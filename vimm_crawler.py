@@ -43,7 +43,7 @@ class VimmCrawler:
                 image = tr.find_all('img', class_='flag')
                 image = image[0] if image else None
                 id = int(link['href'].split('/')[-1])
-                rows.append((id, link.text, image['title']))
+                rows.append((id, link.text, image['title'], 0, 0))
 
             except TypeError:
                 continue

@@ -4,4 +4,7 @@ data/
 old/
 
 *.csv
+*.txt
+
 run.py
+test.py
