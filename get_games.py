@@ -35,16 +35,16 @@ class VimmCrawler:
 
         for tr in table.find_all('tr'):
             try:
-                row = []
-                for td in tr.find_all(["td", "th"]):
-                    link = td.find("a")
-                    row.append({
-                        "text": td.get_text(strip=True),
-                        "href": link["href"] if link else None
-                    })
+                link = tr.find('a')
+                if link is None:
+                    continue
+
+                image = tr.find_all('img', class_='flag')
+                image = image[0] if image else None
+                rows.append((link.text, link['href'], image['title']))
+
             except TypeError:
                 continue
-            rows.append(row)
 
         return self._format_rows(rows)
 
