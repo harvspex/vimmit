@@ -1,26 +1,19 @@
 from bs4 import BeautifulSoup
+from dataclasses import dataclass
 from pathlib import Path
 from requests import Session
 import pandas as pd
 import posixpath
 import urllib.parse
 
+@dataclass
 class VimmCrawler:
-    def __init__(
-        self,
-        session: Session,
-        base_url: str,
-        system: str,
-        filepath: Path,
-        will_reset: bool=False,
-        test_mode: bool=False
-    ):
-        self.session = session
-        self.base_url = base_url
-        self.system = system.upper()
-        self.filepath = filepath
-        self.will_reset = will_reset
-        self.test_mode = test_mode
+    session: Session
+    base_url: str
+    system: str
+    filepath: Path
+    will_reset: bool=False
+    test_mode: bool=False
 
     def _join_url(self, endpoint: str):
         return urllib.parse.urljoin(self.base_url, endpoint)
