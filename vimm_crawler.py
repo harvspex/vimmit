@@ -11,11 +11,15 @@ class VimmCrawler:
         session: Session,
         base_url: str,
         system: str,
+        filepath: Path,
+        will_reset: bool=False,
         test_mode: bool=False
     ):
         self.session = session
         self.base_url = base_url
         self.system = system.upper()
+        self.filepath = filepath
+        self.will_reset = will_reset
         self.test_mode = test_mode
 
     def _join_url(self, endpoint: str):
@@ -36,23 +40,31 @@ class VimmCrawler:
         for tr in table.find_all('tr'):
             try:
                 link = tr.find('a')
-                if link is None:
-                    continue
-
                 image = tr.find_all('img', class_='flag')
                 image = image[0] if image else None
-                rows.append((link.text, link['href'], image['title']))
+                id = int(link['href'].split('/')[-1])
+                rows.append((id, link.text, image['title']))
 
             except TypeError:
                 continue
 
-        return self._format_rows(rows)
+            except ValueError:
+                continue
 
-    @staticmethod
-    def _format_rows(games: list):
-        df = pd.DataFrame(games)
+        return pd.DataFrame(rows)
+
+    def _format(self, games: list):
         # TODO: add bias based on string similarity
         # remove redundant copies of game (e.g. non-US version)
+        df = pd.DataFrame(games)
+
+        if not self.will_reset:
+            old_df = pd.read_csv(self.filepath, header=None)
+            df = (
+                pd.concat([old_df, df], ignore_index=True)
+                .drop_duplicates(subset=[0], keep="first")
+            )
+
         return df
 
     def _crawl(self):
@@ -67,11 +79,12 @@ class VimmCrawler:
 
         return games.reset_index(drop=True)
 
-    @staticmethod
-    def _dump(filepath: Path, df: pd.DataFrame):
-        with open(filepath, 'w', newline='') as f:
-            df.to_csv(f, header=False)
+    def _dump(self, df: pd.DataFrame):
+        print(len(df))
+        with open(self.filepath, 'w', newline='') as f:
+            df.to_csv(f, index=False, header=False)
 
-    def run(self, filepath: Path):
+    def run(self):
         games = self._crawl()
-        self._dump(filepath, games)
+        games = self._format(games)
+        self._dump(games)

@@ -20,6 +20,21 @@ def get_parser() -> argparse.ArgumentParser:
         const=DEFAULT_FILEPATH,
         nargs='?'
     )
+    # parser.add_argument(
+    #     '-b', '--blacklist',
+    #     help='',
+    #     action='store_true'
+    # )
+    # parser.add_argument(
+    #     '-c', '--crawl',
+    #     help='',
+    #     action='store_true'
+    # )
+    # parser.add_argument(
+    #     '-r', '--reset',
+    #     help='',
+    #     action='store_true'
+    # )
 
     return parser
 
