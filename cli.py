@@ -10,7 +10,7 @@ def get_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         'system',
         help='system for which to roll games',
-        choices=['ps1', 'n64'],
+        choices=['ps1', 'n64', '*'],
         # nargs='*' # TODO: support for multi-system game rolls
     )
     parser.add_argument(
