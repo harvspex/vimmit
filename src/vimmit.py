@@ -16,7 +16,7 @@ class Vimmit:
         self.config = load_dump.load_config(config_path)
         self.args = args
 
-    def _handle_scrape(self, systems: list):
+    def _handle_scrape(self, systems: dict):
         from vimm_scraper import VimmScraper
         from requests import Session
         import truststore
@@ -24,7 +24,7 @@ class Vimmit:
         truststore.inject_into_ssl()
         session = Session()
 
-        for system in systems:
+        for system in systems.values():
             print(f'Downloading games list for {system["name"]} ({system["id"]}). Please wait...')
             vimm_scraper = VimmScraper(
                 session,
@@ -38,9 +38,9 @@ class Vimmit:
         print('All systems complete!')
 
     def run(self):
-        systems = [v for k, v in self.config['systems'].items() if k in self.args.systems]
+        systems = {k: v for k, v in self.config['systems'].items() if k in self.args.systems}
         if not self.args.download:
-            vimm_roller = VimmRoller(systems, self.games_path)
+            vimm_roller = VimmRoller(systems, self.games_path, self.config_path)
             vimm_roller.roll()
             return
 
