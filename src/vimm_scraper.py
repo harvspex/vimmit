@@ -6,6 +6,8 @@ import posixpath
 import urllib.parse
 
 # TODO: Make async
+# TODO: Loading percentage based on letter position
+# TODO: Colour logging?
 
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
