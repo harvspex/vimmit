@@ -21,12 +21,13 @@ class NoSystemsError(Exception):
 class VimmRoller:
     def __init__(
         self,
-        systems: set,
+        systems: list,
         collection_path: Path,
         # config_path: Path,
         # blacklist_path: Path
     ):
-        self.systems = systems
+        self.systems_dicts = systems
+        self.systems = {_['id'] for _ in systems}
         self.collection_path = collection_path
         # self.collection = utils.load_collection(collection_path)
         # self.config_path = config_path

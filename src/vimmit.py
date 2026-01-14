@@ -25,11 +25,11 @@ class Vimmit:
         session = Session()
 
         for system in systems:
-            print(f'Crawling for {system} games. Please wait...')
+            print(f'Crawling for {system["name"]} ({system["id"]}) games. Please wait...')
             vimm_crawler = VimmCrawler(
                 session,
                 self.config['base_url'],
-                system,
+                system['id'],
                 self.games_path,
                 self.args.reset,
                 test_mode=True # TODO: Disable test mode
@@ -37,8 +37,7 @@ class Vimmit:
             vimm_crawler.run()
 
     def run(self):
-        systems = [self.config['systems'][system]['id'] for system in self.args.systems]
-
+        systems = [v for k, v in self.config['systems'].items() if k in self.args.systems]
         if self.args.crawl:
             from requests import ConnectionError
             try:
@@ -49,5 +48,5 @@ class Vimmit:
                 load_dump.dump_pickle(self.config, self.config_path)
                 return
 
-        vimm_roller = VimmRoller(set(systems), self.games_path)
+        vimm_roller = VimmRoller(systems, self.games_path)
         vimm_roller.roll()
