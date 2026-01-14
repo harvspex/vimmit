@@ -35,18 +35,21 @@ class Vimmit:
                 test_mode=True # TODO: Disable test mode
             )
             vimm_crawler.run()
+        print('All systems complete!')
 
     def run(self):
         systems = [v for k, v in self.config['systems'].items() if k in self.args.systems]
-        if self.args.crawl:
-            from requests import ConnectionError
-            try:
-                self._handle_crawl(systems)
-            except (AttributeError, ConnectionError):
-                print('That didn\'t work. Resetting base url.') # TODO: Better message
-                self.config['base_url'] = None
-                load_dump.dump_pickle(self.config, self.config_path)
-                return
+        if not self.args.crawl:
+            vimm_roller = VimmRoller(systems, self.games_path)
+            vimm_roller.roll()
+            return
 
-        vimm_roller = VimmRoller(systems, self.games_path)
-        vimm_roller.roll()
+        from requests import ConnectionError
+        try:
+            self._handle_crawl(systems)
+        except (AttributeError, ConnectionError):
+            print('That didn\'t work. Resetting base url.') # TODO: Better message
+            self.config['base_url'] = None
+            load_dump.dump_pickle(self.config, self.config_path)
+            return
+

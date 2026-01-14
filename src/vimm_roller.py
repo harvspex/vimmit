@@ -79,10 +79,4 @@ class VimmRoller:
         game = games[game_id]
         collection[system][game_id]['seen'] = True
         load_dump.dump_pickle(collection, self.collection_path)
-        print( # TODO: Fix link, system name
-f'''
-System: {system}
-Game: {game["name"]}
-Link: {game_id}
-'''
-        )
+        print(f'({system}): "{game["name"]}" {game_id}') # TODO: Fix link, improve system name
