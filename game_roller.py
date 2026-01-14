@@ -19,14 +19,21 @@ class VimmRoller:
         # self.blacklist_path = blacklist_path
         # self.blacklist = utils.load_blacklist(blacklist_path)
 
+    @staticmethod
+    def __game_is_not(game: dict, key: str) -> bool:
+        return key not in game or not game[key]
 
-    def pre(self):
+    @staticmethod
+    def _game_is_allowed(game: dict) -> bool:
+        return VimmRoller.__game_is_not(game, 'seen') and VimmRoller.__game_is_not(game, 'blacklist')
+
+    def pre(self, games):
         # TODO: check if blacklist hash changed
         # if yes, reapply blacklist
         # filter non-blacklisted, non-seen games
         # if list is empty, reroll new system
+        subset = {id: game for id, game in games if self._game_is_allowed(game)}
         ...
-
 
     def roll(self):
         # TODO: WIP
