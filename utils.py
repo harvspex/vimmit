@@ -2,6 +2,11 @@ from pathlib import Path
 from typing import Any, Callable
 import pickle
 
+CONFIG = {
+    'base_url': None,
+    'bl_hash': None,
+    'systems': {},
+}
 
 def dump_pickle(obj: Any, filepath: Path):
     with open(filepath, 'wb') as f:
@@ -21,8 +26,8 @@ def load_collection(filepath: Path) -> dict:
 
 
 def _init_config(filepath: Path) -> dict:
-    # TODO: Provide default config
-    ...
+    dump_pickle(CONFIG, filepath)
+    return CONFIG
 
 
 def load_config(filepath: Path) -> dict:
