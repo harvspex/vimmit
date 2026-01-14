@@ -10,5 +10,4 @@ old/
 *.json
 *.txt
 
-run.py
 test.py
