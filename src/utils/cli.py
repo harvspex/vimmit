@@ -12,7 +12,7 @@ def get_parser(systems: list) -> argparse.ArgumentParser:
         # TODO: support for all-system game rolls
     )
     parser.add_argument(
-        '-s', '--scrape',
+        '-d', '--download',
         help='',
         action='store_true',
         default=False

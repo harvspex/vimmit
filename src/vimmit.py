@@ -25,7 +25,7 @@ class Vimmit:
         session = Session()
 
         for system in systems:
-            print(f'Scraping for {system["name"]} ({system["id"]}) games. Please wait...')
+            print(f'Downloading games list for {system["name"]} ({system["id"]}). Please wait...')
             vimm_scraper = VimmScraper(
                 session,
                 self.config['base_url'],
@@ -39,7 +39,7 @@ class Vimmit:
 
     def run(self):
         systems = [v for k, v in self.config['systems'].items() if k in self.args.systems]
-        if not self.args.scrape:
+        if not self.args.download:
             vimm_roller = VimmRoller(systems, self.games_path)
             vimm_roller.roll()
             return

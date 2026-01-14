@@ -30,7 +30,7 @@ def scrape_systems(base_url: str) -> set:
     import requests
     import truststore
 
-    print('Scraping systems. Please wait...')
+    print('Downloading systems list. Please wait...')
     truststore.inject_into_ssl()
     html = requests.get(base_url).text
     soup = BeautifulSoup(html, 'html.parser')
