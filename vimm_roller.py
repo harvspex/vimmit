@@ -13,6 +13,11 @@ class NoGamesError(Exception):
         super().__init__(*args)
 
 
+class NoSystemsError(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+
 class VimmRoller:
     def __init__(
         self,
@@ -33,6 +38,17 @@ class VimmRoller:
     def _game_is_allowed(game: dict) -> bool:
         return not (game.get('seen', False) or game.get('bl', False))
 
+    def _validate_systems(self, collection: dict):
+        difference = self.systems.difference(set(collection.keys()))
+        self.systems -= difference
+
+        if difference:
+            print(f'The following system/s were not found and will be skipped: {" ".join(difference)}')
+
+        if len(self.systems) < 1:
+            raise NoSystemsError
+
+
     def get_gamelist(self, collection: dict) -> dict:
         while True:
             system = random.choice(list(self.systems))
@@ -50,10 +66,16 @@ class VimmRoller:
     def roll(self):
         collection = utils.load_collection(self.collection_path) # TODO: handle missing filepath
         try:
+            self._validate_systems(collection)
             system, games = self.get_gamelist(collection) # TODO: handle bad system value
         except NoGamesError:
-            ...
+            print('No games found! Try a crawling new system, or reducing your blacklist.')
+            return
+        except NoSystemsError:
+            return
 
         game_id = random.choice(list(games.keys()))
         game = games[game_id]
+        collection[system][game_id]['seen'] = True
+        utils.dump_pickle(collection, self.collection_path)
         print(f'{system} {game["name"]} {game_id}')
