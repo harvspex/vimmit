@@ -49,6 +49,6 @@ class Vimmit:
                 load_dump.dump_pickle(self.config, self.config_path)
                 return
 
-        systems = {_.upper() for _ in self.args.systems}
+        systems = {self.config['systems'][system]['id'] for system in self.args.systems}
         vimm_roller = VimmRoller(systems, self.games_path)
         vimm_roller.roll()
