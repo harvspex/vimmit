@@ -3,7 +3,11 @@ __pycache__/
 data/
 old/
 
+*.bin
 *.csv
+*.dat
+*.html
+*.json
 *.txt
 
 run.py
