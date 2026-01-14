@@ -48,7 +48,7 @@ class Vimmit:
         try:
             self._handle_scrape(systems)
         except (AttributeError, ConnectionError):
-            print('That didn\'t work. Resetting base url.') # TODO: Better message
+            print('That didn\'t work. Resetting base url.') # TODO: Better handling and message
             self.config['base_url'] = None
             load_dump.dump_pickle(self.config, self.config_path)
             return

@@ -2,7 +2,7 @@ from pathlib import Path
 import utils.load_dump as load_dump
 import random
 
-# TODO: Mode to roll games per game rather than per system?
+# TODO: Implement Blacklist
 
 class NoGamesError(Exception):
     def __init__(self, *args):

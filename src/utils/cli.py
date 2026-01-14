@@ -1,5 +1,10 @@
 import argparse
 
+# TODO: Add and implement options
+# - Re-scrape systems
+# - Import/export from file. Existing data wins conflicts
+# - Mode to roll games per game rather than per system?
+
 def get_parser(systems: list) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description='Vimmit!'
