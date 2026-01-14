@@ -1,9 +1,9 @@
 from pathlib import Path
-import json
+import pickle
 
 def load_collection(filepath: Path) -> dict:
     try:
-        with open(filepath, 'r') as f:
-            return json.load(f)
+        with open(filepath, 'rb') as f:
+            return pickle.load(f)
     except FileNotFoundError:
         return {}
