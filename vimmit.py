@@ -39,7 +39,14 @@ def _handle_crawl(args, games_path: Path):
     base_url = '' # TODO
     
     for system in args.systems:
-        vimm_crawler = VimmCrawler(session, base_url, system, games_path, args.reset, test_mode=True) # TODO: Disable test mode
+        vimm_crawler = VimmCrawler(
+            session,
+            base_url,
+            system,
+            games_path,
+            args.reset,
+            test_mode=True # TODO: Disable test mode
+        )
         vimm_crawler.run()
 
 
@@ -49,7 +56,7 @@ def main():
     cwd = Path.cwd()
     games_path = cwd / 'games.dat'
     config_path = cwd / 'config.dat'
-    args.systems = [_.upper() for _ in args.systems]
+    args.systems = {_.upper() for _ in args.systems}
 
     if args.crawl:
         _handle_crawl(args, games_path)
