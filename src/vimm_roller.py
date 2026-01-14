@@ -23,8 +23,7 @@ class VimmRoller:
         config_path: Path,
         # blacklist_path: Path
     ):
-        self.systems_dict = systems
-        self.systems_set = {_['id'] for _ in systems.values()}
+        self.systems = systems
         self.collection_path = collection_path
         self.config_path = config_path
         # self.blacklist_path = blacklist_path
@@ -35,34 +34,37 @@ class VimmRoller:
         return not (game.get('seen', False) or game.get('bl', False))
 
     def _validate_systems(self, collection: dict):
-        difference = self.systems_set.difference(set(collection.keys()))
-        self.systems_set -= difference
+        systems_set = set(self.systems.keys())
+        difference = systems_set.difference(set(collection.keys()))
+        self.systems = {k: v for k, v in self.systems.items() if k not in difference}
 
         if difference:
             print(f'The following system/s were not found and will be skipped: {" ".join(difference)}')
 
-        if len(self.systems_set) < 1:
+        if len(systems_set) < 1:
             raise NoSystemsError
 
-    def get_gamelist(self, collection: dict) -> dict:
+    def _roll_system_and_game(self, collection: dict) -> dict:
+        system_list = list(self.systems.keys())
         while True:
-            system_id = random.choice(list(self.systems_set))
-            self.systems_set.remove(system_id)
+            choice = random.randint(0, len(system_list) - 1)
+            system_id = system_list.pop(choice)
             subset = {
                 id: game
                 for id, game in collection[system_id].items()
                 if VimmRoller._game_is_allowed(game)
             }
             if subset:
-                return system_id, subset
-            if not self.systems_set:
+                game_id = random.choice(list(subset.keys()))
+                return system_id, game_id
+            if not system_list:
                 raise NoGamesError
 
     def roll(self):
         collection = load_dump.load_collection(self.collection_path) # TODO: handle missing filepath
         try:
             self._validate_systems(collection)
-            system_id, games = self.get_gamelist(collection) # TODO: handle bad system value
+            sys_id, game_id = self._roll_system_and_game(collection) # TODO: handle bad system value
         except NoGamesError:
             print('No games found! Try reducing your blacklist, or downloading games for a new system.')
             return
@@ -70,10 +72,8 @@ class VimmRoller:
             return
 
         config = load_dump.load_config(self.config_path)
-        game_id = random.choice(list(games.keys()))
-        game = games[game_id]
-        collection[system_id][game_id]['seen'] = True
+        collection[sys_id][game_id]['seen'] = True
         load_dump.dump_pickle(collection, self.collection_path)
+        game_name = collection[sys_id][game_id]['name']
         url = urllib.parse.urljoin(config['base_url'], str(game_id))
-        print(f'{self.systems_dict[system_id.lower()]["name"]} ({system_id}): "{game["name"]}". {url}') # TODO: Improve system name
-        # TODO: Make this nicer
+        print(f'{self.systems[sys_id]} ({sys_id}): "{game_name}". {url}')

@@ -24,12 +24,12 @@ class Vimmit:
         truststore.inject_into_ssl()
         session = Session()
 
-        for system in systems.values():
-            print(f'Downloading games list for {system["name"]} ({system["id"]}). Please wait...')
+        for sys_id, sys_name in systems.items():
+            print(f'Downloading games list for {sys_name} ({sys_id}). Please wait...')
             vimm_scraper = VimmScraper(
                 session,
                 self.config['base_url'],
-                system['id'],
+                sys_id,
                 self.games_path,
                 self.args.reset,
                 test_mode=True # TODO: Disable test mode
@@ -38,8 +38,7 @@ class Vimmit:
         print('All systems complete!')
 
     def run(self):
-        # TODO: Refactor systems to be simple id : name pairs?
-        systems = {k: v for k, v in self.config['systems'].items() if k in self.args.systems}
+        systems = {v['id']: v['name'] for k, v in self.config['systems'].items() if k in self.args.systems}
         if not self.args.download:
             vimm_roller = VimmRoller(systems, self.games_path, self.config_path)
             vimm_roller.roll()
