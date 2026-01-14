@@ -44,7 +44,6 @@ class VimmRoller:
         if len(self.systems_set) < 1:
             raise NoSystemsError
 
-
     def get_gamelist(self, collection: dict) -> dict:
         while True:
             system_id = random.choice(list(self.systems_set))

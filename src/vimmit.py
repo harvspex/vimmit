@@ -38,6 +38,7 @@ class Vimmit:
         print('All systems complete!')
 
     def run(self):
+        # TODO: Refactor systems to be simple id : name pairs?
         systems = {k: v for k, v in self.config['systems'].items() if k in self.args.systems}
         if not self.args.download:
             vimm_roller = VimmRoller(systems, self.games_path, self.config_path)
