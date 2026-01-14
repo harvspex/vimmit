@@ -31,8 +31,8 @@ class VimmRoller:
     def roll(self):
         # TODO: WIP
         system = random.choice(list(self.systems))
-        collection = utils.load_collection(self.collection_path)
-        games = collection[system]
+        collection = utils.load_collection(self.collection_path) # TODO: handle missing filepath
+        games = collection[system] # TODO: handle missing system
         game_id = random.choice(list(games.keys()))
         game = games[game_id]
         print(f'{system} {game["name"]} {game_id}')
