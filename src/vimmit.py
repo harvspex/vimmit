@@ -52,4 +52,3 @@ class Vimmit:
             self.config['base_url'] = None
             load_dump.dump_pickle(self.config, self.config_path)
             return
-

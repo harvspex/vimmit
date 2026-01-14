@@ -1,12 +1,8 @@
 from pathlib import Path
-# from enum import Enum
 import utils.load_dump as load_dump
 import random
 
-# class Mode(Enum):
-#     SYSTEM = 'game'
-#     GAME = 'game'
-
+# TODO: Mode to roll games per game rather than per system?
 
 class NoGamesError(Exception):
     def __init__(self, *args):
