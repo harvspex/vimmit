@@ -5,6 +5,8 @@ from requests import Session
 import posixpath
 import urllib.parse
 
+# TODO: Multithreading
+
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
     'USA': 1,
