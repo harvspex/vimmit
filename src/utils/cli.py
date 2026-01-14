@@ -1,6 +1,7 @@
 import argparse
 
 # TODO: Add and implement options
+# - Support for all (downloaded) system game rolls with `*` arg
 # - Re-scrape systems
 # - Import/export from file. Existing data wins conflicts
 # - Mode to roll games per game rather than per system?
@@ -14,7 +15,6 @@ def get_parser(systems: list) -> argparse.ArgumentParser:
         help='system/s to roll games for',
         choices=systems,
         nargs='*'
-        # TODO: support for all-system game rolls
     )
     parser.add_argument(
         '-d', '--download',
