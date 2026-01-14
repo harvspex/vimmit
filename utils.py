@@ -1,5 +1,11 @@
 from pathlib import Path
+from typing import Any
 import pickle
+
+
+def dump_pickle(obj: Any, filepath: Path):
+    with open(filepath, 'wb') as f:
+        pickle.dump(obj, f)
 
 
 def load_collection(filepath: Path) -> dict:

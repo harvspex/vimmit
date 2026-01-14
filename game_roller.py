@@ -1,13 +1,12 @@
 from pathlib import Path
 import utils
-import pandas as pd
 import random
 
 
 class VimmRoller:
     def __init__(
         self,
-        systems: list,
+        systems: set,
         collection_path: Path,
         # config_path: Path,
         # blacklist_path: Path
@@ -20,14 +19,25 @@ class VimmRoller:
         # self.blacklist_path = blacklist_path
         # self.blacklist = utils.load_blacklist(blacklist_path)
 
+
+    def pre(self):
+        # TODO: check if blacklist hash changed
+        # if yes, reapply blacklist
+        # filter non-blacklisted, non-seen games
+        # if list is empty, reroll new system
+        ...
+
+
     def roll(self):
-        system = random.choice(self.systems)
+        # TODO: WIP
+        system = random.choice(list(self.systems))
         collection = utils.load_collection(self.collection_path)
         games = collection[system]
-        key = random.choice(list(games.keys()))
-        return games[key]
+        game_id = random.choice(list(games.keys()))
+        game = games[game_id]
+        print(f'{system} {game["name"]} {game_id}')
+
 
 filepath = Path.cwd() / 'games.dat'
 vr = VimmRoller(['PS1'], filepath)
-result = vr.roll()
-print(result)
+vr.roll()

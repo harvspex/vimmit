@@ -100,18 +100,10 @@ class VimmCrawler:
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
-    def _format(self, games: dict) -> dict:
-        # TODO: flag blacklisted games?
-        return games
-
-    def _dump(self, collection: dict):
-        with open(self.filepath, 'wb') as f:
-            pickle.dump(collection, f)
 
     def run(self):
         collection = utils.load_collection(self.filepath)
         games = {} if self.will_reset or self.system not in collection else collection[self.system]
         games = self._crawl(games)
-        # games = self._format(games)
         collection[self.system] = games
-        self._dump(collection)
+        utils.dump_pickle(collection, self.filepath)
