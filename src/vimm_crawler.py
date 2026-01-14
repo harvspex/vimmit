@@ -1,4 +1,4 @@
-import src.utils.load_dump as load_dump
+import utils.load_dump as load_dump
 from bs4 import BeautifulSoup
 from pathlib import Path
 from requests import Session
