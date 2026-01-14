@@ -1,41 +1,33 @@
 from pathlib import Path
+import utils
 import pandas as pd
+import random
 
 
-def _init_blacklist(blacklist_path: Path) -> set:
-    with open(blacklist_path, 'r') as f:
-        return set([_.lower().strip() for _ in f.readlines() if _])
+class VimmRoller:
+    def __init__(
+        self,
+        systems: list,
+        collection_path: Path,
+        # config_path: Path,
+        # blacklist_path: Path
+    ):
+        self.systems = systems
+        self.collection_path = collection_path
+        # self.collection = utils.load_collection(collection_path)
+        # self.config_path = config_path
+        # self.config = utils.load_config(config_path)
+        # self.blacklist_path = blacklist_path
+        # self.blacklist = utils.load_blacklist(blacklist_path)
 
+    def roll(self):
+        system = random.choice(self.systems)
+        collection = utils.load_collection(self.collection_path)
+        games = collection[system]
+        key = random.choice(list(games.keys()))
+        return games[key]
 
-def _get_non_blacklist_game(games: pd.DataFrame, blacklist: set) -> pd.DataFrame:
-    # TODO: This can result in an infinite loop
-    # Better approach:
-    # - Hash blacklist file
-    # - If hash different from last time, recheck database, and flag blacklisted games
-    # - Sample game from updated database
-
-    seeking = True
-    while seeking:
-        game = games.sample()
-        title = game.iloc[0][1].lower()
-
-        for substring in blacklist:
-            print(f'{substring} in {title}: {substring in title}')
-
-            if substring in title:
-                print('substring in title')
-                break
-            
-            seeking = False
-
-    return game
-
-
-def roll_game(games_path: Path, blacklist_path: Path):
-    blacklist = _init_blacklist(blacklist_path)
-    games = pd.read_csv(games_path, header=None)
-    game = _get_non_blacklist_game(games, blacklist)
-    print(game)
-
-
-roll_game('psx_a.csv', 'blacklist.txt')
+filepath = Path.cwd() / 'games.dat'
+vr = VimmRoller(['PS1'], filepath)
+result = vr.roll()
+print(result)
