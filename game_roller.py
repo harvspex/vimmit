@@ -1,6 +1,16 @@
 from pathlib import Path
+from enum import Enum
 import utils
 import random
+
+# class Mode(Enum):
+#     SYSTEM = 'game'
+#     GAME = 'game'
+
+
+class NoGamesError(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
 
 
 class VimmRoller:
@@ -20,26 +30,30 @@ class VimmRoller:
         # self.blacklist = utils.load_blacklist(blacklist_path)
 
     @staticmethod
-    def __game_is_not(game: dict, key: str) -> bool:
-        return key not in game or not game[key]
-
-    @staticmethod
     def _game_is_allowed(game: dict) -> bool:
-        return VimmRoller.__game_is_not(game, 'seen') and VimmRoller.__game_is_not(game, 'blacklist')
+        return not (game.get('seen', False) or game.get('bl', False))
 
-    def pre(self, games):
-        # TODO: check if blacklist hash changed
-        # if yes, reapply blacklist
-        # filter non-blacklisted, non-seen games
-        # if list is empty, reroll new system
-        subset = {id: game for id, game in games if self._game_is_allowed(game)}
-        ...
+    def get_gamelist(self, collection: dict) -> dict:
+        while True:
+            system = random.choice(list(self.systems))
+            self.systems.remove(system)
+            subset = {
+                id: game
+                for id, game in collection[system].items()
+                if VimmRoller._game_is_allowed(game)
+            }
+            if subset:
+                return system, subset
+            if not self.systems:
+                raise NoGamesError
 
     def roll(self):
-        # TODO: WIP
-        system = random.choice(list(self.systems))
         collection = utils.load_collection(self.collection_path) # TODO: handle missing filepath
-        games = collection[system] # TODO: handle missing system
+        try:
+            system, games = self.get_gamelist(collection) # TODO: handle bad system value
+        except NoGamesError:
+            ...
+
         game_id = random.choice(list(games.keys()))
         game = games[game_id]
         print(f'{system} {game["name"]} {game_id}')
