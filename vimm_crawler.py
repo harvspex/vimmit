@@ -2,7 +2,6 @@ import utils
 from bs4 import BeautifulSoup
 from pathlib import Path
 from requests import Session
-import pickle
 import posixpath
 import urllib.parse
 

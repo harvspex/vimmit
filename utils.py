@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 import pickle
 
 
@@ -8,24 +8,25 @@ def dump_pickle(obj: Any, filepath: Path):
         pickle.dump(obj, f)
 
 
-def load_collection(filepath: Path) -> dict:
+def _load_pickle(filepath: Path, default: Callable, *args, **kwargs) -> dict:
     try:
         with open(filepath, 'rb') as f:
             return pickle.load(f)
     except FileNotFoundError:
-        return {}
+        return default(*args, **kwargs)
+
+
+def load_collection(filepath: Path) -> dict:
+    _load_pickle(filepath, lambda: {})
 
 
 def _init_config(filepath: Path) -> dict:
+    # TODO: Provide default config
     ...
 
 
 def load_config(filepath: Path) -> dict:
-    try:
-        with open(filepath, 'rb') as f:
-            return pickle.load(f)
-    except FileNotFoundError:
-        return _init_config(filepath)
+    _load_pickle(filepath, _init_config, filepath)
 
 
 def load_blacklist(filepath: Path) -> set:
