@@ -110,7 +110,7 @@ class VimmCrawler:
 
     def run(self):
         collection = utils.load_collection(self.filepath)
-        games = {} if self.will_reset else collection[self.system]
+        games = {} if self.will_reset or self.system not in collection else collection[self.system]
         games = self._crawl(games)
         # games = self._format(games)
         collection[self.system] = games
