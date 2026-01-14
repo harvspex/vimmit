@@ -25,12 +25,12 @@ def __input_base_url() -> str:
 
         return base_url
 
-def crawl_systems(base_url: str) -> set:
+def scrape_systems(base_url: str) -> set:
     from bs4 import BeautifulSoup
     import requests
     import truststore
 
-    print('Crawling for systems. Please wait...')
+    print('Scraping systems. Please wait...')
     truststore.inject_into_ssl()
     html = requests.get(base_url).text
     soup = BeautifulSoup(html, 'html.parser')
@@ -55,5 +55,5 @@ def __add_if_not(config: dict, key: str, func: Callable, *args, **kwargs):
 
 def handle_setup(config: dict) -> dict:
     __add_if_not(config, 'base_url', __input_base_url)
-    __add_if_not(config, 'systems', crawl_systems, config['base_url'])
+    __add_if_not(config, 'systems', scrape_systems, config['base_url'])
     return config

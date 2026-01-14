@@ -16,8 +16,8 @@ class Vimmit:
         self.config = load_dump.load_config(config_path)
         self.args = args
 
-    def _handle_crawl(self, systems: list):
-        from vimm_crawler import VimmCrawler
+    def _handle_scrape(self, systems: list):
+        from vimm_scraper import VimmScraper
         from requests import Session
         import truststore
 
@@ -25,8 +25,8 @@ class Vimmit:
         session = Session()
 
         for system in systems:
-            print(f'Crawling for {system["name"]} ({system["id"]}) games. Please wait...')
-            vimm_crawler = VimmCrawler(
+            print(f'Scraping for {system["name"]} ({system["id"]}) games. Please wait...')
+            vimm_scraper = VimmScraper(
                 session,
                 self.config['base_url'],
                 system['id'],
@@ -34,19 +34,19 @@ class Vimmit:
                 self.args.reset,
                 test_mode=True # TODO: Disable test mode
             )
-            vimm_crawler.run()
+            vimm_scraper.run()
         print('All systems complete!')
 
     def run(self):
         systems = [v for k, v in self.config['systems'].items() if k in self.args.systems]
-        if not self.args.crawl:
+        if not self.args.scrape:
             vimm_roller = VimmRoller(systems, self.games_path)
             vimm_roller.roll()
             return
 
         from requests import ConnectionError
         try:
-            self._handle_crawl(systems)
+            self._handle_scrape(systems)
         except (AttributeError, ConnectionError):
             print('That didn\'t work. Resetting base url.') # TODO: Better message
             self.config['base_url'] = None

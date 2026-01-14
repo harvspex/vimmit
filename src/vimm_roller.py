@@ -66,7 +66,7 @@ class VimmRoller:
             self._validate_systems(collection)
             system, games = self.get_gamelist(collection) # TODO: handle bad system value
         except NoGamesError:
-            print('No games found! Try a crawling new system, or reducing your blacklist.')
+            print('No games found! Try a scraping new system, or reducing your blacklist.')
             return
         except NoSystemsError:
             return

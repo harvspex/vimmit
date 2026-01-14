@@ -14,7 +14,7 @@ REGION_PRIORITY = {
     OTHER_REGION: 5
 }
 
-class VimmCrawler:
+class VimmScraper:
     def __init__(
         self,
         session: Session,
@@ -90,7 +90,7 @@ class VimmCrawler:
                 'name': game['name']
             }
 
-    def _crawl(self, games: dict) -> dict:
+    def _scrape(self, games: dict) -> dict:
         self.__get_games(self.__get_number_url(), games)
         r = 1 if self.test_mode else 26
         for i in range(r):
@@ -102,6 +102,6 @@ class VimmCrawler:
     def run(self):
         collection = load_dump.load_collection(self.filepath)
         games = {} if self.will_reset or self.system not in collection else collection[self.system]
-        games = self._crawl(games)
+        games = self._scrape(games)
         collection[self.system] = games
         load_dump.dump_pickle(collection, self.filepath)
