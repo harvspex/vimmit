@@ -1,8 +1,8 @@
 from vimm_roller import VimmRoller
 from pathlib import Path
-import utils.load_dump as load_dump
 from argparse import Namespace
-
+import utils.load_dump as load_dump
+import hashlib
 
 class Vimmit:
     def __init__(
@@ -15,6 +15,41 @@ class Vimmit:
         self.config_path = config_path
         self.config = load_dump.load_config(config_path)
         self.args = args
+
+    def _handle_blacklist(self, systems: dict):
+        GLOBAL = 'Global'
+
+        blacklist_path = Path.cwd() / 'blacklist.yaml'
+        if not Path.is_file(blacklist_path):
+            Path.touch(blacklist_path)
+
+        old_hash = self.config['bl_hash']
+        with open(blacklist_path, 'rb') as f:
+            current_hash = hashlib.md5(f.read()).hexdigest()
+
+        if old_hash != current_hash:
+            import yaml
+
+            with open(blacklist_path, 'r') as f:
+                blacklist = yaml.safe_load(f)
+
+            if blacklist is None:
+                blacklist = {}
+
+            if GLOBAL not in blacklist:
+                blacklist[GLOBAL] = []
+
+            for system in self.config['systems'].values():
+                sys_name = system['name']
+                sys_id = system['id']
+                name = f'{sys_name} ({sys_id})'
+                if name not in blacklist:
+                    blacklist[name] = []
+
+            # TODO: WIP
+
+            with open(blacklist_path, 'w') as f:
+                blacklist = yaml.safe_dump(f)
 
     def _handle_scrape(self, systems: dict):
         from vimm_scraper import VimmScraper
@@ -39,7 +74,9 @@ class Vimmit:
 
     def run(self):
         systems = {v['id']: v['name'] for k, v in self.config['systems'].items() if k in self.args.systems}
+
         if not self.args.download:
+            self._handle_blacklist(systems)
             vimm_roller = VimmRoller(systems, self.games_path, self.config_path)
             vimm_roller.roll()
             return

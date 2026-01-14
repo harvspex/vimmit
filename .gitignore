@@ -9,5 +9,7 @@ old/
 *.html
 *.json
 *.txt
+*.yaml
+*.yml
 
 test.py
