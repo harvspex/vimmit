@@ -96,7 +96,7 @@ class VimmScraper:
 
     def _scrape(self, games: dict) -> dict:
         self.__get_games(self.__get_number_url(), games)
-        r = 1 if self.test_mode else 26
+        r = 0 if self.test_mode else 26
         for i in range(r):
             letter = chr(i+65)
             self.__get_games(self.__get_letter_url(letter), games)
