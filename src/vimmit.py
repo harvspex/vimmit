@@ -16,18 +16,16 @@ class Vimmit:
         self.config = load_dump.load_config(config_path)
         self.args = args
 
-    def _handle_crawl(self):
+    def _handle_crawl(self, systems: list):
         from vimm_crawler import VimmCrawler
         from requests import Session
         import truststore
 
-        if not self.config.get('base_url', False):
-            self.__handle_setup()
-
         truststore.inject_into_ssl()
         session = Session()
 
-        for system in self.args.systems:
+        for system in systems:
+            print(f'Crawling for {system} games. Please wait...')
             vimm_crawler = VimmCrawler(
                 session,
                 self.config['base_url'],
@@ -39,16 +37,17 @@ class Vimmit:
             vimm_crawler.run()
 
     def run(self):
+        systems = [self.config['systems'][system]['id'] for system in self.args.systems]
+
         if self.args.crawl:
             from requests import ConnectionError
             try:
-                self._handle_crawl()
+                self._handle_crawl(systems)
             except (AttributeError, ConnectionError):
                 print('That didn\'t work. Resetting base url.') # TODO: Better message
                 self.config['base_url'] = None
                 load_dump.dump_pickle(self.config, self.config_path)
                 return
 
-        systems = {self.config['systems'][system]['id'] for system in self.args.systems}
-        vimm_roller = VimmRoller(systems, self.games_path)
+        vimm_roller = VimmRoller(set(systems), self.games_path)
         vimm_roller.roll()

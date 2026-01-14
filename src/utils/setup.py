@@ -34,18 +34,18 @@ def crawl_systems(base_url: str) -> set:
     truststore.inject_into_ssl()
     html = requests.get(base_url).text
     soup = BeautifulSoup(html, 'html.parser')
-    table = soup.find('table')
     systems = {}
 
-    for tr in table.find_all('tr'):
-        tr.find('td')
-        link = tr.find('a')
-        id = link['href'].split('/')[-1]
-        name = link.text
-        systems[id.lower()] = {
-            'id': id,
-            'name': name
-        }
+    for table in soup.find_all('table'):
+        for tr in table.find_all('tr'):
+            tr.find('td')
+            link = tr.find('a')
+            id = link['href'].split('/')[-1]
+            name = link.text
+            systems[id.lower()] = {
+                'id': id,
+                'name': name
+            }
 
     return systems
 
