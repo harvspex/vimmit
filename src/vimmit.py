@@ -1,8 +1,45 @@
-from vimm_roller import VimmRoller
+from src.vimm_roller import VimmRoller
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
-import utils
+import src.utils.save_load as save_load
 import argparse
+
+SYSTEMS = {
+    "Atari2600",
+    "Atari5200",
+    "NES",
+    "SMS",
+    "Atari7800",
+    "TG16",
+    "Genesis",
+    "TGCD",
+    "SNES",
+    "CDi",
+    "SegaCD",
+    "Jaguar",
+    "32X",
+    "Saturn",
+    "JaguarCD",
+    "N64",
+    "Dreamcast",
+    "PS2",
+    "GameCube",
+    "Xbox",
+    "Xbox360",
+    "X360-D",
+    "PS3",
+    "Wii",
+    "WiiWare",
+    "GB",
+    "Lynx",
+    "GG",
+    "VB",
+    "GBC",
+    "GBA",
+    "DS",
+    "PSP",
+    "3DS",
+}
 
 def _get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -11,6 +48,7 @@ def _get_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         'systems',
         help='system/s to roll games for',
+        choices=['ps1', 'n64'],
         nargs='*'
         # TODO: support for all-system game rolls
     )
@@ -25,6 +63,7 @@ def _get_parser() -> argparse.ArgumentParser:
         help='',
         action='store_true',
         default=False
+        # TODO: -r without -c should clear seen and blacklist
     )
     return parser
 
@@ -34,7 +73,7 @@ class Vimmit:
         cwd = Path.cwd()
         self.games_path = cwd / 'games.dat'
         self.config_path = cwd / 'config.dat'
-        self.config = utils.load_config(self.config_path)
+        self.config = save_load.load_config(self.config_path)
         self.args = args
 
     def run(self):
@@ -45,7 +84,7 @@ class Vimmit:
             except (AttributeError, ConnectionError):
                 print('That didn\'t work. Resetting base url.') # TODO: Better message
                 self.config['base_url'] = None
-                utils.dump_pickle(self.config, self.config_path)
+                save_load.dump_pickle(self.config, self.config_path)
                 return
 
         systems = {_.upper() for _ in self.args.systems}
@@ -75,7 +114,7 @@ class Vimmit:
                 continue
 
             self.config['base_url'] = base_url
-            utils.dump_pickle(self.config, self.config_path)
+            save_load.dump_pickle(self.config, self.config_path)
             break
 
     def _handle_crawl(self):

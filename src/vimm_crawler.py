@@ -1,4 +1,4 @@
-import utils
+import src.utils.save_load as save_load
 from bs4 import BeautifulSoup
 from pathlib import Path
 from requests import Session
@@ -100,8 +100,8 @@ class VimmCrawler:
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def run(self):
-        collection = utils.load_collection(self.filepath)
+        collection = save_load.load_collection(self.filepath)
         games = {} if self.will_reset or self.system not in collection else collection[self.system]
         games = self._crawl(games)
         collection[self.system] = games
-        utils.dump_pickle(collection, self.filepath)
+        save_load.dump_pickle(collection, self.filepath)

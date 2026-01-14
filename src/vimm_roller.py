@@ -1,6 +1,6 @@
 from pathlib import Path
 # from enum import Enum
-import utils
+import src.utils.save_load as save_load
 import random
 
 # class Mode(Enum):
@@ -64,7 +64,7 @@ class VimmRoller:
                 raise NoGamesError
 
     def roll(self):
-        collection = utils.load_collection(self.collection_path) # TODO: handle missing filepath
+        collection = save_load.load_collection(self.collection_path) # TODO: handle missing filepath
         try:
             self._validate_systems(collection)
             system, games = self.get_gamelist(collection) # TODO: handle bad system value
@@ -77,5 +77,5 @@ class VimmRoller:
         game_id = random.choice(list(games.keys()))
         game = games[game_id]
         collection[system][game_id]['seen'] = True
-        utils.dump_pickle(collection, self.collection_path)
+        save_load.dump_pickle(collection, self.collection_path)
         print(f'{system} {game["name"]} {game_id}')
