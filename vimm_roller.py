@@ -1,5 +1,5 @@
 from pathlib import Path
-from enum import Enum
+# from enum import Enum
 import utils
 import random
 
@@ -57,8 +57,3 @@ class VimmRoller:
         game_id = random.choice(list(games.keys()))
         game = games[game_id]
         print(f'{system} {game["name"]} {game_id}')
-
-
-filepath = Path.cwd() / 'games.dat'
-vr = VimmRoller(['PS1'], filepath)
-vr.roll()
