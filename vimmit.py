@@ -28,7 +28,7 @@ def _get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def __handle_setup(config: dict) -> dict:
+def __handle_setup(config: dict, config_path: Path) -> dict:
     from urllib.parse import urlparse
 
     print('First time setup: please enter base url:')
@@ -40,6 +40,7 @@ def __handle_setup(config: dict) -> dict:
             continue
 
         config['base_url'] = base_url
+        utils.dump_pickle(config, config_path)
         return config
 
 
@@ -50,11 +51,11 @@ def _handle_crawl(args, games_path: Path, config_path: Path):
 
     config = utils.load_config(config_path)
     if not config.get('base_url', False):
-        config = __handle_setup(config)
+        config = __handle_setup(config, config_path)
 
     truststore.inject_into_ssl()
     session = Session()
-    
+
     for system in args.systems:
         vimm_crawler = VimmCrawler(
             session,
@@ -76,7 +77,14 @@ def main():
     args.systems = {_.upper() for _ in args.systems}
 
     if args.crawl:
-        _handle_crawl(args, games_path, config_path)
+        from requests import ConnectionError
+        try:
+            _handle_crawl(args, games_path, config_path)
+        except (AttributeError, ConnectionError):
+            # TODO: Handle
+            # Reset config
+            ...
+            return
 
     vimm_roller = VimmRoller(args.systems, games_path)
     vimm_roller.roll()
