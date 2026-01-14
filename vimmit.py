@@ -1,5 +1,6 @@
 from vimm_roller import VimmRoller
 from pathlib import Path
+from urllib.parse import urlparse, urlunparse
 import utils
 import argparse
 
@@ -28,66 +29,83 @@ def _get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def __handle_setup(config: dict, config_path: Path) -> dict:
-    from urllib.parse import urlparse
+class Vimmit:
+    def __init__(self, args: argparse.Namespace):
+        cwd = Path.cwd()
+        self.games_path = cwd / 'games.dat'
+        self.config_path = cwd / 'config.dat'
+        self.config = utils.load_config(self.config_path)
+        self.args = args
 
-    print('First time setup: please enter base url:')
-    while True:
-        base_url = input('>> ')
-        parsed_url = urlparse(base_url)
-        if not parsed_url.scheme or not parsed_url.netloc:
-            print('Please enter valid url:')
-            continue
+    def run(self):
+        if self.args.crawl:
+            from requests import ConnectionError
+            try:
+                self._handle_crawl()
+            except (AttributeError, ConnectionError):
+                print('That didn\'t work. Resetting base url.') # TODO: Better message
+                self.config['base_url'] = None
+                utils.dump_pickle(self.config, self.config_path)
+                return
 
-        config['base_url'] = base_url
-        utils.dump_pickle(config, config_path)
-        return config
+        systems = {_.upper() for _ in self.args.systems}
+        vimm_roller = VimmRoller(systems, self.games_path)
+        vimm_roller.roll()
 
+    @staticmethod
+    def __validate_url(user_input: str, default_scheme='https') -> str:
+        parsed = urlparse(user_input)
 
-def _handle_crawl(args, games_path: Path, config_path: Path):
-    from vimm_crawler import VimmCrawler
-    from requests import Session
-    import truststore
+        if not parsed.scheme:
+            parsed = urlparse(f"{default_scheme}://{user_input}")
 
-    config = utils.load_config(config_path)
-    if not config.get('base_url', False):
-        config = __handle_setup(config, config_path)
+        if not parsed.netloc:
+            return None
 
-    truststore.inject_into_ssl()
-    session = Session()
+        parsed = parsed._replace(path='/vault/')
+        return urlunparse(parsed)
 
-    for system in args.systems:
-        vimm_crawler = VimmCrawler(
-            session,
-            config['base_url'],
-            system,
-            games_path,
-            args.reset,
-            test_mode=True # TODO: Disable test mode
-        )
-        vimm_crawler.run()
+    def __handle_setup(self) -> dict:
+        print('Please enter base url (hint: vimm dot net):')
+        while True:
+            user_input = input('>> ').strip()
+            base_url = Vimmit.__validate_url(user_input)
+            if not base_url:
+                print('Please enter valid url:')
+                continue
+
+            self.config['base_url'] = base_url
+            utils.dump_pickle(self.config, self.config_path)
+            break
+
+    def _handle_crawl(self):
+        from vimm_crawler import VimmCrawler
+        from requests import Session
+        import truststore
+
+        if not self.config.get('base_url', False):
+            self.__handle_setup()
+
+        truststore.inject_into_ssl()
+        session = Session()
+
+        for system in self.args.systems:
+            vimm_crawler = VimmCrawler(
+                session,
+                self.config['base_url'],
+                system,
+                self.games_path,
+                self.args.reset,
+                test_mode=True # TODO: Disable test mode
+            )
+            vimm_crawler.run()
 
 
 def main():
     parser = _get_parser()
     args = parser.parse_args()
-    cwd = Path.cwd()
-    config_path = cwd / 'config.dat'
-    games_path = cwd / 'games.dat'
-    args.systems = {_.upper() for _ in args.systems}
-
-    if args.crawl:
-        from requests import ConnectionError
-        try:
-            _handle_crawl(args, games_path, config_path)
-        except (AttributeError, ConnectionError):
-            # TODO: Handle
-            # Reset config
-            ...
-            return
-
-    vimm_roller = VimmRoller(args.systems, games_path)
-    vimm_roller.roll()
+    vimmit = Vimmit(args)
+    vimmit.run()
 
 
 if __name__ == '__main__':
