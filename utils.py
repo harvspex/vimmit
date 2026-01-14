@@ -17,7 +17,7 @@ def _load_pickle(filepath: Path, default: Callable, *args, **kwargs) -> dict:
 
 
 def load_collection(filepath: Path) -> dict:
-    _load_pickle(filepath, lambda: {})
+    return _load_pickle(filepath, lambda: {})
 
 
 def _init_config(filepath: Path) -> dict:
@@ -26,7 +26,7 @@ def _init_config(filepath: Path) -> dict:
 
 
 def load_config(filepath: Path) -> dict:
-    _load_pickle(filepath, _init_config, filepath)
+    return _load_pickle(filepath, _init_config, filepath)
 
 
 def load_blacklist(filepath: Path) -> set:
