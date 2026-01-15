@@ -1,4 +1,5 @@
-import utils.save_load as save_load
+from data import Config, Games
+from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from pathlib import Path
 from requests import Session
@@ -8,6 +9,7 @@ import urllib.parse
 # TODO: Make async
 # TODO: Loading percentage based on letter position
 # TODO: Colour logging?
+# TODO: Extract region priority into config?
 
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
@@ -18,25 +20,17 @@ REGION_PRIORITY = {
     OTHER_REGION: 5
 }
 
+@dataclass
 class VimmScraper:
-    def __init__(
-        self,
-        session: Session,
-        base_url: str,
-        system: str,
-        filepath: Path,
-        will_reset: bool=False,
-        test_mode: bool=False
-    ):
-        self.session = session
-        self.base_url = base_url
-        self.system = system.upper()
-        self.filepath = filepath
-        self.will_reset = will_reset
-        self.test_mode = test_mode
+    games: Games
+    config: Config
+    session: Session
+    system: str
+    will_reset: bool=False
+    test_mode: bool=False
 
     def __join_url(self, endpoint: str):
-        return urllib.parse.urljoin(self.base_url, endpoint)
+        return urllib.parse.urljoin(self.config.data['base_url'], endpoint)
 
     def __get_number_url(self):
         return self.__join_url(f'?p=list&system={self.system}&section=number')
@@ -104,8 +98,7 @@ class VimmScraper:
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def run(self):
-        collection = save_load.load_collection(self.filepath)
-        games = {} if self.will_reset or self.system not in collection else collection[self.system]
+        games = {} if self.will_reset or self.system not in self.games.data else self.games.data[self.system]
         games = self._scrape(games)
-        collection[self.system] = games
-        save_load.dump_pickle(collection, self.filepath)
+        self.games.data[self.system] = games
+        self.games.save()
