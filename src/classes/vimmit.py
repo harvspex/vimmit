@@ -1,6 +1,6 @@
 from classes.vimm_roller import VimmRoller
 from classes.data import *
-from src.classes.blacklist import Blacklist
+from classes.blacklist import Blacklist
 from utils.setup import scrape_systems
 from argparse import Namespace
 from dataclasses import dataclass
