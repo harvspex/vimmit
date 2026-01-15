@@ -75,7 +75,6 @@ class Blacklist(_BaseData):
 
     @override
     def save(self):
-        # TODO: WIP
         with open(self.filepath, 'w') as f:
             for system, values in self.data.items():
                 f.write(f'# {system}\n')
@@ -83,15 +82,17 @@ class Blacklist(_BaseData):
                 f.write('\n\n')
 
     def validate(self):
-        if self.ALL_SYSTEMS not in self.data:
-            self.data[self.ALL_SYSTEMS] = []
+        system_ids = [f'{system["name"]} ({system["id"]})' for system in self.config.data['systems'].values()]
 
-        # TODO: Validate backwards (remove bad systems)
+        for sys_id in system_ids:
+            if sys_id not in self.data.keys():
+                self.data[sys_id] = []
 
-        for system in self.config.data['systems'].values():
-            system_name = f'{system['name']} ({system['id']})'
-            if system_name not in self.data.keys():
-                self.data[system_name] = []
+        # TODO: TEST
+        for key in self.data.keys():
+            if key not in system_ids:
+                del self.data[key]
+
 
     def get_hash(self):
         import hashlib
