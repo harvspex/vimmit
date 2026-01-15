@@ -88,10 +88,10 @@ class Blacklist(_BaseData):
             if sys_id not in self.data.keys():
                 self.data[sys_id] = []
 
-        # TODO: TEST
         for key in self.data.keys():
             if key not in system_ids:
-                del self.data[key]
+                # TODO: Remove bad keys
+                ...
 
 
     def get_hash(self):
