@@ -1,7 +1,7 @@
 from vimm_roller import VimmRoller
 from pathlib import Path
 from argparse import Namespace
-import utils.load_dump as load_dump
+import utils.save_load as save_load
 import hashlib
 
 class Vimmit:
@@ -13,13 +13,16 @@ class Vimmit:
     ):
         self.games_path = games_path
         self.config_path = config_path
-        self.config = load_dump.load_config(config_path)
+        self.config = save_load.load_config(config_path)
         self.args = args
+
+    def __init_blacklist(self):
+        ...
 
     def _handle_blacklist(self, systems: dict):
         GLOBAL = 'Global'
 
-        blacklist_path = Path.cwd() / 'blacklist.yaml'
+        blacklist_path = Path.cwd() / 'blacklist.txt'
         if not Path.is_file(blacklist_path):
             Path.touch(blacklist_path)
 
@@ -28,8 +31,6 @@ class Vimmit:
             current_hash = hashlib.md5(f.read()).hexdigest()
 
         if old_hash != current_hash:
-            import yaml
-
             with open(blacklist_path, 'r') as f:
                 blacklist = yaml.safe_load(f)
 
@@ -49,7 +50,7 @@ class Vimmit:
             # TODO: WIP
 
             with open(blacklist_path, 'w') as f:
-                blacklist = yaml.safe_dump(f)
+                yaml.safe_dump(blacklist, f)
 
     def _handle_scrape(self, systems: dict):
         from vimm_scraper import VimmScraper
@@ -76,7 +77,7 @@ class Vimmit:
         systems = {v['id']: v['name'] for k, v in self.config['systems'].items() if k in self.args.systems}
 
         if not self.args.download:
-            self._handle_blacklist(systems)
+            # self._handle_blacklist(systems)
             vimm_roller = VimmRoller(systems, self.games_path, self.config_path)
             vimm_roller.roll()
             return
@@ -87,5 +88,5 @@ class Vimmit:
         except (AttributeError, ConnectionError):
             print('That didn\'t work. Resetting base url.') # TODO: Better handling and message
             self.config['base_url'] = None
-            load_dump.dump_pickle(self.config, self.config_path)
+            save_load.dump_pickle(self.config, self.config_path)
             return

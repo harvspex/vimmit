@@ -1,5 +1,5 @@
 from pathlib import Path
-import utils.load_dump as load_dump
+import utils.save_load as save_load
 import random
 import urllib.parse
 
@@ -61,7 +61,7 @@ class VimmRoller:
                 raise NoGamesError
 
     def roll(self):
-        collection = load_dump.load_collection(self.collection_path) # TODO: handle missing filepath
+        collection = save_load.load_collection(self.collection_path) # TODO: handle missing filepath
         try:
             self._validate_systems(collection)
             sys_id, game_id = self._roll_system_and_game(collection) # TODO: handle bad system value
@@ -71,9 +71,9 @@ class VimmRoller:
         except NoSystemsError:
             return
 
-        config = load_dump.load_config(self.config_path)
+        config = save_load.load_config(self.config_path)
         collection[sys_id][game_id]['seen'] = True
-        load_dump.dump_pickle(collection, self.collection_path)
+        save_load.dump_pickle(collection, self.collection_path)
         game_name = collection[sys_id][game_id]['name']
         url = urllib.parse.urljoin(config['base_url'], str(game_id))
         print(f'{self.systems[sys_id]} ({sys_id}): "{game_name}". {url}')
