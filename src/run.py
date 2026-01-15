@@ -1,5 +1,5 @@
-from data import Games, Config
-from vimmit import Vimmit
+from classes.data import Games, Config
+from classes.vimmit import Vimmit
 from utils.cli import get_parser
 
 

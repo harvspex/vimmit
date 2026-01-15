@@ -1,7 +1,7 @@
-from vimm_roller import VimmRoller
+from classes.vimm_roller import VimmRoller
+from classes.data import *
 from argparse import Namespace
-from data import *
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 @dataclass
 class Vimmit:
@@ -18,7 +18,7 @@ class Vimmit:
             ...
 
     def _handle_scrape(self, systems: dict):
-        from vimm_scraper import VimmScraper
+        from classes.vimm_scraper import VimmScraper
         from requests import Session
         import truststore
 

@@ -1,7 +1,6 @@
-from data import Config, Games
+from classes.data import Config, Games
 from dataclasses import dataclass
 from bs4 import BeautifulSoup
-from pathlib import Path
 from requests import Session
 import posixpath
 import urllib.parse
