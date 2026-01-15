@@ -44,3 +44,30 @@ class Config(_BaseData):
             return handle_setup(super().load())
         except FileNotFoundError:
             return handle_setup({})
+
+
+class Blacklist(_BaseData):
+    def __init__(self):
+        filepath = Path.cwd() / 'blacklist.txt'
+        super().__init__(filepath)
+
+    @override
+    def load(self):
+        try:
+            with open(self.filepath, 'r') as f:
+                blacklist = f.read()
+
+            blacklist = blacklist.split('#')
+            blacklist = [_.splitlines() for _ in blacklist if _]
+            blacklist = [[_.strip() for _ in sys if _] for sys in blacklist]
+            blacklist = {_[0]:_[1:] for _ in blacklist}
+            return blacklist
+
+        except FileNotFoundError:
+            # TODO
+            return ...
+
+    def get_hash(self):
+        import hashlib
+        with open(self.filepath, 'rb') as f:
+            return hashlib.md5(f.read()).hexdigest()

@@ -1,9 +1,7 @@
 from vimm_roller import VimmRoller
-from pathlib import Path
 from argparse import Namespace
-import hashlib
-from data import Config, Games
-from dataclasses import dataclass
+from data import *
+from dataclasses import dataclass, field
 
 @dataclass
 class Vimmit:
@@ -11,41 +9,13 @@ class Vimmit:
     config: Config
     args: Namespace
 
-    # def __init_blacklist(self):
-    #     ...
+    def _handle_blacklist(self, systems: dict):
+        blacklist = Blacklist()
+        old_hash = self.config.data['bl_hash']
 
-    # def _handle_blacklist(self, systems: dict):
-    #     GLOBAL = 'Global'
-
-    #     blacklist_path = Path.cwd() / 'blacklist.txt'
-    #     if not Path.is_file(blacklist_path):
-    #         Path.touch(blacklist_path)
-
-    #     old_hash = self.config['bl_hash']
-    #     with open(blacklist_path, 'rb') as f:
-    #         current_hash = hashlib.md5(f.read()).hexdigest()
-
-    #     if old_hash != current_hash:
-    #         with open(blacklist_path, 'r') as f:
-    #             blacklist = yaml.safe_load(f)
-
-    #         if blacklist is None:
-    #             blacklist = {}
-
-    #         if GLOBAL not in blacklist:
-    #             blacklist[GLOBAL] = []
-
-    #         for system in self.config['systems'].values():
-    #             sys_name = system['name']
-    #             sys_id = system['id']
-    #             name = f'{sys_name} ({sys_id})'
-    #             if name not in blacklist:
-    #                 blacklist[name] = []
-
-    #         # TODO: WIP
-
-    #         with open(blacklist_path, 'w') as f:
-    #             yaml.safe_dump(blacklist, f)
+        if old_hash != blacklist.get_hash():
+            # TODO: WIP
+            ...
 
     def _handle_scrape(self, systems: dict):
         from vimm_scraper import VimmScraper
@@ -70,9 +40,8 @@ class Vimmit:
 
     def run(self):
         systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}
-
         if not self.args.download:
-            # self._handle_blacklist(systems)
+            self._handle_blacklist(systems)
             vimm_roller = VimmRoller(self.games, self.config, systems)
             vimm_roller.roll()
             return

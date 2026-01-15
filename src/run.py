@@ -1,6 +1,7 @@
-from data import Config, Games
+from data import Games, Config
 from vimmit import Vimmit
 from utils.cli import get_parser
+
 
 def main():
     games = Games()
