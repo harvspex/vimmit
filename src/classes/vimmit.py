@@ -16,15 +16,21 @@ class Vimmit:
     def _handle_blacklist(
         self,
         config: Config,
-        systems: dict,
         will_check_hash: bool=True
     ):
         blacklist = Blacklist(config)
+        bl_hash = blacklist.get_hash()
+
         if will_check_hash:
             old_hash = self.config.data['bl_hash']
-            if old_hash == blacklist.get_hash():
+            if old_hash == bl_hash:
                 return
-    
+
+        for system in blacklist.data.values():
+            sys_id = system['id']
+            bl = system['list']
+            
+
         # for sys_id, bl_id in self.config.get_blacklist_keys().items():
         #     if sys_id in systems:
         #         # TODO: Flag blacklisted items
@@ -56,19 +62,24 @@ class Vimmit:
             # TODO: Make nicer?
             self.config.data['systems'] = scrape_systems(self.config.data['base_url'])
 
-        systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}
+        # TODO: Make this a set of IDs?
+        selected_systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}
+
         if not self.args.download:
-            self._handle_blacklist(self.config, systems, will_check_hash=True)
-            vimm_roller = VimmRoller(self.games, self.config, systems)
+            self._handle_blacklist(self.config, will_check_hash=True)
+            vimm_roller = VimmRoller(self.games, self.config, selected_systems)
             vimm_roller.roll()
             return
 
         from requests import ConnectionError
         try:
-            self._handle_scrape(systems)
-            self._handle_blacklist(self.config, systems, will_check_hash=False)
+            self._handle_scrape(selected_systems)
+            self._handle_blacklist(self.config, will_check_hash=False)
         except (AttributeError, ConnectionError):
             print('That didn\'t work. Resetting base url.') # TODO: Better handling and message
             self.config['base_url'] = None
             self.config.save()
             return
+
+        self.games.save()
+        self.config.save()
