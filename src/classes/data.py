@@ -21,7 +21,7 @@ class _BaseData(ABC):
 
 class Games(_BaseData):
     def __init__(self):
-        filepath = Path.cwd() / 'data' / 'games.dat'
+        filepath = Path.cwd() / '.data' / 'games.dat'
         super().__init__(filepath)
 
     @override
@@ -34,7 +34,7 @@ class Games(_BaseData):
 
 class Config(_BaseData):
     def __init__(self):
-        filepath = Path.cwd() / 'data' / 'config.dat'
+        filepath = Path.cwd() / '.data' / 'config.dat'
         super().__init__(filepath)
         self.save()
 
@@ -47,9 +47,14 @@ class Config(_BaseData):
 
 
 class Blacklist(_BaseData):
-    def __init__(self):
+    ALL_SYSTEMS = 'All Systems'
+
+    def __init__(self, config: Config):
+        self.config = config
         filepath = Path.cwd() / 'blacklist.txt'
         super().__init__(filepath)
+        self.validate()
+        self.save()
 
     @override
     def load(self):
@@ -58,6 +63,7 @@ class Blacklist(_BaseData):
                 blacklist = f.read()
 
             blacklist = blacklist.split('#')
+            blacklist = blacklist[1:] if blacklist[0] != '' else blacklist
             blacklist = [_.splitlines() for _ in blacklist if _]
             blacklist = [[_.strip() for _ in sys if _] for sys in blacklist]
             blacklist = {_[0]:_[1:] for _ in blacklist}
@@ -66,6 +72,26 @@ class Blacklist(_BaseData):
         except FileNotFoundError:
             # TODO
             return ...
+
+    @override
+    def save(self):
+        # TODO: WIP
+        with open(self.filepath, 'w') as f:
+            for system, values in self.data.items():
+                f.write(f'# {system}\n')
+                f.writelines(values)
+                f.write('\n\n')
+
+    def validate(self):
+        if self.ALL_SYSTEMS not in self.data:
+            self.data[self.ALL_SYSTEMS] = []
+
+        # TODO: Validate backwards (remove bad systems)
+
+        for system in self.config.data['systems'].values():
+            system_name = f'{system['name']} ({system['id']})'
+            if system_name not in self.data.keys():
+                self.data[system_name] = []
 
     def get_hash(self):
         import hashlib

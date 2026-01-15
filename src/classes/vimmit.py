@@ -9,8 +9,8 @@ class Vimmit:
     config: Config
     args: Namespace
 
-    def _handle_blacklist(self, systems: dict):
-        blacklist = Blacklist()
+    def _handle_blacklist(self, config: Config):
+        blacklist = Blacklist(config)
         old_hash = self.config.data['bl_hash']
 
         if old_hash != blacklist.get_hash():
@@ -41,7 +41,7 @@ class Vimmit:
     def run(self):
         systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}
         if not self.args.download:
-            self._handle_blacklist(systems)
+            self._handle_blacklist(self.config)
             vimm_roller = VimmRoller(self.games, self.config, systems)
             vimm_roller.roll()
             return
