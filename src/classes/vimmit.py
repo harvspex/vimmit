@@ -3,6 +3,8 @@ from classes.data import *
 from argparse import Namespace
 from dataclasses import dataclass
 
+# TODO: Apply the blacklist to crawled systems
+
 @dataclass
 class Vimmit:
     games: Games
