@@ -1,5 +1,7 @@
 from classes.vimm_roller import VimmRoller
 from classes.data import *
+from src.classes.blacklist import Blacklist
+from utils.setup import scrape_systems
 from argparse import Namespace
 from dataclasses import dataclass
 
@@ -23,10 +25,10 @@ class Vimmit:
             if old_hash == blacklist.get_hash():
                 return
     
-        for sys_id, bl_id in self.config.get_blacklist_keys().items():
-            if sys_id in systems:
-                # TODO: Flag blacklisted items
-                ...
+        # for sys_id, bl_id in self.config.get_blacklist_keys().items():
+        #     if sys_id in systems:
+        #         # TODO: Flag blacklisted items
+        #         ...
 
     def _handle_scrape(self, systems: dict):
         from classes.vimm_scraper import VimmScraper
@@ -50,6 +52,10 @@ class Vimmit:
         print('All systems complete!')
 
     def run(self):
+        if self.args.scrape_systems:
+            # TODO: Make nicer?
+            self.config.data['systems'] = scrape_systems(self.config.data['base_url'])
+
         systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}
         if not self.args.download:
             self._handle_blacklist(self.config, systems, will_check_hash=True)

@@ -28,6 +28,12 @@ def __input_base_url() -> str:
         return base_url
 
 
+def _get_blacklist_name(id: str, name: str):
+    if name.replace(' ', '').lower() == id.lower():
+        return name
+    return f'{name} ({id})'
+
+
 def scrape_systems(base_url: str) -> set:
     from bs4 import BeautifulSoup
     import requests
@@ -43,11 +49,12 @@ def scrape_systems(base_url: str) -> set:
         for tr in table.find_all('tr'):
             tr.find('td')
             link = tr.find('a')
-            id = link['href'].split('/')[-1]
-            name = link.text
+            id = link['href'].split('/')[-1].strip()
+            name = link.text.strip()
             systems[id.lower()] = {
                 'id': id,
-                'name': name
+                'name': name,
+                'bl': _get_blacklist_name(id, name)
             }
 
     return systems

@@ -4,8 +4,6 @@ from pathlib import Path
 from typing import override
 import pickle
 
-ALL_SYSTEMS = 'All Systems'
-
 class _BaseData(ABC):
     def __init__(self, filepath: Path):
         self.filepath = filepath
@@ -45,59 +43,3 @@ class Config(_BaseData):
             return handle_setup(super().load())
         except FileNotFoundError:
             return handle_setup({})
-
-    def get_blacklist_keys(self):
-        blacklist_keys = {key: f'{system["name"]} ({system["id"]})' for key, system in self.data['systems'].items()}
-        blacklist_keys.insert(0, ALL_SYSTEMS)
-        return blacklist_keys
-
-
-class Blacklist(_BaseData):
-    def __init__(self, config: Config):
-        self.config = config
-        filepath = Path.cwd() / 'blacklist.txt'
-        super().__init__(filepath)
-        self.validate()
-        self.save()
-
-    @override
-    def load(self):
-        try:
-            with open(self.filepath, 'r') as f:
-                blacklist = f.read()
-
-            blacklist = blacklist.split('#')
-            blacklist = blacklist[1:] if blacklist[0] != '' else blacklist
-            blacklist = [_.splitlines() for _ in blacklist if _]
-            blacklist = [[_.strip() for _ in sys if _] for sys in blacklist]
-            blacklist = {_[0]:_[1:] for _ in blacklist}
-            return blacklist
-
-        except FileNotFoundError:
-            # TODO
-            return ...
-
-    @override
-    def save(self):
-        with open(self.filepath, 'w') as f:
-            for system, values in self.data.items():
-                f.write(f'# {system}\n')
-                f.writelines([f'{v}\n' for v in values])
-                f.write('\n')
-
-    def validate(self):
-        blacklist_ids = self.config.get_blacklist_keys().values()
-        for sys_id in blacklist_ids:
-            if sys_id not in self.data.keys():
-                self.data[sys_id] = []
-
-        difference = set(self.data.keys()).difference(blacklist_ids)
-        for key in difference:
-            del self.data[key]
-
-    def get_hash(self):
-        import hashlib
-        with open(self.filepath, 'rb') as f:
-            hash = hashlib.md5(f.read()).hexdigest()
-            self.config.data['bl_hash'] = hash
-            return hash
