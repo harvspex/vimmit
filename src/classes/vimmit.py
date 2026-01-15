@@ -11,13 +11,22 @@ class Vimmit:
     config: Config
     args: Namespace
 
-    def _handle_blacklist(self, config: Config):
+    def _handle_blacklist(
+        self,
+        config: Config,
+        systems: dict,
+        will_check_hash: bool=True
+    ):
         blacklist = Blacklist(config)
-        old_hash = self.config.data['bl_hash']
-
-        if old_hash != blacklist.get_hash():
-            # TODO: WIP
-            ...
+        if will_check_hash:
+            old_hash = self.config.data['bl_hash']
+            if old_hash == blacklist.get_hash():
+                return
+    
+        for sys_id, bl_id in self.config.get_blacklist_keys().items():
+            if sys_id in systems:
+                # TODO: Flag blacklisted items
+                ...
 
     def _handle_scrape(self, systems: dict):
         from classes.vimm_scraper import VimmScraper
@@ -43,7 +52,7 @@ class Vimmit:
     def run(self):
         systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}
         if not self.args.download:
-            self._handle_blacklist(self.config)
+            self._handle_blacklist(self.config, systems, will_check_hash=True)
             vimm_roller = VimmRoller(self.games, self.config, systems)
             vimm_roller.roll()
             return
@@ -51,6 +60,7 @@ class Vimmit:
         from requests import ConnectionError
         try:
             self._handle_scrape(systems)
+            self._handle_blacklist(self.config, systems, will_check_hash=False)
         except (AttributeError, ConnectionError):
             print('That didn\'t work. Resetting base url.') # TODO: Better handling and message
             self.config['base_url'] = None

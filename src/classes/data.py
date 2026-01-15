@@ -1,9 +1,10 @@
 from utils.setup import handle_setup
 from abc import ABC
 from pathlib import Path
-from typing import Any, override
+from typing import override
 import pickle
 
+ALL_SYSTEMS = 'All Systems'
 
 class _BaseData(ABC):
     def __init__(self, filepath: Path):
@@ -45,10 +46,13 @@ class Config(_BaseData):
         except FileNotFoundError:
             return handle_setup({})
 
+    def get_blacklist_keys(self):
+        blacklist_keys = {key: f'{system["name"]} ({system["id"]})' for key, system in self.data['systems'].items()}
+        blacklist_keys.insert(0, ALL_SYSTEMS)
+        return blacklist_keys
+
 
 class Blacklist(_BaseData):
-    ALL_SYSTEMS = 'All Systems'
-
     def __init__(self, config: Config):
         self.config = config
         filepath = Path.cwd() / 'blacklist.txt'
@@ -78,23 +82,22 @@ class Blacklist(_BaseData):
         with open(self.filepath, 'w') as f:
             for system, values in self.data.items():
                 f.write(f'# {system}\n')
-                f.writelines(values)
-                f.write('\n\n')
+                f.writelines([f'{v}\n' for v in values])
+                f.write('\n')
 
     def validate(self):
-        system_ids = [f'{system["name"]} ({system["id"]})' for system in self.config.data['systems'].values()]
-
-        for sys_id in system_ids:
+        blacklist_ids = self.config.get_blacklist_keys().values()
+        for sys_id in blacklist_ids:
             if sys_id not in self.data.keys():
                 self.data[sys_id] = []
 
-        for key in self.data.keys():
-            if key not in system_ids:
-                # TODO: Remove bad keys
-                ...
-
+        difference = set(self.data.keys()).difference(blacklist_ids)
+        for key in difference:
+            del self.data[key]
 
     def get_hash(self):
         import hashlib
         with open(self.filepath, 'rb') as f:
-            return hashlib.md5(f.read()).hexdigest()
+            hash = hashlib.md5(f.read()).hexdigest()
+            self.config.data['bl_hash'] = hash
+            return hash
