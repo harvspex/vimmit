@@ -62,8 +62,10 @@ class VimmRoller:
                 return key, game
 
     def roll(self):
+        # TODO: Handle edge cases
         sys_id, system = self._roll_system()
         game_id, game = self._roll_game(sys_id)
-        self.games.data[sys_id][game_id]['seen'] = True
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
         print(f'{format_system_name_and_id(system['name'], system['vimm_id'])}: "{game['name']}". {url}')
+        self.games.data[sys_id][game_id]['seen'] = True
+        self.games.save()

@@ -47,32 +47,32 @@ class VimmScraper:
         self.config.data['systems'] = systems
         self.config.save()
 
-    def __join_url(self, endpoint: str):
+    def _join_url(self, endpoint: str):
         return urllib.parse.urljoin(self.base_url, endpoint)
 
-    def __get_number_url(self, sys_vimm_id: str):
-        return self.__join_url(f'?p=list&system={sys_vimm_id}&section=number')
+    def _get_number_url(self, sys_vimm_id: str):
+        return self._join_url(f'?p=list&system={sys_vimm_id}&section=number')
 
-    def __get_letter_url(self, sys_vimm_id: str, letter: str):
-        return self.__join_url(posixpath.join(sys_vimm_id, letter))
+    def _get_letter_url(self, sys_vimm_id: str, letter: str):
+        return self._join_url(posixpath.join(sys_vimm_id, letter))
 
-    def __get_game_region_priority(self, game: dict) -> int:
+    def _get_game_region_priority(self, game: dict) -> int:
         try:
             return REGION_PRIORITY[game['region']]
         except KeyError:
             return REGION_PRIORITY[OTHER_REGION]
 
-    def __handle_region(self, games_list: list[dict], new_game: dict) -> dict:
+    def _handle_region(self, games_list: list[dict], new_game: dict) -> dict:
         try:
             if not games_list[-1]['name'] == new_game['name']:
                 return new_game
         except IndexError:
             return new_game
 
-        games_by_region = {self.__get_game_region_priority(game): game for game in (new_game, games_list.pop())}
+        games_by_region = {self._get_game_region_priority(game): game for game in (new_game, games_list.pop())}
         return games_by_region[ min( games_by_region.keys() ) ]
 
-    def __scrape_page_for_games(self, url: str, games_dict: dict) -> None: # NOTE: Inplace
+    def _scrape_page_for_games(self, url: str, games_dict: dict) -> None: # NOTE: Inplace
         html = self.session.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         table = soup.find('table')
@@ -89,7 +89,7 @@ class VimmScraper:
                     'name': link.text,
                     'region': region,
                 }
-                new_game = self.__handle_region(games_list, new_game)
+                new_game = self._handle_region(games_list, new_game)
                 games_list.append(new_game)
 
             except TypeError:
@@ -106,12 +106,12 @@ class VimmScraper:
                 'name': game['name']
             }
 
-    def __scrape_games_per_system(self, sys_vimm_id: str, games: dict, test_mode: bool=True) -> dict: # TODO: Disable test mode
-        self.__scrape_page_for_games(self.__get_number_url(sys_vimm_id), games)
+    def _scrape_games_per_system(self, sys_vimm_id: str, games: dict, test_mode: bool=True) -> dict: # TODO: Disable test mode
+        self._scrape_page_for_games(self._get_number_url(sys_vimm_id), games)
         r = 0 if test_mode else 26
         for i in range(r):
             letter = chr(i+65)
-            self.__scrape_page_for_games(self.__get_letter_url(sys_vimm_id, letter), games)
+            self._scrape_page_for_games(self._get_letter_url(sys_vimm_id, letter), games)
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
@@ -125,7 +125,7 @@ class VimmScraper:
             vimm_id, sys_name = system['vimm_id'], system['name']
             print(f'Downloading games list for {format_system_name_and_id(vimm_id, sys_name)}. Please wait...')
             games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
-            games_dict = self.__scrape_games_per_system(vimm_id, games_dict)
+            games_dict = self._scrape_games_per_system(vimm_id, games_dict)
             games.data[sys_id] = games_dict
             games.save()
         print('All systems complete!')

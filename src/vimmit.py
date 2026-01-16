@@ -10,31 +10,31 @@ class Vimmit:
     def __init__(self):
         self.config = Config()
 
-    def __add_if_not_in(self, key: str, func: Callable, *args, **kwargs):
+    def _add_if_not_in(self, key: str, func: Callable, *args, **kwargs):
         if not self.config.data.get(key, False):
             self.config.data[key] = func(*args, **kwargs)
 
-    def __setup(self):
-        self.__add_if_not_in('base_url', input_base_url)
-        self.__add_if_not_in('systems', self.__scrape_systems_list)
+    def _setup(self):
+        self._add_if_not_in('base_url', input_base_url)
+        self._add_if_not_in('systems', self._scrape_systems_list)
         self.config.save()
 
-    def __scrape_systems_list(self):
+    def _scrape_systems_list(self):
         scraper = VimmScraper(self.config)
         scraper.scrape_systems_list()
 
-    def __scrape_games(self, games: Games, systems: dict):
+    def _scrape_games(self, games: Games, systems: dict):
         scraper = VimmScraper(self.config)
         scraper.scrape_games(games, systems)
 
     def run(self):
-        self.__setup()
+        self._setup()
         systems = list(self.config.data['systems'].keys())
         parser = get_parser(systems)
         args = parser.parse_args()
 
         if args.scrape_systems:
-            self.__scrape_systems_list()
+            self._scrape_systems_list()
 
         games = Games()
         blacklist = Blacklist(self.config)
@@ -45,7 +45,7 @@ class Vimmit:
             vimm_roller.roll()
             return
 
-        self.__scrape_games(games, selected_systems)
+        self._scrape_games(games, selected_systems)
 
         if args.export:
             games.dump_json()
