@@ -23,16 +23,16 @@ class VimmRoller:
     def _game_is_unseen(game: dict) -> bool:
         return not game.get('seen', False)
 
-    def _validate_systems(self, selected_systems: list[tuple]):
-        # TODO: Fix
-        selected_systems = {_[0] for _ in selected_systems}
+    def _validate_systems(self, selected_systems: list[tuple]) -> dict:
+        selected_systems_set = {_[0] for _ in selected_systems}
         downloaded_systems = set(self.games.data.keys())
-        union = selected_systems.union(downloaded_systems)
-        difference = selected_systems.difference(downloaded_systems)
+        intersect = selected_systems_set.intersection(downloaded_systems)
+        difference = selected_systems_set.difference(downloaded_systems)
         if difference:
             print(f'Game data for the following system/s were not found: {" ".join(difference)}')
 
-        return {k: v for k, v in self.config.data['systems'].items() if k in union}
+        # TODO: fix
+        return {v['id']: v['name'] for v in self.config.data['systems'].values() if v['id'] in intersect}
 
     def _check_blacklist(self, bl_id: str, game_name: str) -> bool:
         for phrase in self.blacklist.data[bl_id]:
@@ -64,6 +64,7 @@ class VimmRoller:
 
     def roll(self):
         try:
+            # TODO: WIP / fix
             sys_id, sys_name = self._roll_system()
         except IndexError:
             print('No systems')
