@@ -42,7 +42,7 @@ class VimmScraper:
                 systems[id.lower()] = {
                     'vimm_id': id,
                     'name': name,
-                    'bl_id': format_system_name_and_id(id, name)
+                    'bl_id': format_system_name_and_id(name, id)
                 }
         self.config.data['systems'] = systems
         self.config.save()
@@ -120,9 +120,9 @@ class VimmScraper:
         # TODO: Not resetting seen flag
         for sys_id, system in selected_systems.items():
             vimm_id, sys_name = system['vimm_id'], system['name']
-            print(f'Downloading games list for {format_system_name_and_id(vimm_id, sys_name)}. Please wait...')
+            print(f'Downloading games list for {format_system_name_and_id(sys_name, sys_id)}. Please wait...')
             games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
-            games_dict = self._scrape_games_per_system(vimm_id, games_dict)
+            games_dict = self._scrape_games_per_system(vimm_id, games_dict, test_mode=False)
             games.data[sys_id] = games_dict
             games.save()
         print('All systems complete!')
