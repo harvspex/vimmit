@@ -6,15 +6,15 @@ import argparse
 # - Import/export from file. Existing data wins conflicts
 # - Mode to roll games per game rather than per system?
 # - Reset config (or at least base url)
+# - Add flag to show list of systems (scrapes if necessary, no roll)
 
-def get_parser(systems: list) -> argparse.ArgumentParser:
+def get_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description='Vimmit!'
     )
     parser.add_argument(
         'systems',
         help='system/s to roll games for',
-        choices=systems,
         nargs='*'
     )
     parser.add_argument(
@@ -51,4 +51,4 @@ def get_parser(systems: list) -> argparse.ArgumentParser:
         action='store_true',
         default=False
     )
-    return parser
+    return parser.parse_args()

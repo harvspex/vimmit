@@ -27,7 +27,7 @@ class VimmScraper:
         self.config = config
         self.base_url = self.config.data['base_url']
 
-    def scrape_systems_list(self):
+    def scrape_systems_dict(self) -> dict:
         print('Downloading systems list. Please wait...')
         truststore.inject_into_ssl()
         html = self.session.get(self.base_url).text
@@ -44,8 +44,7 @@ class VimmScraper:
                     'name': name,
                     'bl_id': format_system_name_and_id(name, id)
                 }
-        self.config.data['systems'] = systems
-        self.config.save()
+        return systems
 
     def _join_url(self, endpoint: str) -> str:
         return urllib.parse.urljoin(self.base_url, endpoint)
@@ -125,4 +124,4 @@ class VimmScraper:
             games_dict = self._scrape_games_per_system(vimm_id, games_dict, test_mode=False)
             games.data[sys_id] = games_dict
             games.save()
-        print('All systems complete!')
+        print('All system downloads complete!')

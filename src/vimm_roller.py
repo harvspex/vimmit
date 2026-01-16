@@ -1,19 +1,9 @@
 from data_objects import Blacklist, Config, Games
+from exceptions import NoGamesError, NoSystemsError
 from utils.format import format_system_name_and_id
 from typing import Any
 import random
 import urllib.parse
-
-
-class NoGamesError(Exception):
-    def __init__(self, *args):
-        super().__init__(*args)
-
-
-class NoSystemsError(Exception):
-    def __init__(self, *args):
-        super().__init__(*args)
-
 
 class VimmRoller:
     def __init__(
@@ -26,7 +16,7 @@ class VimmRoller:
         self.games = games
         self.config = config
         self.blacklist = blacklist
-        self.selected_systems = self._validate_systems(selected_systems)
+        self.selected_systems = selected_systems
 
     @staticmethod
     def _roll_dict_key(_dict: dict) -> Any:
@@ -35,15 +25,6 @@ class VimmRoller:
     @staticmethod
     def _game_is_unseen(game: dict) -> bool:
         return not game.get('seen', False)
-
-    def _validate_systems(self, selected_systems: dict) -> dict:
-        selected_systems_set = set(selected_systems.keys())
-        downloaded_systems = set(self.games.data.keys())
-        intersect = selected_systems_set.intersection(downloaded_systems)
-        difference = selected_systems_set.difference(downloaded_systems)
-        if difference:
-            print(f'Game data for the following system/s were not found and will be skipped: {" ".join(difference)}')
-        return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
     def _check_blacklist(self, bl_id: str, game_name: str) -> bool:
         for phrase in self.blacklist.data[bl_id]:
@@ -78,9 +59,6 @@ class VimmRoller:
         raise NoGamesError
 
     def roll(self):
-        if len(self.selected_systems) < 1:
-            return
-
         while True:
             try:
                 sys_id, system = self._roll_system()
