@@ -28,38 +28,6 @@ def __input_base_url() -> str:
         return base_url
 
 
-def _get_blacklist_name(id: str, name: str):
-    if name.replace(' ', '').lower() == id.lower():
-        return name
-    return f'{name} ({id})'
-
-
-def scrape_systems(base_url: str) -> set:
-    from bs4 import BeautifulSoup
-    import requests
-    import truststore
-
-    print('Downloading systems list. Please wait...')
-    truststore.inject_into_ssl()
-    html = requests.get(base_url).text
-    soup = BeautifulSoup(html, 'html.parser')
-    systems = {}
-
-    for table in soup.find_all('table'):
-        for tr in table.find_all('tr'):
-            tr.find('td')
-            link = tr.find('a')
-            id = link['href'].split('/')[-1].strip()
-            name = link.text.strip()
-            systems[id.lower()] = {
-                'id': id,
-                'name': name,
-                'bl_id': _get_blacklist_name(id, name)
-            }
-
-    return systems
-
-
 def __add_if_not(config: dict, key: str, func: Callable, *args, **kwargs):
     if not config.get(key, False):
         config[key] = func(*args, **kwargs)

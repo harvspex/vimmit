@@ -1,16 +1,6 @@
-from classes.data import Blacklist, Config, Games
+from data_objects import Blacklist, Config, Games
 import random
 import urllib.parse
-
-class NoGamesError(Exception):
-    def __init__(self, *args):
-        super().__init__(*args)
-
-
-class NoSystemsError(Exception):
-    def __init__(self, *args):
-        super().__init__(*args)
-
 
 class VimmRoller:
     def __init__(
@@ -69,10 +59,14 @@ class VimmRoller:
                 return game
 
     def roll(self):
-        system = self._roll_system()
-        sys_id = system['id']
-        game = self._roll_game(system['id'])
+        try:
+            system = self._roll_system()
+            sys_id = system['id']
+        except IndexError:
+            print('No systems')
+            return
+        game = self._roll_game(sys_id)
         game_id = game['id']
         self.games.data[sys_id][game_id]['seen'] = True
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
-        print(f'{self.systems[sys_id]} ({sys_id}): "{game['name']}". {url}')
+        print(f'{system['name']} ({sys_id}): "{game['name']}". {url}')

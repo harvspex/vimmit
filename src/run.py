@@ -1,6 +1,6 @@
-from classes.data import Config
-from classes.vimmit import Vimmit
-from utils.cli import get_parser
+from data_objects import Config
+from vimmit import Vimmit
+from cli import get_parser
 
 
 def main():

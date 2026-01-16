@@ -1,4 +1,4 @@
-from utils.setup import handle_setup
+from setup import handle_setup
 from abc import ABC
 from pathlib import Path
 from typing import override
