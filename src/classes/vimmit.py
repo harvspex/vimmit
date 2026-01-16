@@ -31,12 +31,12 @@ class Vimmit:
         print('All systems complete!')
 
     def run(self):
-        games = Games()
-        blacklist = Blacklist(self.config)
-
         if self.args.scrape_systems:
             # TODO: Make nicer?
             self.config.data['systems'] = scrape_systems(self.config.data['base_url'])
+
+        games = Games()
+        blacklist = Blacklist(self.config)
 
         # TODO: Make this a set of IDs?
         selected_systems = {v['id']: v['name'] for k, v in self.config.data['systems'].items() if k in self.args.systems}

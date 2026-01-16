@@ -59,7 +59,7 @@ class Blacklist(_BaseData):
         # Init
         blacklist = {self.ALL_SYSTEMS: []}
         for val in self.systems.values():
-            blacklist[val['bl']] = []
+            blacklist[val['bl_id']] = []
 
         # Read
         try:
@@ -89,5 +89,5 @@ class Blacklist(_BaseData):
         with open(self.filepath, 'w') as f:
             for bl_id, values in self.data.items():
                 f.write(f'# {bl_id}\n')
-                f.writelines([f'{v}\n' for v in values['list']])
+                f.writelines([f'{v}\n' for v in values])
                 f.write('\n')

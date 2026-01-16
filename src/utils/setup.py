@@ -54,7 +54,7 @@ def scrape_systems(base_url: str) -> set:
             systems[id.lower()] = {
                 'id': id,
                 'name': name,
-                'bl': _get_blacklist_name(id, name)
+                'bl_id': _get_blacklist_name(id, name)
             }
 
     return systems

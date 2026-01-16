@@ -2,8 +2,6 @@ from classes.data import Blacklist, Config, Games
 import random
 import urllib.parse
 
-# TODO: Implement Blacklist
-
 class NoGamesError(Exception):
     def __init__(self, *args):
         super().__init__(*args)
