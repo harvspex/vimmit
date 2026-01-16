@@ -33,46 +33,48 @@ class VimmRoller:
         return _dict.pop(key)
 
     @staticmethod
-    def _game_is_allowed(game: dict) -> bool:
+    def _game_is_unseen(game: dict) -> bool:
         return not game.get('seen', False)
 
     def _validate_systems(self, systems: dict):
         systems_set = set(systems.keys())
         difference = systems_set.difference(set(self.games.data.keys()))
-        self.systems = {k: v for k, v in systems.items() if k not in difference}
-
+        systems = {k: v for k, v in systems.items() if k not in difference}
         if difference:
             print(f'Game data for the following system/s were not found: {" ".join(difference)}')
+        return systems
 
-    def _check_blacklist(self, game: dict) -> bool:
-        ...
+    def _check_blacklist(self, bl_id: str, game_name: str) -> bool:
+        for phrase in self.blacklist.data[bl_id]:
+            if phrase in game_name:
+                return True
+        return False
+
+    def _game_is_blacklisted(self, sys_id: str, game: dict) -> bool:
+        bl_id = self.systems[sys_id]['bl_id']
+        game_name = game['name']
+        return self._check_blacklist(self.blacklist.ALL_SYSTEMS, game_name) \
+            or self._check_blacklist(bl_id, game_name)
 
     def _roll_system(self) -> dict:
         return self._roll_and_pop(self.systems)
 
-    def _roll_game(self, system_id: str) -> dict:
+    def _roll_game(self, sys_id: str) -> dict:
         games = {
             id: game
-            for id, game in self.games.data[system_id].items()
-            if VimmRoller._game_is_allowed(game)
+            for id, game in self.games.data[sys_id].items()
+            if VimmRoller._game_is_unseen(game)
         }
-        game = self._roll_and_pop(games)
+        while True:
+            game = self._roll_and_pop(games)
+            if not self._game_is_blacklisted(sys_id, game):
+                return game
 
     def roll(self):
-        ...
-
-    # def roll(self):
-    #     try:
-    #         self._validate_systems()
-    #         sys_id, game_id = self._roll_system_and_game() # TODO: handle bad system value?
-    #     except NoGamesError:
-    #         print('No games found! Try reducing your blacklist, or downloading games for a new system.')
-    #         return
-    #     except NoSystemsError:
-    #         return
-
-    #     game_name = self.games.data[sys_id][game_id]['name']
-    #     self.games.data[sys_id][game_id]['seen'] = True
-    #     self.games.save()
-    #     url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
-    #     print(f'{self.systems[sys_id]} ({sys_id}): "{game_name}". {url}')
+        system = self._roll_system()
+        sys_id = system['id']
+        game = self._roll_game(system['id'])
+        game_id = game['id']
+        self.games.data[sys_id][game_id]['seen'] = True
+        url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
+        print(f'{self.systems[sys_id]} ({sys_id}): "{game['name']}". {url}')
