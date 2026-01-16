@@ -1,4 +1,5 @@
 from data_objects import Games, Config
+from format import format_system_name_and_id
 from bs4 import BeautifulSoup
 from requests import Session
 import truststore
@@ -26,12 +27,6 @@ class VimmScraper:
         self.config = config
         self.base_url = self.config.data['base_url']
 
-    @staticmethod
-    def __get_blacklist_name(id: str, name: str):
-        if name.replace(' ', '').lower() == id.lower():
-            return name
-        return f'{name} ({id})'
-
     def scrape_systems_list(self) -> dict:
         print('Downloading systems list. Please wait...')
         truststore.inject_into_ssl()
@@ -45,9 +40,9 @@ class VimmScraper:
                 id = link['href'].split('/')[-1].strip()
                 name = link.text.strip()
                 systems[id.lower()] = {
-                    'id': id,
+                    'vimm_id': id,
                     'name': name,
-                    'bl_id': self.__get_blacklist_name(id, name)
+                    'bl_id': format_system_name_and_id(id, name)
                 }
         self.config.data['systems'] = systems
         self.config.save()
@@ -55,11 +50,11 @@ class VimmScraper:
     def __join_url(self, endpoint: str):
         return urllib.parse.urljoin(self.base_url, endpoint)
 
-    def __get_number_url(self, sys_id: str):
-        return self.__join_url(f'?p=list&system={sys_id}&section=number')
+    def __get_number_url(self, sys_vimm_id: str):
+        return self.__join_url(f'?p=list&system={sys_vimm_id}&section=number')
 
-    def __get_letter_url(self, sys_id: str, letter: str):
-        return self.__join_url(posixpath.join(sys_id, letter))
+    def __get_letter_url(self, sys_vimm_id: str, letter: str):
+        return self.__join_url(posixpath.join(sys_vimm_id, letter))
 
     def __get_game_region_priority(self, game: dict) -> int:
         try:
@@ -111,25 +106,26 @@ class VimmScraper:
                 'name': game['name']
             }
 
-    def __scrape_games_per_system(self, sys_id: str, games: dict, test_mode: bool=True) -> dict: # TODO: Disable test mode
-        self.__scrape_page_for_games(self.__get_number_url(sys_id), games)
+    def __scrape_games_per_system(self, sys_vimm_id: str, games: dict, test_mode: bool=True) -> dict: # TODO: Disable test mode
+        self.__scrape_page_for_games(self.__get_number_url(sys_vimm_id), games)
         r = 0 if test_mode else 26
         for i in range(r):
             letter = chr(i+65)
-            self.__scrape_page_for_games(self.__get_letter_url(sys_id, letter), games)
+            self.__scrape_page_for_games(self.__get_letter_url(sys_vimm_id, letter), games)
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def scrape_games(
         self,
         games: Games,
-        selected_systems: list[tuple],
+        selected_systems: dict,
         will_reset: bool=False
     ):
-        for sys_id, sys_name in selected_systems:
-            print(f'Downloading games list for {sys_name} ({sys_id}). Please wait...')
+        for sys_id, system in selected_systems.items():
+            vimm_id, sys_name = system['vimm_id'], system['name']
+            print(f'Downloading games list for {format_system_name_and_id(vimm_id, sys_name)}. Please wait...')
             games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
-            games_dict = self.__scrape_games_per_system(sys_id, games_dict)
+            games_dict = self.__scrape_games_per_system(vimm_id, games_dict)
             games.data[sys_id] = games_dict
             games.save()
         print('All systems complete!')

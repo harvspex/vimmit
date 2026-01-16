@@ -23,6 +23,15 @@ def get_parser(systems: list) -> argparse.ArgumentParser:
         default=False
     )
     parser.add_argument(
+        '-e', '--export',
+        help='',
+        action='store_true',
+        default=False
+        # TODO: Accept filepath as arg
+        # default=None,
+        # nargs='?'
+    )
+    parser.add_argument(
         '-ss', '--scrape-systems',
         help='',
         action='store_true',

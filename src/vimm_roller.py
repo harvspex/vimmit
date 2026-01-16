@@ -1,4 +1,5 @@
 from data_objects import Blacklist, Config, Games
+from format import format_system_name_and_id
 import random
 import urllib.parse
 
@@ -8,7 +9,7 @@ class VimmRoller:
         games: Games,
         config: Config,
         blacklist: Blacklist,
-        selected_systems: list[tuple]
+        selected_systems: dict
     ):
         self.games = games
         self.config = config
@@ -23,16 +24,14 @@ class VimmRoller:
     def _game_is_unseen(game: dict) -> bool:
         return not game.get('seen', False)
 
-    def _validate_systems(self, selected_systems: list[tuple]) -> dict:
-        selected_systems_set = {_[0] for _ in selected_systems}
+    def _validate_systems(self, selected_systems: dict) -> dict:
+        selected_systems_set = set(selected_systems.keys())
         downloaded_systems = set(self.games.data.keys())
         intersect = selected_systems_set.intersection(downloaded_systems)
         difference = selected_systems_set.difference(downloaded_systems)
         if difference:
-            print(f'Game data for the following system/s were not found: {" ".join(difference)}')
-
-        # TODO: fix
-        return {v['id']: v['name'] for v in self.config.data['systems'].values() if v['id'] in intersect}
+            print(f'Game data for the following system/s were not found and will be skipped: {" ".join(difference)}')
+        return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
     def _check_blacklist(self, bl_id: str, game_name: str) -> bool:
         for phrase in self.blacklist.data[bl_id]:
@@ -41,7 +40,7 @@ class VimmRoller:
         return False
 
     def _game_is_blacklisted(self, sys_id: str, game: dict) -> bool:
-        bl_id = self.selected_systems[sys_id]['bl_id']
+        bl_id = self.config.data['systems'][sys_id]['bl_id']
         game_name = game['name']
         return self._check_blacklist(self.blacklist.ALL_SYSTEMS, game_name) \
             or self._check_blacklist(bl_id, game_name)
@@ -60,17 +59,11 @@ class VimmRoller:
             key = self._roll_dict_key(games)
             game = games.pop(key)
             if not self._game_is_blacklisted(sys_id, game):
-                return game
+                return key, game
 
     def roll(self):
-        try:
-            # TODO: WIP / fix
-            sys_id, sys_name = self._roll_system()
-        except IndexError:
-            print('No systems')
-            return
-        game = self._roll_game(sys_id)
-        game_id = game['id']
+        sys_id, system = self._roll_system()
+        game_id, game = self._roll_game(sys_id)
         self.games.data[sys_id][game_id]['seen'] = True
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
-        print(f'{sys_name} ({sys_id}): "{game['name']}". {url}')
+        print(f'{format_system_name_and_id(system['name'], system['vimm_id'])}: "{game['name']}". {url}')

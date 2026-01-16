@@ -25,6 +25,14 @@ class Games(_BaseData):
         filepath = Path.cwd() / '.data' / 'games.dat'
         super().__init__(filepath)
 
+    def dump_json(self, filepath: Path | None=None):
+        import json
+        filename = 'games.json'
+        filepath = filepath / filename if filepath else Path.cwd() / filename
+
+        with open(filepath, 'w') as f:
+            json.dump(self.data, f, indent=2)
+
 
 class Config(_BaseData):
     def __init__(self):
