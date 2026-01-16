@@ -1,7 +1,7 @@
 from vimm_roller import VimmRoller
 from vimm_scraper import VimmScraper
-from cli import get_parser
-from setup import input_base_url
+from utils.cli import get_parser
+from utils.setup import input_base_url
 from data_objects import *
 from typing import Callable
 # from requests import ConnectionError

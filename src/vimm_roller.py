@@ -1,5 +1,5 @@
 from data_objects import Blacklist, Config, Games
-from format import format_system_name_and_id
+from utils.format import format_system_name_and_id
 import random
 import urllib.parse
 
