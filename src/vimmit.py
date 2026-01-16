@@ -19,7 +19,7 @@ class Vimmit:
             self.config.data['base_url'] = input_base_url()
             self.config.save()
 
-        if not self.config.data.get('base_url', False):
+        if not self.config.data.get('systems', False):
             self._scrape_systems_list()
 
     def _scrape_systems_list(self):
@@ -52,7 +52,10 @@ class Vimmit:
         if args.export:
             games.dump_json()
 
-        # TODO
+        # TODO:
+        # - handle bad url
+        # - handle incorrect url
+        #
         # try:
         #     self._handle_scrape(selected_systems)
         # except (AttributeError, ConnectionError) as e:
