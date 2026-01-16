@@ -53,7 +53,7 @@ class VimmRoller:
 
     def _game_is_blacklisted(self, sys_id: str, game: dict) -> bool:
         bl_id = self.config.data['systems'][sys_id]['bl_id']
-        game_name = game['name']
+        game_name = game['name'].lower()
         return self._check_blacklist(self.blacklist.ALL_SYSTEMS, game_name) \
             or self._check_blacklist(bl_id, game_name)
 
