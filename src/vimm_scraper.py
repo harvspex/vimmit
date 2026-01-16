@@ -72,7 +72,7 @@ class VimmScraper:
         games_by_region = {self._get_game_region_priority(game): game for game in (new_game, games_list.pop())}
         return games_by_region[ min( games_by_region.keys() ) ]
 
-    def _scrape_page_for_games(self, url: str, games_dict: dict) -> None:
+    def _scrape_page_for_games(self, url: str, games_dict: dict):
         html = self.session.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         table = soup.find('table')
@@ -116,7 +116,7 @@ class VimmScraper:
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
-    def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> None:
+    def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False):
         # TODO: Not resetting seen flag
         for sys_id, system in selected_systems.items():
             vimm_id, sys_name = system['vimm_id'], system['name']

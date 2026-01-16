@@ -1,5 +1,6 @@
 from data_objects import Blacklist, Config, Games
 from utils.format import format_system_name_and_id
+from typing import Any
 import random
 import urllib.parse
 
@@ -28,7 +29,7 @@ class VimmRoller:
         self.selected_systems = self._validate_systems(selected_systems)
 
     @staticmethod
-    def _roll_dict_key(_dict: dict):
+    def _roll_dict_key(_dict: dict) -> Any:
         return random.choice(list(_dict.keys()))
 
     @staticmethod
