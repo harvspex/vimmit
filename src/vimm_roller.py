@@ -63,6 +63,9 @@ class VimmRoller:
 
     def roll(self):
         # TODO: Handle edge cases
+        if len(self.selected_systems) < 1:
+            return
+
         sys_id, system = self._roll_system()
         game_id, game = self._roll_game(sys_id)
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
