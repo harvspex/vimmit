@@ -15,9 +15,12 @@ class Vimmit:
             self.config.data[key] = func(*args, **kwargs)
 
     def _setup(self):
-        self._add_if_not_in('base_url', input_base_url)
-        self._add_if_not_in('systems', self._scrape_systems_list)
-        self.config.save()
+        if not self.config.data.get('base_url', False):
+            self.config.data['base_url'] = input_base_url()
+            self.config.save()
+
+        if not self.config.data.get('base_url', False):
+            self._scrape_systems_list()
 
     def _scrape_systems_list(self):
         scraper = VimmScraper(self.config)
@@ -37,10 +40,10 @@ class Vimmit:
             self._scrape_systems_list()
 
         games = Games()
-        blacklist = Blacklist(self.config)
         selected_systems = {k: v for k, v in self.config.data['systems'].items() if k in args.systems}
 
         if not args.download:
+            blacklist = Blacklist(self.config)
             vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
             vimm_roller.roll()
             return
@@ -50,6 +53,7 @@ class Vimmit:
         if args.export:
             games.dump_json()
 
+        # TODO
         # try:
         #     self._handle_scrape(selected_systems)
         # except (AttributeError, ConnectionError) as e:
