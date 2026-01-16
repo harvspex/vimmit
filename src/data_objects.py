@@ -1,4 +1,3 @@
-from setup import handle_setup
 from abc import ABC
 from pathlib import Path
 from typing import override
@@ -14,8 +13,11 @@ class _BaseData(ABC):
             pickle.dump(self.data, f)
 
     def load(self) -> dict:
-        with open(self.filepath, 'rb') as f:
-            return pickle.load(f)
+        try:
+            with open(self.filepath, 'rb') as f:
+                return pickle.load(f)
+        except FileNotFoundError:
+            return {}
 
 
 class Games(_BaseData):
@@ -23,26 +25,12 @@ class Games(_BaseData):
         filepath = Path.cwd() / '.data' / 'games.dat'
         super().__init__(filepath)
 
-    @override
-    def load(self):
-        try:
-            return super().load()
-        except FileNotFoundError:
-            return {}
-
 
 class Config(_BaseData):
     def __init__(self):
         filepath = Path.cwd() / '.data' / 'config.dat'
         super().__init__(filepath)
         self.save()
-
-    @override
-    def load(self):
-        try:
-            return handle_setup(super().load())
-        except FileNotFoundError:
-            return handle_setup({})
 
 
 class Blacklist(_BaseData):

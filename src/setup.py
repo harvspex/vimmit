@@ -1,6 +1,3 @@
-from typing import Callable
-
-
 def __validate_url(user_input: str, default_scheme='https') -> str:
     from urllib.parse import urlparse, urlunparse
 
@@ -16,7 +13,7 @@ def __validate_url(user_input: str, default_scheme='https') -> str:
     return urlunparse(parsed)
 
 
-def __input_base_url() -> str:
+def input_base_url() -> str:
     print('Please enter base url (hint: vimm dot net):')
     while True:
         user_input = input('>> ').strip()
@@ -26,14 +23,3 @@ def __input_base_url() -> str:
             continue
 
         return base_url
-
-
-def __add_if_not(config: dict, key: str, func: Callable, *args, **kwargs):
-    if not config.get(key, False):
-        config[key] = func(*args, **kwargs)
-
-
-def handle_setup(config: dict) -> dict:
-    __add_if_not(config, 'base_url', __input_base_url)
-    __add_if_not(config, 'systems', scrape_systems, config['base_url'])
-    return config
