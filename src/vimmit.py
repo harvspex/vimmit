@@ -34,6 +34,10 @@ class Vimmit:
         try:
             self._setup()
             systems = list(self.config.data['systems'].keys())
+            # TODO:
+            # - Remove systems from parser
+            # - Parse FIRST, then setup()
+            # - Add flag to show list of systems (scrapes if necessary, no roll)
             parser = get_parser(systems)
             args = parser.parse_args()
 
@@ -56,7 +60,7 @@ class Vimmit:
 
             if args.export:
                 games.dump_json()
-        except ConnectionError:
+        except (ConnectionError, TypeError):
         # except (AttributeError, ConnectionError) as e:
             # TODO:
             # - handle bad url
