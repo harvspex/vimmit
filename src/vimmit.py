@@ -42,13 +42,12 @@ class Vimmit:
         games = Games()
         selected_systems = {k: v for k, v in self.config.data['systems'].items() if k in args.systems}
 
-        if not args.download:
+        if args.download:
+            self._scrape_games(games, selected_systems)
+        else:
             blacklist = Blacklist(self.config)
             vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
             vimm_roller.roll()
-            return
-
-        self._scrape_games(games, selected_systems)
 
         if args.export:
             games.dump_json()
