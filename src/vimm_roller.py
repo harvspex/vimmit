@@ -3,6 +3,17 @@ from utils.format import format_system_name_and_id
 import random
 import urllib.parse
 
+
+class NoGamesError(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+
+class NoSystemsError(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+
 class VimmRoller:
     def __init__(
         self,
@@ -46,6 +57,9 @@ class VimmRoller:
             or self._check_blacklist(bl_id, game_name)
 
     def _roll_system(self) -> str:
+        if len(self.selected_systems) < 1:
+            raise NoSystemsError
+
         key = self._roll_dict_key(self.selected_systems)
         return key, self.selected_systems.pop(key)
 
@@ -55,19 +69,29 @@ class VimmRoller:
             for id, game in self.games.data[sys_id].items()
             if VimmRoller._game_is_unseen(game)
         }
-        while True:
+        while len(games) > 0:
             key = self._roll_dict_key(games)
             game = games.pop(key)
             if not self._game_is_blacklisted(sys_id, game):
                 return key, game
+        raise NoGamesError
 
     def roll(self):
-        # TODO: Handle edge cases
         if len(self.selected_systems) < 1:
             return
 
-        sys_id, system = self._roll_system()
-        game_id, game = self._roll_game(sys_id)
+        while True:
+            try:
+                sys_id, system = self._roll_system()
+            except NoSystemsError:
+                print('No new games! Try a new system, or reduce your blacklist.')
+                return
+            try:
+                game_id, game = self._roll_game(sys_id)
+                break
+            except NoGamesError:
+                continue
+
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
         print(f'{format_system_name_and_id(system['name'], system['vimm_id'])}: "{game['name']}". {url}')
         self.games.data[sys_id][game_id]['seen'] = True
