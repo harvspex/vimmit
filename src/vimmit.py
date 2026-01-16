@@ -4,7 +4,7 @@ from utils.cli import get_parser
 from utils.setup import input_base_url
 from data_objects import *
 from typing import Callable
-# from requests import ConnectionError
+from requests import ConnectionError
 
 class Vimmit:
     def __init__(self):
@@ -31,36 +31,37 @@ class Vimmit:
         scraper.scrape_games(games, systems)
 
     def run(self):
-        self._setup()
-        systems = list(self.config.data['systems'].keys())
-        parser = get_parser(systems)
-        args = parser.parse_args()
+        try:
+            self._setup()
+            systems = list(self.config.data['systems'].keys())
+            parser = get_parser(systems)
+            args = parser.parse_args()
 
-        if args.scrape_systems:
-            self._scrape_systems_list()
+            if args.url:
+                # Doesn't work, getting out of hand
+                self.config.data['base_url'] = input_base_url()
 
-        games = Games()
-        selected_systems = {k: v for k, v in self.config.data['systems'].items() if k in args.systems}
+            if args.scrape_systems:
+                self._scrape_systems_list()
 
-        if args.download:
-            self._scrape_games(games, selected_systems)
-        else:
-            blacklist = Blacklist(self.config)
-            vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
-            vimm_roller.roll()
+            games = Games()
+            selected_systems = {k: v for k, v in self.config.data['systems'].items() if k in args.systems}
 
-        if args.export:
-            games.dump_json()
+            if args.download:
+                self._scrape_games(games, selected_systems)
+            else:
+                blacklist = Blacklist(self.config)
+                vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
+                vimm_roller.roll()
 
-        # TODO:
-        # - handle bad url
-        # - handle incorrect url
-        #
-        # try:
-        #     self._handle_scrape(selected_systems)
+            if args.export:
+                games.dump_json()
+        except ConnectionError:
         # except (AttributeError, ConnectionError) as e:
-        #     print(e)
-        #     # print('That didn\'t work. Resetting base url.') # TODO: Better handling and message
-        #     self.config.data['base_url'] = None
-        #     self.config.save()
-        #     return
+            # TODO:
+            # - handle bad url
+            # - handle incorrect url
+            print('That didn\'t work. Resetting base url.') # TODO: Better handling and message
+            self.config.data['base_url'] = None
+            self.config.save()
+            return
