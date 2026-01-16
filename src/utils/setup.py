@@ -68,5 +68,4 @@ def __add_if_not(config: dict, key: str, func: Callable, *args, **kwargs):
 def handle_setup(config: dict) -> dict:
     __add_if_not(config, 'base_url', __input_base_url)
     __add_if_not(config, 'systems', scrape_systems, config['base_url'])
-    __add_if_not(config, 'bl_hash', lambda: None)
     return config

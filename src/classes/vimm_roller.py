@@ -1,4 +1,4 @@
-from classes.data import Config, Games
+from classes.data import Blacklist, Config, Games
 from dataclasses import dataclass
 import random
 import urllib.parse
@@ -19,11 +19,12 @@ class NoSystemsError(Exception):
 class VimmRoller:
     games: Games
     config: Config
+    blacklist: Blacklist
     systems: dict
 
     @staticmethod
     def _game_is_allowed(game: dict) -> bool:
-        return not (game.get('seen', False) or game.get('bl', False))
+        return not game.get('seen', False)
 
     def _validate_systems(self):
         systems_set = set(self.systems.keys())
@@ -31,7 +32,7 @@ class VimmRoller:
         self.systems = {k: v for k, v in self.systems.items() if k not in difference}
 
         if difference:
-            print(f'The following system/s were not found and will be skipped: {" ".join(difference)}')
+            print(f'Game data for the following system/s were not found: {" ".join(difference)}')
 
         if len(systems_set) < 1:
             raise NoSystemsError

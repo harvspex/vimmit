@@ -1,15 +1,14 @@
-from classes.data import Games, Config
+from classes.data import Config
 from classes.vimmit import Vimmit
 from utils.cli import get_parser
 
 
 def main():
-    games = Games()
     config = Config()
     systems = list(config.data['systems'].keys())
     parser = get_parser(systems)
     args = parser.parse_args()
-    vimmit = Vimmit(games, config, args)
+    vimmit = Vimmit(config, args)
     vimmit.run()
 
 
