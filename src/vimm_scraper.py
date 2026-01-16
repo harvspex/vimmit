@@ -27,7 +27,7 @@ class VimmScraper:
         self.config = config
         self.base_url = self.config.data['base_url']
 
-    def scrape_systems_list(self) -> dict:
+    def scrape_systems_list(self):
         print('Downloading systems list. Please wait...')
         truststore.inject_into_ssl()
         html = self.session.get(self.base_url).text
@@ -47,13 +47,13 @@ class VimmScraper:
         self.config.data['systems'] = systems
         self.config.save()
 
-    def _join_url(self, endpoint: str):
+    def _join_url(self, endpoint: str) -> str:
         return urllib.parse.urljoin(self.base_url, endpoint)
 
-    def _get_number_url(self, sys_vimm_id: str):
+    def _get_number_url(self, sys_vimm_id: str) -> str:
         return self._join_url(f'?p=list&system={sys_vimm_id}&section=number')
 
-    def _get_letter_url(self, sys_vimm_id: str, letter: str):
+    def _get_letter_url(self, sys_vimm_id: str, letter: str) -> str:
         return self._join_url(posixpath.join(sys_vimm_id, letter))
 
     def _get_game_region_priority(self, game: dict) -> int:
@@ -72,7 +72,7 @@ class VimmScraper:
         games_by_region = {self._get_game_region_priority(game): game for game in (new_game, games_list.pop())}
         return games_by_region[ min( games_by_region.keys() ) ]
 
-    def _scrape_page_for_games(self, url: str, games_dict: dict) -> None: # NOTE: Inplace
+    def _scrape_page_for_games(self, url: str, games_dict: dict) -> None:
         html = self.session.get(url).text
         soup = BeautifulSoup(html, 'html.parser')
         table = soup.find('table')
@@ -106,7 +106,8 @@ class VimmScraper:
                 'name': game['name']
             }
 
-    def _scrape_games_per_system(self, sys_vimm_id: str, games: dict, test_mode: bool=True) -> dict: # TODO: Disable test mode
+    def _scrape_games_per_system(self, sys_vimm_id: str, games: dict, test_mode: bool=True) -> dict:
+        # TODO: Disable test mode
         self._scrape_page_for_games(self._get_number_url(sys_vimm_id), games)
         r = 0 if test_mode else 26
         for i in range(r):
@@ -115,12 +116,8 @@ class VimmScraper:
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
-    def scrape_games(
-        self,
-        games: Games,
-        selected_systems: dict,
-        will_reset: bool=False
-    ):
+    def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> None:
+        # TODO: Not resetting seen flag
         for sys_id, system in selected_systems.items():
             vimm_id, sys_name = system['vimm_id'], system['name']
             print(f'Downloading games list for {format_system_name_and_id(vimm_id, sys_name)}. Please wait...')
