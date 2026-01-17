@@ -112,7 +112,7 @@ class VimmScraper:
         progress: Progress,
         task_id: TaskID,
         advance_amt: float,
-        delay: float=2
+        delay: float
     ):
         increments = math.ceil(delay*10)
         step = advance_amt/increments
@@ -133,7 +133,7 @@ class VimmScraper:
         r = 2 if test_mode else 26
         amt = 1 / (r+1) * 100
         self._scrape_page_for_games(self._get_number_url(vimm_id), games)
-        self._smooth_update(progress, task_id, amt)
+        self._smooth_update(progress, task_id, amt, base_delay)
 
         for i in range(r):
             start = time.monotonic()
