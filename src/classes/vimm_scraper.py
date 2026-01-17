@@ -2,9 +2,11 @@ from classes.data_objects import Games, Config
 from utils.format import format_system_name_and_id
 from bs4 import BeautifulSoup
 from requests import Session
+from rich.progress import Progress, TaskID
 import truststore
 import posixpath
 import urllib.parse
+import time
 
 # TODO: Make async
 # TODO: Loading percentage based on letter position
@@ -105,23 +107,45 @@ class VimmScraper:
                 'name': game['name']
             }
 
-    def _scrape_games_per_system(self, sys_vimm_id: str, games: dict, test_mode: bool=True) -> dict:
-        # TODO: Disable test mode
-        self._scrape_page_for_games(self._get_number_url(sys_vimm_id), games)
-        r = 0 if test_mode else 26
+    # TODO: Disable test mode
+    def _scrape_games_per_system(
+        self,
+        vimm_id: str,
+        games: dict,
+        progress: Progress,
+        task_id: TaskID,
+        test_mode: bool=True
+    ) -> dict:
+        r = 2 if test_mode else 26
+        amt = 1 / (r+1) * 100
+        self._scrape_page_for_games(self._get_number_url(vimm_id), games)
+        progress.update(task_id, advance=amt)
+
         for i in range(r):
             letter = chr(i+65)
-            self._scrape_page_for_games(self._get_letter_url(sys_vimm_id, letter), games)
+            self._scrape_page_for_games(self._get_letter_url(vimm_id, letter), games)
+            progress.update(task_id, advance=amt)
+            time.sleep(1)
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> bool:
-        for sys_id, system in selected_systems.items():
-            vimm_id, sys_name = system['vimm_id'], system['name']
-            print(f'Downloading games list for {format_system_name_and_id(sys_name, vimm_id)}. Please wait...')
-            games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
-            games_dict = self._scrape_games_per_system(vimm_id, games_dict)
-            games.data[sys_id] = games_dict
-            games.save()
-        print('All system downloads complete!')
+        with Progress() as progress:
+            tasks = {}
+            for sys_id, system in selected_systems.items():
+                task_name = format_system_name_and_id(system['name'], system['vimm_id'])
+                tasks[sys_id] = progress.add_task(task_name, total=100)
+
+            for sys_id, system in selected_systems.items():
+                vimm_id = system['vimm_id']
+                games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
+                games_dict = self._scrape_games_per_system(
+                    vimm_id,
+                    games_dict,
+                    progress,
+                    tasks[sys_id]
+                )
+                games.data[sys_id] = games_dict
+                games.save()
+        print('All downloads complete!')
         return True

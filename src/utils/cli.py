@@ -7,6 +7,7 @@ import argparse
 # - Mode to roll games per game rather than per system?
 # - Reset config (or at least base url)
 # - Add flag to show list of systems (scrapes if necessary, no roll)
+# - delay time (between requests)
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
