@@ -8,24 +8,24 @@ import argparse
 # - Reset config (or at least base url)
 # - Add flag to show list of systems (scrapes if necessary, no roll)
 
-def get_args() -> argparse.ArgumentParser:
+def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Vimmit!'
+        description='Vimmit! ✌️🤮 "The Retro Game Randomiser"'
     )
     parser.add_argument(
         'systems',
-        help='system/s to roll games for',
+        help='system/s to roll games for (separated by spaces)',
         nargs='*'
     )
     parser.add_argument(
         '-d', '--download',
-        help='',
+        help='download gamelists for selected systems',
         action='store_true',
         default=False
     )
     parser.add_argument(
         '-e', '--export',
-        help='',
+        help='export gamelists (optional: filepath)',
         action='store_true',
         default=False
         # TODO: Accept filepath as arg
@@ -33,8 +33,8 @@ def get_args() -> argparse.ArgumentParser:
         # nargs='?'
     )
     parser.add_argument(
-        '-ss', '--scrape-systems',
-        help='',
+        '-ds', '--download-systems',
+        help='re-download list of systems',
         action='store_true',
         default=False
     )
@@ -43,11 +43,12 @@ def get_args() -> argparse.ArgumentParser:
         help='',
         action='store_true',
         default=False
-        # TODO: -r without -c should clear seen and blacklist
+        # TODO: Implement
+        # -r without -d should clear seen
     )
     parser.add_argument(
         '-u', '--url',
-        help='',
+        help='reset base url',
         action='store_true',
         default=False
     )

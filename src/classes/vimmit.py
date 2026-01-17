@@ -62,7 +62,7 @@ class Vimmit:
 
     def _setup(self, args):
         self._update_config('base_url', input_base_url, args.url)
-        self._update_config('systems', self._scrape_systems_list, args.scrape_systems)
+        self._update_config('systems', self._scrape_systems_list, args.download_systems)
 
     def run(self):
         args = cli.get_args()
@@ -75,7 +75,7 @@ class Vimmit:
             error_msg=f'Please select from list of valid systems:\n{' '.join(self.config.data['systems'].keys())}'
         )
         if args.download:
-            self._scrape_games(games, valid_systems)
+            self._scrape_games(games, valid_systems) # TODO: add will_reset
 
         else: # Roll game
             selected_systems = self._validate_systems(
@@ -89,4 +89,5 @@ class Vimmit:
             vimm_roller.roll()
 
         if args.export:
+            print(f'Exporting games data to {NotImplemented}')
             games.dump_json()
