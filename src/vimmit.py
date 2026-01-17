@@ -30,8 +30,7 @@ class Vimmit:
         except KeyboardInterrupt:
             raise
         except:
-            # raise ScrapeError
-            raise
+            raise ScrapeError
         if not result:
             raise ScrapeError
         return result
