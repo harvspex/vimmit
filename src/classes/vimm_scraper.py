@@ -1,4 +1,4 @@
-from data_objects import Games, Config
+from classes.data_objects import Games, Config
 from utils.format import format_system_name_and_id
 from bs4 import BeautifulSoup
 from requests import Session

@@ -1,10 +1,10 @@
-from data_objects import Config
-from exceptions import NoSystemsError, ScrapeError
-from vimm_roller import VimmRoller
-from vimm_scraper import VimmScraper
+from classes.data_objects import Config
+from classes.exceptions import NoSystemsError, ScrapeError
+from classes.vimm_roller import VimmRoller
+from classes.vimm_scraper import VimmScraper
 import utils.cli as cli
 from utils.setup import input_base_url
-from data_objects import *
+from classes.data_objects import *
 from typing import Any, Callable
 
 class Vimmit:

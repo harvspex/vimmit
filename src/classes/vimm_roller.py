@@ -1,5 +1,5 @@
-from data_objects import Blacklist, Config, Games
-from exceptions import NoGamesError, NoSystemsError
+from classes.data_objects import Blacklist, Config, Games
+from classes.exceptions import NoGamesError, NoSystemsError
 from utils.format import format_system_name_and_id
 from typing import Any
 import random

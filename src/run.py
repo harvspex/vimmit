@@ -1,5 +1,5 @@
-from vimmit import Vimmit
-from exceptions import *
+from classes.vimmit import Vimmit
+from classes.exceptions import *
 
 
 def main():
