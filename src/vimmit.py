@@ -5,7 +5,7 @@ from vimm_scraper import VimmScraper
 from utils.cli import get_args
 from utils.setup import input_base_url
 from data_objects import *
-from typing import Callable
+from typing import Any, Callable
 
 class Vimmit:
     def __init__(self):
@@ -24,11 +24,14 @@ class Vimmit:
             self.config.save()
 
     @staticmethod
-    def _scrape_wrapper(func: Callable, *args, **kwargs):
+    def _scrape_wrapper(func: Callable, *args, **kwargs) -> Any:
         try:
             result = func(*args, **kwargs)
+        except KeyboardInterrupt:
+            raise
         except:
-            raise ScrapeError
+            # raise ScrapeError
+            raise
         if not result:
             raise ScrapeError
         return result
@@ -45,18 +48,17 @@ class Vimmit:
         self,
         selected_systems: list,
         all_systems: list,
-        difference_message: str
+        diff_msg: str,
+        error_msg: str
     ) -> dict:
         selected_systems_set = set(selected_systems)
         downloaded_systems = set(all_systems)
         intersect = selected_systems_set.intersection(downloaded_systems)
         difference = selected_systems_set.difference(downloaded_systems)
         if not intersect:
-            raise NoSystemsError(
-                f'Please select a valid system:\n{' '.join(self.config.data['systems'].keys())}'
-            )
+            raise NoSystemsError(error_msg)
         if difference:
-            print(f'{difference_message}: {' '.join(difference)}')
+            print(f'{diff_msg}: {' '.join(difference)}')
         return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
     def run(self):
@@ -68,10 +70,12 @@ class Vimmit:
 
         games = Games()
 
+        # If no valid systems, just raise error
         valid_systems = self.validate_systems(
             args.systems,
             self.config.data['systems'].keys(),
-            'The following systems were not found and will be skipped',
+            diff_msg='The following systems were not found and will be skipped',
+            error_msg=f'Please select from list of valid systems:\n{' '.join(self.config.data['systems'].keys())}'
         )
         if args.download:
             self._scrape_games(games, valid_systems)
@@ -80,7 +84,8 @@ class Vimmit:
             selected_systems = self.validate_systems(
                 valid_systems.keys(),
                 games.data.keys(),
-                'No games found for following systems (will be skipped)',
+                diff_msg='No games found for following systems (will be skipped)',
+                error_msg=f'No games found. Try downloading game list for the following system/s: {' '.join(valid_systems.keys())}'
             )
             blacklist = Blacklist(self.config)
             vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
