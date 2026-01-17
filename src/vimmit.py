@@ -2,7 +2,7 @@ from data_objects import Config
 from exceptions import NoSystemsError, ScrapeError
 from vimm_roller import VimmRoller
 from vimm_scraper import VimmScraper
-from utils.cli import get_args
+import utils.cli as cli
 from utils.setup import input_base_url
 from data_objects import *
 from typing import Any, Callable
@@ -44,7 +44,7 @@ class Vimmit:
         scraper = VimmScraper(self.config)
         return self._scrape_wrapper(scraper.scrape_games, games, systems)
 
-    def validate_systems(
+    def _validate_systems(
         self,
         selected_systems: list,
         all_systems: list,
@@ -61,17 +61,15 @@ class Vimmit:
             print(f'{diff_msg}: {' '.join(difference)}')
         return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
-    def run(self):
-        args = get_args()
-
-        # Setup
+    def _setup(self, args):
         self._update_config('base_url', input_base_url, args.url)
         self._update_config('systems', self._scrape_systems_list, args.scrape_systems)
 
+    def run(self):
+        args = cli.get_args()
+        self._setup(args)
         games = Games()
-
-        # If no valid systems, just raise error
-        valid_systems = self.validate_systems(
+        valid_systems = self._validate_systems(
             args.systems,
             self.config.data['systems'].keys(),
             diff_msg='The following systems were not found and will be skipped',
@@ -81,11 +79,11 @@ class Vimmit:
             self._scrape_games(games, valid_systems)
 
         else: # Roll game
-            selected_systems = self.validate_systems(
+            selected_systems = self._validate_systems(
                 valid_systems.keys(),
                 games.data.keys(),
                 diff_msg='No games found for following systems (will be skipped)',
-                error_msg=f'No games found. Try downloading game list for the following system/s: {' '.join(valid_systems.keys())}'
+                error_msg=f'No games found. Try downloading gamelist for the following system/s: {' '.join(valid_systems.keys())}'
             )
             blacklist = Blacklist(self.config)
             vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
