@@ -116,7 +116,6 @@ class VimmScraper:
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> bool:
-        # TODO: Not resetting seen flag
         for sys_id, system in selected_systems.items():
             vimm_id, sys_name = system['vimm_id'], system['name']
             print(f'Downloading games list for {format_system_name_and_id(sys_name, vimm_id)}. Please wait...')
