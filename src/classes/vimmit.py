@@ -7,6 +7,8 @@ from utils.setup import input_base_url
 from classes.data_objects import *
 from typing import Any, Callable
 
+# TODO: Colour printing
+
 class Vimmit:
     def __init__(self):
         self.config = Config()
@@ -72,7 +74,7 @@ class Vimmit:
             args.systems,
             self.config.data['systems'].keys(),
             diff_msg='The following systems were not found and will be skipped',
-            error_msg=f'Please select from list of valid systems:\n{' '.join(self.config.data['systems'].keys())}'
+            error_msg=f'[orange1]Please select from list of valid systems:[/orange1]\n{' '.join(self.config.data['systems'].keys())}'
         )
         if args.download:
             self._scrape_games(games, valid_systems) # TODO: add will_reset

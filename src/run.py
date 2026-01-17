@@ -1,18 +1,20 @@
 from classes.vimmit import Vimmit
 from classes.exceptions import *
+from rich.console import Console
 
 
 def main():
+    console = Console()
     vimmit = Vimmit()
     try:
         vimmit.run()
     except NoSystemsError as e:
-        print(e)
+        console.print(str(e))
     except ScrapeError:
-        print('Download error. Resetting config.')
+        console.print('[red]Download error - Resetting config.[/red]')
         vimmit.reset_config(reset_all=True)
     except ConnectionError:
-        print('Connection error. Resetting base url.')
+        console.print('[red]Connection error - Resetting base url.[/red]')
         vimmit.reset_config('base_url')
     except KeyboardInterrupt:
         pass
