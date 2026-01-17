@@ -76,7 +76,7 @@ class Blacklist(_BaseData):
         # Validate
         for key in blacklist.keys():
             try:
-                blacklist[key] = bl_file[key]
+                blacklist[key] = sorted({_.lower() for _ in bl_file[key]})
             except KeyError:
                 continue
 
