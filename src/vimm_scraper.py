@@ -121,7 +121,7 @@ class VimmScraper:
             vimm_id, sys_name = system['vimm_id'], system['name']
             print(f'Downloading games list for {format_system_name_and_id(sys_name, sys_id)}. Please wait...')
             games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
-            games_dict = self._scrape_games_per_system(vimm_id, games_dict, test_mode=False)
+            games_dict = self._scrape_games_per_system(vimm_id, games_dict)
             games.data[sys_id] = games_dict
             games.save()
         print('All system downloads complete!')

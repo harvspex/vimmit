@@ -39,13 +39,13 @@ class VimmRoller:
             or self._check_blacklist(bl_id, game_name)
 
     def _roll_system(self) -> str:
-        if len(self.selected_systems) < 1:
-            raise NoSystemsError
+        if not self.selected_systems:
+            raise NoSystemsError('No new games! Try a new system, or reduce your blacklist.')
 
         key = self._roll_dict_key(self.selected_systems)
         return key, self.selected_systems.pop(key)
 
-    def _roll_game(self, sys_id: str) -> dict:
+    def _roll_game(self, sys_id: str) -> tuple:
         games = {
             id: game
             for id, game in self.games.data[sys_id].items()
@@ -60,11 +60,7 @@ class VimmRoller:
 
     def roll(self):
         while True:
-            try:
-                sys_id, system = self._roll_system()
-            except NoSystemsError:
-                print('No new games! Try a new system, or reduce your blacklist.')
-                return
+            sys_id, system = self._roll_system()
             try:
                 game_id, game = self._roll_game(sys_id)
                 break
