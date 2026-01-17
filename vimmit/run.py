@@ -2,6 +2,7 @@ from classes.vimmit import Vimmit
 from classes.exceptions import *
 from rich.console import Console
 
+# TODO: setup or way to install
 
 def main():
     console = Console()
