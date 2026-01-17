@@ -107,6 +107,18 @@ class VimmScraper:
                 'name': game['name']
             }
 
+    @staticmethod
+    def _smooth_update(
+        progress: Progress,
+        task_id: TaskID,
+        advance_amt: float,
+        delay: float=2,
+        increments: float=4
+    ):
+        for _ in range(increments):
+            time.sleep(delay/increments)
+            progress.update(task_id, advance=advance_amt/increments)
+
     # TODO: Disable test mode
     def _scrape_games_per_system(
         self,
@@ -119,13 +131,12 @@ class VimmScraper:
         r = 2 if test_mode else 26
         amt = 1 / (r+1) * 100
         self._scrape_page_for_games(self._get_number_url(vimm_id), games)
-        progress.update(task_id, advance=amt)
+        self._smooth_update(progress, task_id, amt)
 
         for i in range(r):
+            self._smooth_update(progress, task_id, amt)                
             letter = chr(i+65)
             self._scrape_page_for_games(self._get_letter_url(vimm_id, letter), games)
-            progress.update(task_id, advance=amt)
-            time.sleep(1)
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
