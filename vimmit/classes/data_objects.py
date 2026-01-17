@@ -21,6 +21,8 @@ class _BaseData(ABC):
 
 
 class Games(_BaseData):
+    # TODO: Fix duplicate object key bug
+
     def __init__(self):
         filepath = Path.cwd() / '.data' / 'games.dat'
         super().__init__(filepath)
