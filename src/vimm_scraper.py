@@ -115,13 +115,15 @@ class VimmScraper:
 
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
-    def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False):
+    def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> bool:
         # TODO: Not resetting seen flag
         for sys_id, system in selected_systems.items():
             vimm_id, sys_name = system['vimm_id'], system['name']
+            # TODO: why does this print sys_id in lower case?
             print(f'Downloading games list for {format_system_name_and_id(sys_name, sys_id)}. Please wait...')
             games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
             games_dict = self._scrape_games_per_system(vimm_id, games_dict)
             games.data[sys_id] = games_dict
             games.save()
         print('All system downloads complete!')
+        return True
