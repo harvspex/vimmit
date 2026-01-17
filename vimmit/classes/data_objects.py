@@ -21,7 +21,8 @@ class _BaseData(ABC):
 
 
 class Games(_BaseData):
-    # TODO: Fix duplicate object key bug
+    # TODO: Fix duplicate object key bug (some games with str keys of same int value)
+    # May not need fixing - bad data is holdover from older version of vimmit
 
     def __init__(self):
         filepath = Path.cwd() / '.data' / 'games.dat'
