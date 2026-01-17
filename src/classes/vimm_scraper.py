@@ -3,14 +3,14 @@ from utils.format import format_system_name_and_id
 from bs4 import BeautifulSoup
 from requests import Session
 from rich.progress import Progress, TaskID
+import math
 import truststore
 import posixpath
 import urllib.parse
 import time
+import random
 
-# TODO: Make async
-# TODO: Loading percentage based on letter position
-# TODO: Colour logging?
+# TODO: Colour logging
 # TODO: Extract region priority into config?
 
 OTHER_REGION = 'Other'
@@ -112,12 +112,13 @@ class VimmScraper:
         progress: Progress,
         task_id: TaskID,
         advance_amt: float,
-        delay: float=2,
-        increments: float=4
+        delay: float=2
     ):
+        increments = math.ceil(delay*10)
+        step = advance_amt/increments
         for _ in range(increments):
             time.sleep(delay/increments)
-            progress.update(task_id, advance=advance_amt/increments)
+            progress.update(task_id, advance=step)
 
     # TODO: Disable test mode
     def _scrape_games_per_system(
@@ -126,6 +127,7 @@ class VimmScraper:
         games: dict,
         progress: Progress,
         task_id: TaskID,
+        base_delay: float=2,
         test_mode: bool=True
     ) -> dict:
         r = 2 if test_mode else 26
@@ -134,10 +136,15 @@ class VimmScraper:
         self._smooth_update(progress, task_id, amt)
 
         for i in range(r):
-            self._smooth_update(progress, task_id, amt)                
+            start = time.monotonic()
             letter = chr(i+65)
-            self._scrape_page_for_games(self._get_letter_url(vimm_id, letter), games)
+            url = self._get_letter_url(vimm_id, letter)
+            self._scrape_page_for_games(url, games)
+            elapsed = time.monotonic() - start
+            delay = max(0, base_delay - elapsed) + random.uniform(0, 0.5)
+            self._smooth_update(progress, task_id, amt, delay)
 
+        progress.update(task_id, completed=100)
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> bool:
