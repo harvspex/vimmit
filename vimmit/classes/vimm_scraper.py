@@ -1,5 +1,4 @@
 from classes.data_objects import Games, Config
-from utils.format import format_system_name_and_id
 from utils.cli import console
 from bs4 import BeautifulSoup
 from requests import Session
@@ -23,12 +22,19 @@ REGION_PRIORITY = {
     OTHER_REGION: 5
 }
 
+
 class VimmScraper:
     def __init__(self, config: Config):
         truststore.inject_into_ssl()
         self.session = Session()
         self.config = config
         self.base_url = self.config.data['base_url']
+
+    @staticmethod
+    def _format_system_name_and_id(sys_name: str, sys_vimm_id: str) -> str:
+        if sys_name.replace(' ', '').lower() == sys_vimm_id.lower():
+            return sys_name
+        return f'{sys_name} ({sys_vimm_id})'
 
     def scrape_systems_dict(self) -> dict:
         console.print('Downloading systems list. Please wait...')
@@ -45,7 +51,7 @@ class VimmScraper:
                 systems[id.lower()] = {
                     'vimm_id': id,
                     'name': name,
-                    'bl_id': format_system_name_and_id(name, id)
+                    'bl_id': self._format_system_name_and_id(name, id)
                 }
         return systems
 
@@ -152,7 +158,7 @@ class VimmScraper:
         with Progress(console=console) as progress:
             tasks = {}
             for sys_id, system in selected_systems.items():
-                task_name = format_system_name_and_id(system['name'], system['vimm_id'])
+                task_name = system['bl_id']
                 tasks[sys_id] = progress.add_task(task_name, total=100)
 
             for sys_id, system in selected_systems.items():

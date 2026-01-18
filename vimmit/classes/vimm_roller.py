@@ -1,6 +1,5 @@
 from classes.data_objects import Blacklist, Config, Games
 from classes.exceptions import NoGamesError, NoSystemsError
-from utils.format import format_system_name_and_id
 from utils.cli import console
 from typing import Any
 import random
@@ -69,7 +68,6 @@ class VimmRoller:
                 continue
 
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
-        system_name = format_system_name_and_id(system['name'], system['vimm_id'])
-        console.print(f'[green][{system_name}][/green] [bold]{game['name']}[/bold] → [magenta]{url}[/magenta]', highlight=False)
+        console.print(f'[green][{system['bl_id']}][/green] [bold]{game['name']}[/bold] → [magenta]{url}[/magenta]', highlight=False)
         self.games.data[sys_id][game_id]['seen'] = True
         self.games.save()
