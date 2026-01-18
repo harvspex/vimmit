@@ -1,5 +1,6 @@
 from classes.data_objects import Games, Config
 from utils.format import format_system_name_and_id
+from utils.cli import console
 from bs4 import BeautifulSoup
 from requests import Session
 from rich.progress import Progress, TaskID
@@ -10,7 +11,7 @@ import urllib.parse
 import time
 import random
 
-# TODO: Colour logging
+# TODO: Colour printing
 # TODO: Extract region priority into config?
 
 OTHER_REGION = 'Other'
@@ -30,7 +31,7 @@ class VimmScraper:
         self.base_url = self.config.data['base_url']
 
     def scrape_systems_dict(self) -> dict:
-        print('Downloading systems list. Please wait...')
+        console.print('Downloading systems list. Please wait...')
         truststore.inject_into_ssl()
         html = self.session.get(self.base_url).text
         soup = BeautifulSoup(html, 'html.parser')
@@ -148,7 +149,7 @@ class VimmScraper:
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
     def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> bool:
-        with Progress() as progress:
+        with Progress(console=console) as progress:
             tasks = {}
             for sys_id, system in selected_systems.items():
                 task_name = format_system_name_and_id(system['name'], system['vimm_id'])
@@ -165,5 +166,5 @@ class VimmScraper:
                 )
                 games.data[sys_id] = games_dict
                 games.save()
-        print('All downloads complete!')
+        console.print('All downloads complete!')
         return True

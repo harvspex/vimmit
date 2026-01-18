@@ -3,6 +3,7 @@ from classes.exceptions import NoSystemsError, ScrapeError
 from classes.vimm_roller import VimmRoller
 from classes.vimm_scraper import VimmScraper
 import utils.cli as cli
+from utils.cli import console
 from utils.setup import input_base_url
 from classes.data_objects import *
 from typing import Any, Callable
@@ -59,7 +60,7 @@ class Vimmit:
         if not intersect:
             raise NoSystemsError(error_msg)
         if difference:
-            print(f'{diff_msg}: {' '.join(difference)}')
+            console.print(f'{diff_msg}: {' '.join(difference)}')
         return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
     def _setup(self, args):
@@ -91,5 +92,5 @@ class Vimmit:
             vimm_roller.roll()
 
         if args.export:
-            print(f'Exporting games data to {NotImplemented}')
+            console.print(f'Exporting games data to {NotImplemented}')
             games.dump_json()

@@ -1,3 +1,5 @@
+from utils.cli import console
+
 def _validate_url(user_input: str, default_scheme='https') -> str:
     from urllib.parse import urlparse, urlunparse
 
@@ -14,12 +16,12 @@ def _validate_url(user_input: str, default_scheme='https') -> str:
 
 
 def input_base_url() -> str:
-    print('Please enter base url (hint: vimm dot net):')
+    console.print('Please enter base url (hint: vimm dot net):')
     while True:
-        user_input = input('>> ').strip()
+        user_input = console.input('>> ').strip()
         base_url = _validate_url(user_input)
         if not base_url:
-            print('Please enter valid url:')
+            console.print('Please enter valid url:')
             continue
 
         return base_url

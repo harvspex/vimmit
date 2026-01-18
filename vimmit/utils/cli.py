@@ -1,4 +1,7 @@
 import argparse
+from rich.console import Console
+
+console = Console() # TODO: Use
 
 # TODO: Add and implement options
 # - Support for all (downloaded) system game rolls with `*` arg
