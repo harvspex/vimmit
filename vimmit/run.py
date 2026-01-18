@@ -1,6 +1,6 @@
-from classes.vimmit import Vimmit
-from classes.exceptions import *
+from vimmit.vimmit import Vimmit
 from utils.cli import console
+from utils.exceptions import NoSystemsError, ScrapeError
 
 # TODO: setup or way to install
 

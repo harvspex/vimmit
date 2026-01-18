@@ -1,5 +1,6 @@
 from utils.cli import console
 
+
 def _validate_url(user_input: str, default_scheme='https') -> str:
     from urllib.parse import urlparse, urlunparse
 

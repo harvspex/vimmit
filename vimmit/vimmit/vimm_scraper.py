@@ -1,14 +1,17 @@
-from classes.data import Games, Config
-from utils.cli import console
-from bs4 import BeautifulSoup
-from requests import Session
-from rich.progress import Progress, TaskID
 import math
-import truststore
 import posixpath
-import urllib.parse
-import time
 import random
+import time
+import urllib.parse
+
+from requests import Session
+from bs4 import BeautifulSoup
+from rich.progress import Progress, TaskID
+import truststore
+
+from data.config import Config
+from data.games import Games
+from utils.cli import console
 
 # TODO (maybe): Extract region priority into config?
 

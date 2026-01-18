@@ -1,4 +1,5 @@
 import argparse
+
 from rich.console import Console
 
 console = Console()

@@ -1,12 +1,16 @@
-from classes.data import Config
-from classes.exceptions import NoSystemsError, ScrapeError
-from classes.vimm_roller import VimmRoller
-from classes.vimm_scraper import VimmScraper
-import utils.cli as cli
-from utils.cli import console
-from utils.setup import input_base_url
-from classes.data import *
 from typing import Any, Callable
+
+from data.blacklist import Blacklist
+from data.config import Config
+from data.games import Games
+from data.import_export import ImportExport
+from utils.exceptions import ScrapeError
+from utils.cli import console, get_args
+from utils.exceptions import NoSystemsError
+from utils.setup import input_base_url
+from vimmit.vimm_roller import VimmRoller
+from vimmit.vimm_scraper import VimmScraper
+
 
 class Vimmit:
     def __init__(self):
@@ -84,7 +88,7 @@ class Vimmit:
         )
 
     def run(self):
-        args = cli.get_args()
+        args = get_args()
         games = Games()
 
         if args.download_systems:
@@ -120,21 +124,23 @@ class Vimmit:
         )
         if args.download:
             self._scrape_games(games, valid_systems) # TODO: add will_reset
-
-        else: # Roll game
-            selected_systems = self._validate_systems(
-                valid_systems.keys(),
-                games.data.keys(),
-                diff_msg='No games found for following systems (will be skipped)',
-                error_msg=(
-                    f'No games found. Try downloading gamelist for the following system/s: '
-                    f'[orange1]{' '.join(valid_systems.keys())}[/orange1]'
-                )
-            )
-            blacklist = Blacklist(self.config)
-            vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
-            vimm_roller.roll()
+            return
 
         if args.export:
             # TODO: Handle export
             ...
+            return
+
+        # Roll game
+        selected_systems = self._validate_systems(
+            valid_systems.keys(),
+            games.data.keys(),
+            diff_msg='No games found for following systems (will be skipped)',
+            error_msg=(
+                f'No games found. Try downloading gamelist for the following system/s: '
+                f'[orange1]{' '.join(valid_systems.keys())}[/orange1]'
+            )
+        )
+        blacklist = Blacklist(self.config)
+        vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
+        vimm_roller.roll()
