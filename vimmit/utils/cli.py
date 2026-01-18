@@ -28,26 +28,24 @@ def get_args() -> argparse.Namespace:
         default=False
     )
     parser.add_argument(
-        '-e', '--export',
-        help='',
-        nargs='?',
-        choices=['games', 'all', 'history'],
-        const='games',
-        default=None
-    )
-    parser.add_argument(
-        # TODO: Should this overwrite or update only?
-        # Option for overwrite?
         '-i', '--import',
-        help='',
+        help='games (default): import gamelists, all: import gamelists and seen data',
         nargs='?',
         choices=['games', 'all'],
         const='games',
         default=None
     )
     parser.add_argument(
+        '-e', '--export',
+        help='games (default): export gamelists, all: export gamelists and seen data, history: export list of seen games',
+        nargs='?',
+        choices=['games', 'all', 'history'],
+        const='games',
+        default=None
+    )
+    parser.add_argument(
         '-f', '--filepath',
-        help='',
+        help='optional: filepath for import/export (default is current folder)',
         nargs='?',
         const=None, # TODO: Path.cwd() ?
         default=None
