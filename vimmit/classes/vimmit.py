@@ -26,6 +26,10 @@ class Vimmit:
             self.config.data[key] = func()
             self.config.save()
 
+    def _setup(self, args):
+        self._update_config('base_url', input_base_url, args.url)
+        self._update_config('systems', self._scrape_systems_list, args.download_systems)
+
     @staticmethod
     def _scrape_wrapper(func: Callable, *args, **kwargs) -> Any:
         try:
@@ -72,10 +76,6 @@ class Vimmit:
             console.print(f'{diff_msg}: [orange1]{' '.join(difference)}[/orange1]')
         return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
-    def _setup(self, args):
-        self._update_config('base_url', input_base_url, args.url)
-        self._update_config('systems', self._scrape_systems_list, args.download_systems)
-
     def _show_systems(self, games: Games):
         downloaded = list(games.data.keys())
         available = [_ for _ in self.config.data['systems'].keys() if _ not in downloaded]
@@ -87,11 +87,20 @@ class Vimmit:
 
     def run(self):
         args = cli.get_args()
+        games = Games()
 
-        # TODO: Handle import
+        if getattr(args, 'import'):
+            # TODO: WIP
+            try:
+                importer = ImportExport(args.filepath)
+                self.config, games = importer.import_file(self.config, games)
+                self.config.save()
+                games.save()
+            except:
+                ...
+                return
 
         self._setup(args)
-        games = Games()
 
         if args.show_systems:
             self._show_systems(games)
@@ -125,5 +134,6 @@ class Vimmit:
             vimm_roller.roll()
 
         if args.export:
+            # TODO: Handle export
             console.print(f'Exporting games data to {NotImplemented}')
-            games.dump_json()
+            ...

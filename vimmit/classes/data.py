@@ -99,7 +99,9 @@ class ImportExport(_BaseData):
         self.filepath = self._validate_filepath(filepath)
 
     @staticmethod
-    def _validate_filepath(filepath: str):
+    def _validate_filepath(filepath: str=None):
+        if filepath is None:
+            return Path.cwd() / 'vimmit.vmt'
         # TODO
         ...
         return filepath
