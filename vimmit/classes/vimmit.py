@@ -82,7 +82,7 @@ class Vimmit:
         console.print(
             f'Downloaded systems: [green]{' '.join(downloaded)}[/green] '
             f'( [green]*[/green] to select all)\n'
-            f'Available systems: [orange1]{' '.join(available)}[/orange1]'
+            f'Available systems: [bright_cyan]{' '.join(available)}[/bright_cyan]'
         )
 
     def run(self):
