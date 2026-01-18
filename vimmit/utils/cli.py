@@ -31,11 +31,13 @@ def get_args() -> argparse.Namespace:
         '-e', '--export',
         help='',
         nargs='?',
-        choices=['games', 'history'],
+        choices=['games', 'all', 'history'],
         const='games',
         default=None
     )
     parser.add_argument(
+        # TODO: Should this overwrite or update only?
+        # Option for overwrite?
         '-i', '--import',
         help='',
         nargs='?',
