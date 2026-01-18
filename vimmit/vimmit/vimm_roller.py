@@ -72,6 +72,6 @@ class VimmRoller:
                 continue
 
         url = urllib.parse.urljoin(self.config.data['base_url'], str(game_id))
-        console.print(f'[green][{system['bl_id']}][/green] [bold]{game['name']}[/bold] → [magenta]{url}[/magenta]', highlight=False)
+        console.print(f'[green][{system['bl_id']}][/green] [bold]{game['name']}[/bold] → [magenta]{url}[/magenta]')
         self.games.data[sys_id][game_id]['seen'] = True
         self.games.save()

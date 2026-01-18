@@ -2,7 +2,7 @@ import argparse
 
 from rich.console import Console
 
-console = Console()
+console = Console(highlight=False)
 
 # TODO: Add/Implement
 # - Flag to clear seen for selected systems
@@ -37,7 +37,7 @@ def get_args() -> argparse.Namespace:
         '-i', '--import',
         help='games (default): import gamelists, all: import gamelists and seen data',
         nargs='?',
-        choices=['games', 'all'],
+        choices=['games', 'all'], # TODO add: 'seen', 'blacklist',
         const='games',
         default=None
     )
