@@ -69,7 +69,7 @@ class Vimmit:
         if not intersect:
             raise NoSystemsError(error_msg)
         if difference:
-            console.print(f'{diff_msg}: {' '.join(difference)}')
+            console.print(f'{diff_msg}: [orange1]{' '.join(difference)}[/orange1]')
         return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
     def _setup(self, args):
@@ -84,8 +84,12 @@ class Vimmit:
         valid_systems = self._validate_systems(
             self._check_if_all_systems_selected(games, args.systems),
             self.config.data['systems'].keys(),
-            diff_msg='The following systems were not found and will be skipped',
-            error_msg=f'[orange1]Please select from list of valid systems:[/orange1]\n{' '.join(self.config.data['systems'].keys())}'
+            diff_msg='The following systems were not found (will be skipped)',
+            error_msg=(
+                f'Please select from list of valid systems: '
+                f'[orange1]{' '.join(self.config.data['systems'].keys())}[/orange1]\n'
+                f'Or select all downloaded systems with [orange1]*[/orange1]'
+            )
         )
         if args.download:
             self._scrape_games(games, valid_systems) # TODO: add will_reset
@@ -95,7 +99,10 @@ class Vimmit:
                 valid_systems.keys(),
                 games.data.keys(),
                 diff_msg='No games found for following systems (will be skipped)',
-                error_msg=f'No games found. Try downloading gamelist for the following system/s: {' '.join(valid_systems.keys())}'
+                error_msg=(
+                    f'No games found. Try downloading gamelist for the following system/s: '
+                    f'[orange1]{' '.join(valid_systems.keys())}[/orange1]'
+                )
             )
             blacklist = Blacklist(self.config)
             vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
