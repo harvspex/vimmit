@@ -32,6 +32,7 @@ class ImportExport(BaseData):
 
     def import_file(self, old_config: Config, old_games: Games) -> tuple[Config, Games]:
         # Updates without overwriting
+        # TODO: Sort gamelists and systems list?
         data = self.load()
         return self._update(old_config, data['config']), self._update(old_games, data['games'])
 
