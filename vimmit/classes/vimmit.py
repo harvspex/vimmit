@@ -46,6 +46,15 @@ class Vimmit:
         scraper = VimmScraper(self.config)
         return self._scrape_wrapper(scraper.scrape_games, games, systems)
 
+    def _check_if_all_systems_selected(self, games: Games, systems: list) -> list:
+        systems = set(systems)
+        try:
+            systems.remove('*')
+            systems.update(games.data.keys())
+        except KeyError:
+            pass
+        return list(systems)
+
     def _validate_systems(
         self,
         selected_systems: list,
@@ -54,9 +63,9 @@ class Vimmit:
         error_msg: str
     ) -> dict:
         selected_systems_set = set(selected_systems)
-        downloaded_systems = set(all_systems)
-        intersect = selected_systems_set.intersection(downloaded_systems)
-        difference = selected_systems_set.difference(downloaded_systems)
+        all_systems_set = set(all_systems)
+        intersect = selected_systems_set.intersection(all_systems_set)
+        difference = selected_systems_set.difference(all_systems_set)
         if not intersect:
             raise NoSystemsError(error_msg)
         if difference:
@@ -73,7 +82,7 @@ class Vimmit:
         self._setup(args)
         games = Games()
         valid_systems = self._validate_systems(
-            args.systems,
+            self._check_if_all_systems_selected(games, args.systems),
             self.config.data['systems'].keys(),
             diff_msg='The following systems were not found and will be skipped',
             error_msg=f'[orange1]Please select from list of valid systems:[/orange1]\n{' '.join(self.config.data['systems'].keys())}'
