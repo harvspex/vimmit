@@ -4,8 +4,9 @@ from rich.console import Console
 console = Console() # TODO: Use
 
 # TODO: Add/Implement
-# - Support for all (downloaded) system game rolls with `*` arg
-# - Add flag to show list of systems (scrapes if necessary, no roll)
+# - Flag to show list of systems
+#   - downloaded, available, * reminder
+#   - scrapes systems if necessary, no roll
 # - Flag to clear seen for selected systems
 # - Flag to delete selected systems
 #
