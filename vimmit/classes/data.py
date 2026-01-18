@@ -21,22 +21,9 @@ class _BaseData(ABC):
 
 
 class Games(_BaseData):
-    # TODO: Fix duplicate object key bug (some games with str keys of same int value)
-    # May not need fixing - bad data is holdover from older version of vimmit
-
     def __init__(self):
         filepath = Path.cwd() / '.data' / 'games.dat'
         super().__init__(filepath)
-
-    def dump_json(self, filepath: Path | None=None):
-        # TODO: Fix
-        import json
-        filename = 'games.json'
-        # filepath = filepath / filename if filepath else Path.cwd() / filename
-        filepath = Path.cwd() / filename
-
-        with open(filepath, 'w') as f:
-            json.dump(self.data, f, indent=2)
 
     def dump_history(self, config: Config, filepath: Path):
         extract_names = lambda data: [f'{game['name']}\n' for game in data.values() if game.get('seen', False)]
@@ -105,7 +92,7 @@ class Blacklist(_BaseData):
 
 
 class ImportExport(_BaseData):
-    # TODO: Read Exceptions?
+    # TODO: Handle Read Exceptions?
     # TODO: Import blacklist?
 
     def __init__(self, filepath):
