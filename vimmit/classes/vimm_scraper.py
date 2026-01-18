@@ -10,8 +10,7 @@ import urllib.parse
 import time
 import random
 
-# TODO: Colour printing
-# TODO: Extract region priority into config?
+# TODO (maybe): Extract region priority into config?
 
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
@@ -36,7 +35,7 @@ class VimmScraper:
         return f'{sys_name} ({sys_vimm_id})'
 
     def scrape_systems_dict(self) -> dict:
-        console.print('Downloading systems list. Please wait...')
+        console.print('Downloading systems list. Please wait... ', highlight=False, end='')
         truststore.inject_into_ssl()
         html = self.session.get(self.base_url).text
         soup = BeautifulSoup(html, 'html.parser')
@@ -52,6 +51,7 @@ class VimmScraper:
                     'name': name,
                     'bl_id': self._format_system_name_and_id(name, id)
                 }
+        console.print('[green]Complete![/green]')
         return systems
 
     def _join_url(self, endpoint: str) -> str:
@@ -171,5 +171,5 @@ class VimmScraper:
                 )
                 games.data[sys_id] = games_dict
                 games.save()
-        console.print('All downloads complete!')
+        console.print('[green]All downloads complete![/green]')
         return True
