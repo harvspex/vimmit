@@ -1,7 +1,7 @@
 import argparse
 from rich.console import Console
 
-console = Console() # TODO: Use
+console = Console()
 
 # TODO: Add/Implement
 # - Flag to clear seen for selected systems
@@ -52,7 +52,7 @@ def get_args() -> argparse.Namespace:
         '-f', '--filepath',
         help='optional: filepath for import/export (default is current folder)',
         nargs='?',
-        const=None, # TODO: Path.cwd() ?
+        const=None,
         default=None
     )
     parser.add_argument(
@@ -67,12 +67,4 @@ def get_args() -> argparse.Namespace:
         action='store_true',
         default=False
     )
-    # parser.add_argument(
-    #     '-r', '--reset',
-    #     help='',
-    #     action='store_true',
-    #     default=False
-    #     # TODO: Implement
-    #     # -r without -d should clear seen
-    # )
     return parser.parse_args()

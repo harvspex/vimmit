@@ -8,8 +8,6 @@ from utils.setup import input_base_url
 from classes.data import *
 from typing import Any, Callable
 
-# TODO: Colour printing
-
 class Vimmit:
     def __init__(self):
         self.config = Config()
@@ -28,7 +26,7 @@ class Vimmit:
 
     def _setup(self, args):
         self._update_config('base_url', input_base_url, args.url)
-        self._update_config('systems', self._scrape_systems_list, args.download_systems)
+        self._update_config('systems', self._scrape_systems_list)
 
     @staticmethod
     def _scrape_wrapper(func: Callable, *args, **kwargs) -> Any:
@@ -89,6 +87,10 @@ class Vimmit:
         args = cli.get_args()
         games = Games()
 
+        if args.download_systems:
+            self._update_config('systems', self._scrape_systems_list, will_run=True)
+            return # TODO: should this return?
+
         if getattr(args, 'import'):
             # TODO: WIP
             try:
@@ -135,5 +137,4 @@ class Vimmit:
 
         if args.export:
             # TODO: Handle export
-            console.print(f'Exporting games data to {NotImplemented}')
             ...

@@ -93,7 +93,7 @@ class Blacklist(_BaseData):
 
 class ImportExport(_BaseData):
     # TODO: Handle Read Exceptions?
-    # TODO: Import blacklist?
+    # TODO (maybe): Import blacklist?
 
     def __init__(self, filepath):
         self.filepath = self._validate_filepath(filepath)
