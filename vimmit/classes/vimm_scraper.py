@@ -22,7 +22,6 @@ REGION_PRIORITY = {
     OTHER_REGION: 5
 }
 
-
 class VimmScraper:
     def __init__(self, config: Config):
         truststore.inject_into_ssl()
