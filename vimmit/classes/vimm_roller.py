@@ -1,4 +1,4 @@
-from classes.data_objects import Blacklist, Config, Games
+from classes.data import Blacklist, Config, Games
 from classes.exceptions import NoGamesError, NoSystemsError
 from utils.cli import console
 from typing import Any

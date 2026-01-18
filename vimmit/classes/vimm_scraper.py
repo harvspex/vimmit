@@ -1,4 +1,4 @@
-from classes.data_objects import Games, Config
+from classes.data import Games, Config
 from utils.cli import console
 from bs4 import BeautifulSoup
 from requests import Session

@@ -1,11 +1,11 @@
-from classes.data_objects import Config
+from classes.data import Config
 from classes.exceptions import NoSystemsError, ScrapeError
 from classes.vimm_roller import VimmRoller
 from classes.vimm_scraper import VimmScraper
 import utils.cli as cli
 from utils.cli import console
 from utils.setup import input_base_url
-from classes.data_objects import *
+from classes.data import *
 from typing import Any, Callable
 
 # TODO: Colour printing
