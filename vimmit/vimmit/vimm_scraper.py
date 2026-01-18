@@ -2,6 +2,7 @@ import math
 import posixpath
 import random
 import time
+from typing import Callable, Any
 import urllib.parse
 
 from requests import Session
@@ -12,9 +13,9 @@ import truststore
 from data.config import Config
 from data.games import Games
 from utils.cli import console
+from utils.exceptions import ScrapeError
 
 # TODO (maybe): Extract region priority into config?
-
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
     'USA': 1,
@@ -23,6 +24,19 @@ REGION_PRIORITY = {
     'Canada': 4,
     OTHER_REGION: 5
 }
+
+def scrape_wrapper(func: Callable) -> Any:
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+        except KeyboardInterrupt:
+            raise
+        except:
+            raise ScrapeError
+        if not result:
+            raise ScrapeError
+        return result
+    return wrapper
 
 class VimmScraper:
     def __init__(self, config: Config):
@@ -37,6 +51,7 @@ class VimmScraper:
             return sys_name
         return f'{sys_name} ({sys_vimm_id})'
 
+    @scrape_wrapper
     def scrape_systems_dict(self) -> dict:
         console.print('Downloading systems list. Please wait... ', highlight=False, end='')
         truststore.inject_into_ssl()
@@ -156,7 +171,13 @@ class VimmScraper:
         progress.update(task_id, completed=100)
         return dict(sorted(games.items(), key=lambda x: x[1]['name']))
 
-    def scrape_games(self, games: Games, selected_systems: dict, will_reset: bool=False) -> bool:
+    @scrape_wrapper
+    def scrape_games(
+        self,
+        games: Games,
+        selected_systems: dict,
+        will_reset: bool=False
+    ) -> bool:
         with Progress(console=console) as progress:
             tasks = {}
             for sys_id, system in selected_systems.items():

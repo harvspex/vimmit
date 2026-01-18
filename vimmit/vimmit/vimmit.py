@@ -1,5 +1,3 @@
-from typing import Any, Callable
-
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
@@ -16,29 +14,14 @@ class Vimmit:
     def __init__(self):
         self.config = Config()
 
+    def _scrape_systems_list(self) -> dict:
+        scraper = VimmScraper(self.config)
+        return scraper.scrape_systems_dict()
+
     def _setup(self, args):
         self.config.update('base_url', input_base_url, args.url)
         self.config.update('systems', self._scrape_systems_list, args.download_systems)
-
-    @staticmethod
-    def _scrape_wrapper(func: Callable, *args, **kwargs) -> Any:
-        try:
-            result = func(*args, **kwargs)
-        except KeyboardInterrupt:
-            raise
-        except:
-            raise ScrapeError
-        if not result:
-            raise ScrapeError
-        return result
-
-    def _scrape_systems_list(self) -> dict:
-        scraper = VimmScraper(self.config)
-        return self._scrape_wrapper(scraper.scrape_systems_dict)
-
-    def _scrape_games(self, games: Games, systems: dict):
-        scraper = VimmScraper(self.config)
-        return self._scrape_wrapper(scraper.scrape_games, games, systems)
+        self.config.save()
 
     def _check_if_all_systems_selected(self, games: Games, systems: list) -> list:
         systems = set(systems)
@@ -107,7 +90,8 @@ class Vimmit:
             )
         )
         if args.download:
-            self._scrape_games(games, valid_systems) # TODO: add will_reset
+            scraper = VimmScraper(self.config)
+            scraper.scrape_games(games, valid_systems) # TODO: add will_reset
             return
 
         if args.export:
