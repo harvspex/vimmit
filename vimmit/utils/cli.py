@@ -29,12 +29,26 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '-e', '--export',
-        help='export gamelists (optional: filepath)',
-        action='store_true',
-        default=False
-        # TODO: Accept filepath as arg
-        # default=None,
-        # nargs='?'
+        help='',
+        nargs='?',
+        choices=['games', 'history'],
+        const='games',
+        default=None
+    )
+    parser.add_argument(
+        '-i', '--import',
+        help='',
+        nargs='?',
+        choices=['games', 'all'],
+        const='games',
+        default=None
+    )
+    parser.add_argument(
+        '-f', '--filepath',
+        help='',
+        nargs='?',
+        const=None, # TODO: Path.cwd() ?
+        default=None
     )
     parser.add_argument(
         '-ds', '--download-systems',
@@ -43,17 +57,17 @@ def get_args() -> argparse.Namespace:
         default=False
     )
     parser.add_argument(
-        '-r', '--reset',
-        help='',
-        action='store_true',
-        default=False
-        # TODO: Implement
-        # -r without -d should clear seen
-    )
-    parser.add_argument(
         '-u', '--url',
         help='reset base url',
         action='store_true',
         default=False
     )
+    # parser.add_argument(
+    #     '-r', '--reset',
+    #     help='',
+    #     action='store_true',
+    #     default=False
+    #     # TODO: Implement
+    #     # -r without -d should clear seen
+    # )
     return parser.parse_args()
