@@ -1,10 +1,11 @@
 from abc import ABC
 from pathlib import Path
+from typing import Callable
 
 import pickle
-    
 
-class _BaseData(ABC):
+
+class BaseData(ABC):
     def __init__(self, filepath: Path):
         self.filepath = filepath
         self.data = self.load()
@@ -19,3 +20,14 @@ class _BaseData(ABC):
                 return pickle.load(f)
         except FileNotFoundError:
             return {}
+
+    def update(self, key: str, func: Callable, overwrite: bool=False):
+        if not self.data.get(key, False) or overwrite:
+            self.data[key] = func()
+
+    def clear(self, *keys: str, clear_all: bool=False):
+        if clear_all:
+            self.data.clear()
+            return
+        for key in keys:
+            del self.data[key]

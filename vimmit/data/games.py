@@ -1,10 +1,10 @@
 from data.config import Config
-from data.base_data import _BaseData
+from data.base_data import BaseData
 
 from pathlib import Path
 
 
-class Games(_BaseData):
+class Games(BaseData):
     def __init__(self):
         filepath = Path.cwd() / '.data' / 'games.dat'
         super().__init__(filepath)

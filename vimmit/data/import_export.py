@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from data.base_data import _BaseData
+from data.base_data import BaseData
 from data.config import Config
 from data.games import Games
 
 
-class ImportExport(_BaseData):
+class ImportExport(BaseData):
     # TODO: Handle Read Exceptions?
     # TODO (maybe): Import blacklist?
 

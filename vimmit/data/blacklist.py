@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import override
 
-from data.base_data import _BaseData
+from data.base_data import BaseData
 from data.config import Config
 
 
-class Blacklist(_BaseData):
+class Blacklist(BaseData):
     ALL_SYSTEMS = 'All Systems'
 
     def __init__(self, config: Config):

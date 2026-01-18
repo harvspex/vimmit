@@ -16,21 +16,9 @@ class Vimmit:
     def __init__(self):
         self.config = Config()
 
-    def reset_config(self, *keys: str, reset_all: bool=False):
-        if reset_all:
-            self.config.data.clear()
-        for key in keys:
-            self.config.data[key] = None
-        self.config.save()
-
-    def _update_config(self, key: str, func: Callable, will_run: bool=False):
-        if not self.config.data.get(key, False) or will_run:
-            self.config.data[key] = func()
-            self.config.save()
-
     def _setup(self, args):
-        self._update_config('base_url', input_base_url, args.url)
-        self._update_config('systems', self._scrape_systems_list)
+        self.config.update('base_url', input_base_url, args.url)
+        self.config.update('systems', self._scrape_systems_list, args.download_systems)
 
     @staticmethod
     def _scrape_wrapper(func: Callable, *args, **kwargs) -> Any:
@@ -90,10 +78,6 @@ class Vimmit:
     def run(self):
         args = get_args()
         games = Games()
-
-        if args.download_systems:
-            self._update_config('systems', self._scrape_systems_list, will_run=True)
-            return # TODO: should this return?
 
         if getattr(args, 'import'):
             # TODO: WIP
