@@ -4,13 +4,10 @@ from rich.console import Console
 console = Console() # TODO: Use
 
 # TODO: Add/Implement
-# - Flag to show list of systems
-#   - downloaded, available, * reminder
-#   - scrapes systems if necessary, no roll
 # - Flag to clear seen for selected systems
 # - Flag to delete selected systems
 #
-# MAYBE:
+# TODO (maybe): Add and implement
 # - Delay time (between requests)
 # - Mode to roll games per game rather than per system?
 
@@ -26,6 +23,12 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         '-d', '--download',
         help='download gamelists for selected systems',
+        action='store_true',
+        default=False
+    )
+    parser.add_argument(
+        '-s', '--show-systems', '--systems',
+        help='show list of downloaded and available systems',
         action='store_true',
         default=False
     )
@@ -53,13 +56,13 @@ def get_args() -> argparse.Namespace:
         default=None
     )
     parser.add_argument(
-        '-ds', '--download-systems',
+        '--download-systems',
         help='re-download list of systems',
         action='store_true',
         default=False
     )
     parser.add_argument(
-        '-u', '--url',
+        '--url',
         help='reset base url',
         action='store_true',
         default=False

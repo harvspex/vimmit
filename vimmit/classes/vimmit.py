@@ -76,11 +76,27 @@ class Vimmit:
         self._update_config('base_url', input_base_url, args.url)
         self._update_config('systems', self._scrape_systems_list, args.download_systems)
 
+    def _show_systems(self, games: Games):
+        downloaded = list(games.data.keys())
+        available = [_ for _ in self.config.data['systems'].keys() if _ not in downloaded]
+        console.print(
+            f'Downloaded systems: [green]{' '.join(downloaded)}[/green] '
+            f'( [green]*[/green] to select all)\n'
+            f'Available systems: [orange1]{' '.join(available)}[/orange1]'
+        )
+
     def run(self):
         args = cli.get_args()
+
         # TODO: Handle import
+
         self._setup(args)
         games = Games()
+
+        if args.show_systems:
+            self._show_systems(games)
+            return
+
         valid_systems = self._validate_systems(
             self._check_if_all_systems_selected(games, args.systems),
             self.config.data['systems'].keys(),
