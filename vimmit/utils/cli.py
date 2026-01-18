@@ -3,14 +3,15 @@ from rich.console import Console
 
 console = Console() # TODO: Use
 
-# TODO: Add and implement options
+# TODO: Add/Implement
 # - Support for all (downloaded) system game rolls with `*` arg
-# - Re-scrape systems
-# - Import/export from file. Existing data wins conflicts
-# - Mode to roll games per game rather than per system?
-# - Reset config (or at least base url)
 # - Add flag to show list of systems (scrapes if necessary, no roll)
-# - delay time (between requests)
+# - Flag to clear seen for selected systems
+# - Flag to delete selected systems
+#
+# MAYBE:
+# - Delay time (between requests)
+# - Mode to roll games per game rather than per system?
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -18,7 +19,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument(
         'systems',
-        help='system/s to roll games for (separated by spaces)',
+        help='system/s to roll games for (separated by spaces), or * to select all available systems',
         nargs='*'
     )
     parser.add_argument(
