@@ -1,8 +1,9 @@
+from rich.columns import Columns
+
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
 from data.import_export import ImportExport
-from utils.exceptions import ScrapeError
 from utils.cli import console, get_args
 from utils.exceptions import NoSystemsError
 from utils.setup import input_base_url
@@ -50,13 +51,21 @@ class Vimmit:
         return {k: v for k, v in self.config.data['systems'].items() if k in intersect}
 
     def _show_systems(self, games: Games):
+        # TODO (maybe): Force equal number of columns for both
+        format_name = lambda sys_id, colour: (
+            f'[{colour}]{sys_id}[/{colour}] ({self.config.data['systems'][sys_id]['name']})'
+        )
+        get_columns = lambda systems, colour: Columns(
+            [format_name(_, colour) for _ in systems], column_first=True, equal=True, expand=True
+        )
+        print_columns = lambda systems, title, colour: (
+            console.print(f'[{colour}]{title}[/{colour}]'),
+            console.print(get_columns(systems, colour))
+        )
         downloaded = list(games.data.keys())
         available = [_ for _ in self.config.data['systems'].keys() if _ not in downloaded]
-        console.print(
-            f'Downloaded systems: [green]{' '.join(downloaded)}[/green] '
-            f'( [green]*[/green] to select all)\n'
-            f'Available systems: [bright_cyan]{' '.join(available)}[/bright_cyan]'
-        )
+        print_columns(downloaded, 'Downloaded systems:', 'green')
+        print_columns(available, 'Available systems:','bright_cyan')
 
     def run(self):
         args = get_args()
@@ -85,8 +94,8 @@ class Vimmit:
             diff_msg='The following systems were not found (will be skipped)',
             error_msg=(
                 f'Please select from list of valid systems: '
-                f'[orange1]{' '.join(self.config.data['systems'].keys())}[/orange1]\n'
-                f'Or select all downloaded systems with [orange1]*[/orange1]'
+                f'[orange1]{' '.join(self.config.data['systems'].keys())}[/orange1] '
+                f'(or select all downloaded systems with [orange1]*[/orange1] )'
             )
         )
         if args.download:
