@@ -18,3 +18,9 @@ class Games(BaseData):
                 f.write(f'# {bl_id}\n')
                 f.writelines(games)
                 f.write('\n')
+
+    def clear_seen(self, *systems: str):
+        for sys in systems:
+            for game in self.data[sys]:
+                del self.data[sys][game]['seen']
+        # TODO: save?
