@@ -5,9 +5,15 @@ from typing import Callable
 import pickle
 
 
+CWD = Path.cwd()
+DATA_DIR = CWD / '.data'
+
+
 class BaseData(ABC):
-    def __init__(self, filepath: Path):
-        self.filepath = filepath
+    def __init__(self, path: Path, filename: str):
+        if not path.exists():
+            path.mkdir(parents=True)
+        self.filepath = path / filename
         self.data = self.load()
 
     def save(self):

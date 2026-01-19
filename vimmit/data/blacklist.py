@@ -1,7 +1,6 @@
-from pathlib import Path
 from typing import override
 
-from data.base_data import BaseData
+from data.base_data import BaseData, CWD
 from data.config import Config
 
 
@@ -11,9 +10,8 @@ class Blacklist(BaseData):
     ALL_SYSTEMS = 'All Systems'
 
     def __init__(self, config: Config):
-        self.systems = config.data['systems']
-        filepath = Path.cwd() / 'blacklist.txt'
-        super().__init__(filepath)
+        self.systems = config.data.get('systems', {}) # TODO: test
+        super().__init__(CWD, 'blacklist.txt')
         self.save()
 
     @override

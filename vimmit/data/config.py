@@ -1,10 +1,7 @@
-from pathlib import Path
-
-from data.base_data import BaseData
+from data.base_data import BaseData, DATA_DIR
 
 
 class Config(BaseData):
     def __init__(self):
-        filepath = Path.cwd() / '.data' / 'config.dat'
-        super().__init__(filepath)
+        super().__init__(DATA_DIR, 'config.dat')
         self.save()
