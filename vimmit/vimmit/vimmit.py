@@ -26,11 +26,10 @@ class Vimmit:
             self.config.update('base_url', input_base_url, args.url),
             self.config.update('systems', self._scrape_systems_list, args.download_systems)
         )
-        if True in results:
-            blacklist = Blacklist(self.config)
+        did_update_config = True in results
+        if did_update_config:
             self.config.save()
-            return True
-        return False
+        return did_update_config
 
     def _check_if_all_systems_selected(self, games: Games, systems: list) -> list:
         systems = set(systems)
@@ -92,6 +91,19 @@ class Vimmit:
     def run(self):
         args = get_args()
         games = Games()
+        blacklist = Blacklist(self.config)
+
+        if getattr(args, 'import'):
+            # TODO: WIP
+            try:
+                importer = ImportExport(args.filepath)
+                importer.import_file(self.config, games, blacklist)
+                console.print('Imported file')
+            except:
+                raise
+                ...
+                return
+            return
 
         if self._setup(args):
             return
@@ -100,21 +112,16 @@ class Vimmit:
             self._show_systems(games)
             return
 
-        if getattr(args, 'import'):
-            # TODO: WIP
-            try:
-                importer = ImportExport(args.filepath)
-                self.config, games = importer.import_file(self.config, games)
-                self.config.save()
-                games.save()
-            except:
-                ...
-                return
-            return
-
         if args.export:
             # TODO: Handle export
-            ...
+            try:
+                exporter = ImportExport(args.filepath)
+                exporter.export_file(self.config, games, blacklist)
+                console.print('Exported file')
+            except:
+                raise
+                ...
+                return
             return
 
         valid_systems = self._validate_systems(
@@ -141,7 +148,6 @@ class Vimmit:
                 f'[orange1]{' '.join(valid_systems.keys())}[/orange1]'
             )
         )
-
         if args.clear_seen:
             self._delete_wrapper(
                 games,
@@ -161,6 +167,5 @@ class Vimmit:
             return
 
         # Roll game
-        blacklist = Blacklist(self.config)
         vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
         vimm_roller.roll()

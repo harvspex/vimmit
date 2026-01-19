@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from data.base_data import BaseData
+from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
 
@@ -9,7 +10,7 @@ class ImportExport(BaseData):
     # TODO: Handle Read Exceptions?
     # TODO (maybe): Import blacklist?
 
-    def __init__(self, filepath):
+    def __init__(self, filepath: Path):
         self.filepath = self._validate_filepath(filepath)
 
     @staticmethod
@@ -22,7 +23,7 @@ class ImportExport(BaseData):
 
     @staticmethod
     def _update(old_data: dict, new_data: dict) -> dict:
-        # NOTE: Updated gamelist may lose alphabetic ordering
+        # NOTE: Updates without overwriting
         for k, v in new_data.items():
             if k not in old_data:
                 old_data[k] = v
@@ -30,15 +31,32 @@ class ImportExport(BaseData):
                 ImportExport._update(old_data[k], v)
         return old_data
 
-    def import_file(self, old_config: Config, old_games: Games) -> tuple[Config, Games]:
-        # Updates without overwriting
-        # TODO: Sort gamelists and systems list?
-        data = self.load()
-        return self._update(old_config, data['config']), self._update(old_games, data['games'])
-
-    def export_file(self, config: Config, games: Games):
-        self.data = {
-            'config': config,
-            'games': games
+    def import_file(
+        self,
+        old_config: Config,
+        old_games: Games,
+        old_blacklist: Blacklist
+    ):
+        # TODO: Updated gamelist may lose alphabetic ordering
+        # Sort gamelists and systems list?
+        old_data = {
+            'config': old_config, 
+            'games': old_games, 
+            'blacklist': old_blacklist,
         }
+        new_data = self.load()
+        for key, obj in old_data.items():
+            self._update(obj.data, new_data[key])
+            obj.save()
+
+    def export_file(self, config: Config, games: Games, blacklist: Blacklist):
+        self.data = {
+            'config': config.data,
+            'games': games.data,
+            'blacklist': blacklist.data
+        }
+        # TODO: Problem importing blacklist?
         self.save()
+        with open(Path.cwd() / 'test2.json', 'w') as f:
+            import json
+            json.dump(self.data, f, indent=2)

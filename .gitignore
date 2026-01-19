@@ -10,6 +10,7 @@ old/
 *.html
 *.json
 *.txt
+*.vmt
 *.yaml
 *.yml
 
