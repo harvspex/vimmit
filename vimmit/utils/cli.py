@@ -4,10 +4,6 @@ from rich.console import Console
 
 console = Console(highlight=False)
 
-# TODO: Add/Implement
-# - Flag to clear seen for selected systems
-# - Flag to delete selected systems
-#
 # TODO (maybe): Add and implement
 # - Delay time (between requests)
 # - Mode to roll games per game rather than per system?
