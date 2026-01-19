@@ -5,21 +5,51 @@ from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
+from utils.exceptions import ImportExportException
+
+# TODO: add validate_import_path
+# Split ImportExport into Importer and Exporter
+# Finalise
+
+def validate_export_path(filepath: str) -> Path:
+    VMT_SUFFIX = '.vmt'
+    DEFAULT_FILENAME = 'data'
+    path = Path(filepath).expanduser()
+
+    if not path.parent.exists():
+        raise ImportExportException('Parent directory does not exist.')
+
+    if path.exists():
+        if path.is_file() and path.suffix == VMT_SUFFIX:
+            raise ImportExportException('File already exists.')
+        if path.is_dir():
+            path /= DEFAULT_FILENAME
+
+    return path.with_suffix(VMT_SUFFIX)
 
 
 class ImportExport(BaseData):
     # TODO: Handle Read Exceptions?
 
-    def __init__(self, filepath: Path):
+    def __init__(self, filepath: str):
         self.filepath = self._validate_filepath(filepath)
 
-    @staticmethod
-    def _validate_filepath(filepath: str=None):
-        if filepath is None:
-            return Path.cwd() / 'vimmit.vmt'
-        # TODO: Complete
-        ...
-        return filepath
+    # @staticmethod
+    # def _validate_filepath(filepath: str) -> Path:
+    #     VMT_SUFFIX = '.vmt'
+    #     DEFAULT_FILENAME = 'vimmit'
+    #     path = Path(filepath).expanduser()
+
+    #     if not path.parent.exists():
+    #         raise ImportExportException('Parent directory does not exist.')
+
+    #     if path.exists():
+    #         if path.is_file() and path.suffix == VMT_SUFFIX:
+    #             raise ImportExportException('File already exists.')
+    #         if path.is_dir():
+    #             path /= DEFAULT_FILENAME
+
+    #     return path.with_suffix(VMT_SUFFIX)
 
     @staticmethod
     def _both_instance_of(a: Any, b: Any, type: type):
