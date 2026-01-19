@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 from data.base_data import BaseData
 from data.blacklist import Blacklist
@@ -22,16 +23,20 @@ class ImportExport(BaseData):
         return filepath
 
     @staticmethod
+    def _both_instance_of(a: Any, b: Any, type: type):
+        return isinstance(a, type) and isinstance(b, type)
+
+    @staticmethod
     def _update(old_data: dict, new_data: dict) -> dict:
-        # NOTE: Overwrites old data if old_data[k] is falsy
         for k, v in new_data.items():
             if k not in old_data:
                 old_data[k] = v
-            elif isinstance(old_data[k], dict) and isinstance(v, dict):
+            elif ImportExport._both_instance_of(old_data[k], v, dict):
                 ImportExport._update(old_data[k], v)
-            elif isinstance(old_data[k], list) and isinstance(v, list):
-                # TODO: this can degrade order and produce dupes
-                old_data[k] = old_data[k] + v
+            elif ImportExport._both_instance_of(old_data[k], v, list):
+                data = set(old_data[k])
+                data.update(set(v))
+                old_data[k] = sorted(list(data))
         return old_data
 
     def import_file(
@@ -48,11 +53,10 @@ class ImportExport(BaseData):
         new_data = self.load()
         for key, obj in old_data.items():
             self._update(obj.data, new_data[key])
-            # TODO: Need to perform validation on data before saving
-            # e.g. remove blacklist duplicates, sort
-            # sort gamelists
-            # sort system lists
             obj.save()
+        # TODO (maybe): sort system lists?
+        old_games.sort_all_games()
+        old_games.save()
 
     def export_file(self, config: Config, games: Games, blacklist: Blacklist):
         self.data = {

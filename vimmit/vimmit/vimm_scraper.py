@@ -169,14 +169,13 @@ class VimmScraper:
             self._smooth_update(progress, task_id, amt, delay)
 
         progress.update(task_id, completed=100)
-        return dict(sorted(games.items(), key=lambda x: x[1]['name']))
+        return games
 
     @scrape_wrapper
     def scrape_games(
         self,
         games: Games,
-        selected_systems: dict,
-        will_reset: bool=False
+        selected_systems: dict
     ) -> bool:
         with Progress(console=console) as progress:
             tasks = {}
@@ -186,7 +185,7 @@ class VimmScraper:
 
             for sys_id, system in selected_systems.items():
                 vimm_id = system['vimm_id']
-                games_dict = {} if will_reset or sys_id not in games.data else games.data[sys_id]
+                games_dict = {} if sys_id not in games.data else games.data[sys_id]
                 games_dict = self._scrape_games_per_system(
                     vimm_id,
                     games_dict,
@@ -194,6 +193,7 @@ class VimmScraper:
                     tasks[sys_id]
                 )
                 games.data[sys_id] = games_dict
+                games.sort_games_per_system(sys_id)
                 games.save()
         console.print('[green]All downloads complete![/green]')
         return True
