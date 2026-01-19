@@ -23,12 +23,15 @@ class ImportExport(BaseData):
 
     @staticmethod
     def _update(old_data: dict, new_data: dict) -> dict:
-        # NOTE: Updates without overwriting
+        # NOTE: Overwrites old data if old_data[k] is falsy
         for k, v in new_data.items():
             if k not in old_data:
                 old_data[k] = v
             elif isinstance(old_data[k], dict) and isinstance(v, dict):
                 ImportExport._update(old_data[k], v)
+            elif isinstance(old_data[k], list) and isinstance(v, list):
+                # TODO: this can degrade order and produce dupes
+                old_data[k] = old_data[k] + v
         return old_data
 
     def import_file(
@@ -37,8 +40,6 @@ class ImportExport(BaseData):
         old_games: Games,
         old_blacklist: Blacklist
     ):
-        # TODO: Updated gamelist may lose alphabetic ordering
-        # Sort gamelists and systems list?
         old_data = {
             'config': old_config, 
             'games': old_games, 
@@ -47,6 +48,10 @@ class ImportExport(BaseData):
         new_data = self.load()
         for key, obj in old_data.items():
             self._update(obj.data, new_data[key])
+            # TODO: Need to perform validation on data before saving
+            # e.g. remove blacklist duplicates, sort
+            # sort gamelists
+            # sort system lists
             obj.save()
 
     def export_file(self, config: Config, games: Games, blacklist: Blacklist):
@@ -55,11 +60,4 @@ class ImportExport(BaseData):
             'games': games.data,
             'blacklist': blacklist.data
         }
-        # TODO: Problem importing blacklist
-        # Seems to work normally if there is already a blacklist file
-        # However if there is no blacklist file, does not load All Systems data
-        # Could indicate problem with loading config or games too
         self.save()
-        with open(Path.cwd() / 'test.json', 'w') as f:
-            import json
-            json.dump(self.data, f, indent=2)
