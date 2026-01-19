@@ -77,8 +77,11 @@ class Vimmit:
 
     @staticmethod
     def _delete_wrapper(games: Games, func: Callable, systems: list, message: str):
-        console.print(f'[bold red]WARNING: [/bold red][red]{message}[/red][orange1]{' '.join(systems)}[/orange1]')
-        console.print(f'Enter "delete" to confirm:')
+        console.print(
+            f'[bold red]WARNING: [/bold red][red]{message}[/red][orange1]'
+            f'{' '.join(systems)}[/orange1]'
+        )
+        console.print(f'Enter "delete" to confirm, or anything else to cancel:')
         user_input = console.input('>> ')
         if not user_input.strip().lower() == 'delete':
             return
