@@ -19,8 +19,8 @@ class Games(BaseData):
                 f.writelines(games)
                 f.write('\n')
 
-    def clear_seen(self, *systems: str):
+    def clear_seen(self, systems: list):
         for sys in systems:
-            for game in self.data[sys]:
-                del self.data[sys][game]['seen']
-        # TODO: save?
+            for game in self.data[sys].values():
+                if game.get('seen', False):
+                    del game['seen']

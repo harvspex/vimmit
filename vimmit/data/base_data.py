@@ -25,7 +25,7 @@ class BaseData(ABC):
         if not self.data.get(key, False) or overwrite:
             self.data[key] = func()
 
-    def clear(self, *keys: str, clear_all: bool=False):
+    def clear(self, keys: list, clear_all: bool=False):
         if clear_all:
             self.data.clear()
             return

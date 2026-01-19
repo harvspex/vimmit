@@ -66,8 +66,20 @@ def get_args() -> argparse.Namespace:
         default=None
     )
     parser.add_argument(
+        '--clear-seen',
+        help='clear seen data for selected systems (games can be rerolled)',
+        action='store_true',
+        default=False
+    )
+    parser.add_argument(
+        '--delete',
+        help='delete gamelist for selected systems',
+        action='store_true',
+        default=False
+    )
+    parser.add_argument(
         '--download-systems',
-        help='re-download list of systems',
+        help='redownload list of systems',
         action='store_true',
         default=False
     )

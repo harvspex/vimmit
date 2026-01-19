@@ -1,3 +1,5 @@
+from typing import Callable
+
 from rich.columns import Columns
 
 from data.blacklist import Blacklist
@@ -67,6 +69,16 @@ class Vimmit:
         print_columns(downloaded, 'Downloaded systems:', 'green')
         print_columns(available, 'Available systems:','bright_cyan')
 
+    @staticmethod
+    def _delete_wrapper(games: Games, func: Callable, systems: list, message: str):
+        console.print(f'[red]WARNING: {message}[/red]: [orange1]{' '.join(systems)}[/orange1]')
+        console.print(f'Enter "yes" to confirm:')
+        user_input = console.input('>> ')
+        if not user_input.lower() == 'yes':
+            return
+        func(systems)
+        games.save()
+
     def run(self):
         args = get_args()
         games = Games()
@@ -109,7 +121,6 @@ class Vimmit:
             ...
             return
 
-        # Roll game
         selected_systems = self._validate_systems(
             valid_systems.keys(),
             games.data.keys(),
@@ -119,6 +130,26 @@ class Vimmit:
                 f'[orange1]{' '.join(valid_systems.keys())}[/orange1]'
             )
         )
+
+        if args.clear_seen:
+            self._delete_wrapper(
+                games,
+                games.clear_seen,
+                selected_systems.keys(),
+                'You are about to clear seen data for the following system/s'
+            )
+            return
+
+        if args.delete:
+            self._delete_wrapper(
+                games,
+                games.clear,
+                selected_systems.keys(),
+                'You are about to delete gamelists for the following system/s',
+            )
+            return
+
+        # Roll game
         blacklist = Blacklist(self.config)
         vimm_roller = VimmRoller(games, self.config, blacklist, selected_systems)
         vimm_roller.roll()
