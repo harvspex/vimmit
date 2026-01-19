@@ -74,7 +74,7 @@ class Vimmit:
         console.print(f'[red]WARNING: {message}[/red]: [orange1]{' '.join(systems)}[/orange1]')
         console.print(f'Enter "yes" to confirm:')
         user_input = console.input('>> ')
-        if not user_input.lower() == 'yes':
+        if not user_input.strip().lower() == 'yes':
             return
         func(systems)
         games.save()
