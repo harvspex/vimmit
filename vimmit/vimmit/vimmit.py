@@ -94,7 +94,7 @@ class Vimmit:
         blacklist = Blacklist(self.config)
 
         if getattr(args, 'import'):
-            # TODO: WIP
+            # TODO: Import WIP
             try:
                 importer = ImportExport(args.filepath)
                 importer.import_file(self.config, games, blacklist)
@@ -113,7 +113,7 @@ class Vimmit:
             return
 
         if args.export:
-            # TODO: Handle export
+            # TODO: Export WIP
             try:
                 exporter = ImportExport(args.filepath)
                 exporter.export_file(self.config, games, blacklist)
@@ -136,7 +136,7 @@ class Vimmit:
         )
         if args.download:
             scraper = VimmScraper(self.config)
-            scraper.scrape_games(games, valid_systems) # TODO: add will_reset
+            scraper.scrape_games(games, valid_systems)
             return
 
         selected_systems = self._validate_systems(

@@ -154,7 +154,7 @@ class VimmScraper:
         base_delay: float=2,
         test_mode: bool=True
     ) -> dict:
-        r = 2 if test_mode else 26
+        r = 1 if test_mode else 26
         amt = 1 / (r+1) * 100
         self._scrape_page_for_games(self._get_number_url(vimm_id), games)
         self._smooth_update(progress, task_id, amt, base_delay)

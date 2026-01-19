@@ -11,15 +11,10 @@ def main():
     except NoSystemsError as e:
         console.print(str(e))
     except ScrapeError:
-        console.print('[red]Download error - Resetting config.[/red]')
-        # TODO: should this:
-        #   - reset only base url
-        #   - prompt user to reset url and/or config
-        vimmit.reset_config(reset_all=True)
-    # TODO: This never resolves
-    # except ConnectionError:
-    #     console.print('[red]Connection error - Resetting base url.[/red]')
-    #     vimmit.reset_config('base_url')
+        console.print(
+            '[bold red]Download error.[/bold red][red] If the problem persists, try reseting url '
+            'with --url, or redownload systems with --download-systems[/red]'
+        )
     except KeyboardInterrupt:
         pass
 

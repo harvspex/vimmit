@@ -10,7 +10,7 @@ class Blacklist(BaseData):
     ALL_SYSTEMS = 'All Systems'
 
     def __init__(self, config: Config):
-        self.systems = config.data.get('systems', {}) # TODO: test
+        self.systems = config.data.get('systems', {})
         super().__init__(CWD, 'blacklist.txt')
         self.save()
 

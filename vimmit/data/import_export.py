@@ -9,7 +9,6 @@ from data.games import Games
 
 class ImportExport(BaseData):
     # TODO: Handle Read Exceptions?
-    # TODO (maybe): Import blacklist?
 
     def __init__(self, filepath: Path):
         self.filepath = self._validate_filepath(filepath)
