@@ -5,6 +5,8 @@ from data.base_data import BaseData
 from data.config import Config
 
 
+# TODO (maybe): reimplement blacklist hash, with re-check only on changed hash
+
 class Blacklist(BaseData):
     ALL_SYSTEMS = 'All Systems'
 
