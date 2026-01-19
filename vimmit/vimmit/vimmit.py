@@ -21,10 +21,15 @@ class Vimmit:
         scraper = VimmScraper(self.config)
         return scraper.scrape_systems_dict()
 
-    def _setup(self, args):
-        self.config.update('base_url', input_base_url, args.url)
-        self.config.update('systems', self._scrape_systems_list, args.download_systems)
-        self.config.save()
+    def _setup(self, args) -> bool:
+        results = (
+            self.config.update('base_url', input_base_url, args.url),
+            self.config.update('systems', self._scrape_systems_list, args.download_systems)
+        )
+        if True in results:
+            self.config.save()
+            return True
+        return False
 
     def _check_if_all_systems_selected(self, games: Games, systems: list) -> list:
         systems = set(systems)
@@ -96,7 +101,8 @@ class Vimmit:
                 return
             return
 
-        self._setup(args)
+        if self._setup(args):
+            return
 
         if args.show_systems:
             self._show_systems(games)

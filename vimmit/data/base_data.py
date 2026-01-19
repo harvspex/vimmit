@@ -21,9 +21,11 @@ class BaseData(ABC):
         except FileNotFoundError:
             return {}
 
-    def update(self, key: str, func: Callable, overwrite: bool=False):
+    def update(self, key: str, func: Callable, overwrite: bool=False) -> bool:
         if not self.data.get(key, False) or overwrite:
             self.data[key] = func()
+            return True
+        return False
 
     def clear(self, keys: list, clear_all: bool=False):
         if clear_all:
