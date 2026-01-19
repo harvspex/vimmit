@@ -1,4 +1,7 @@
-# Vimmit: The Retro Game Randomiser
+# Vimmit
+
+### The Retro Game Randomiser
+
 Vimmit is a command-line tool for discovering retro games
 
 ## How to Vimmit ✌️🤮
@@ -14,6 +17,8 @@ Download gamelists by running `vimmit system1 system2 ... systemX --download` (o
 ### After setup
 
 Run `vimmit system1 system2 ... systemX` to roll a random game!
+
+You can also run `vimmit *` to roll all downloaded systems.
 
 Games that you have already seen won't be rerolled.
 
