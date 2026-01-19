@@ -27,6 +27,7 @@ class Vimmit:
             self.config.update('systems', self._scrape_systems_list, args.download_systems)
         )
         if True in results:
+            blacklist = Blacklist(self.config)
             self.config.save()
             return True
         return False
@@ -92,6 +93,13 @@ class Vimmit:
         args = get_args()
         games = Games()
 
+        if self._setup(args):
+            return
+
+        if args.show_systems:
+            self._show_systems(games)
+            return
+
         if getattr(args, 'import'):
             # TODO: WIP
             try:
@@ -104,11 +112,9 @@ class Vimmit:
                 return
             return
 
-        if self._setup(args):
-            return
-
-        if args.show_systems:
-            self._show_systems(games)
+        if args.export:
+            # TODO: Handle export
+            ...
             return
 
         valid_systems = self._validate_systems(
@@ -124,11 +130,6 @@ class Vimmit:
         if args.download:
             scraper = VimmScraper(self.config)
             scraper.scrape_games(games, valid_systems) # TODO: add will_reset
-            return
-
-        if args.export:
-            # TODO: Handle export
-            ...
             return
 
         selected_systems = self._validate_systems(
