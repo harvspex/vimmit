@@ -71,7 +71,7 @@ class Vimmit:
 
     @staticmethod
     def _delete_wrapper(games: Games, func: Callable, systems: list, message: str):
-        console.print(f'[red]WARNING: {message}[/red]: [orange1]{' '.join(systems)}[/orange1]')
+        console.print(f'[red]WARNING: {message}[/red][orange1]{' '.join(systems)}[/orange1]')
         console.print(f'Enter "yes" to confirm:')
         user_input = console.input('>> ')
         if not user_input.strip().lower() == 'yes':
@@ -136,7 +136,7 @@ class Vimmit:
                 games,
                 games.clear_seen,
                 selected_systems.keys(),
-                'You are about to clear seen data for the following system/s'
+                'You are about to clear seen data for the following system/s: '
             )
             return
 
@@ -145,7 +145,7 @@ class Vimmit:
                 games,
                 games.clear,
                 selected_systems.keys(),
-                'You are about to delete gamelists for the following system/s',
+                'You are about to delete gamelists for the following system/s: ',
             )
             return
 
