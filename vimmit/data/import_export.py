@@ -55,8 +55,11 @@ class ImportExport(BaseData):
             'games': games.data,
             'blacklist': blacklist.data
         }
-        # TODO: Problem importing blacklist?
+        # TODO: Problem importing blacklist
+        # Seems to work normally if there is already a blacklist file
+        # However if there is no blacklist file, does not load All Systems data
+        # Could indicate problem with loading config or games too
         self.save()
-        with open(Path.cwd() / 'test2.json', 'w') as f:
+        with open(Path.cwd() / 'test.json', 'w') as f:
             import json
             json.dump(self.data, f, indent=2)
