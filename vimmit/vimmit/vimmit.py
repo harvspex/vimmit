@@ -81,6 +81,7 @@ class Vimmit:
             except:
                 ...
                 return
+            return
 
         self._setup(args)
 
