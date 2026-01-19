@@ -16,7 +16,7 @@ class ImportExport(BaseData):
     def _validate_filepath(filepath: str=None):
         if filepath is None:
             return Path.cwd() / 'vimmit.vmt'
-        # TODO
+        # TODO: Complete
         ...
         return filepath
 

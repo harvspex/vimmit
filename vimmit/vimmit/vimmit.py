@@ -61,12 +61,13 @@ class Vimmit:
             [format_name(_, colour) for _ in systems], column_first=True, equal=True, expand=True
         )
         print_columns = lambda systems, title, colour: (
-            console.print(f'[{colour}]{title}[/{colour}]'),
+            console.print(f'[bold {colour}]{title}[/bold {colour}]'),
             console.print(get_columns(systems, colour))
         )
         downloaded = list(games.data.keys())
         available = [_ for _ in self.config.data['systems'].keys() if _ not in downloaded]
         print_columns(downloaded, 'Downloaded systems:', 'green')
+        console.print()
         print_columns(available, 'Available systems:','bright_cyan')
 
     @staticmethod
