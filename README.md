@@ -1,1 +1,52 @@
 # Vimmit: The Retro Game Randomiser
+Vimmit is a command-line tool for discovering retro games
+
+## How to Vimmit ✌️🤮
+
+### Install: WIP
+...
+
+### First time setup
+After following the first-time setup prompts, view a list of available systems with: `vimmit --show-systems` or `vimmit -s`
+
+Download gamelists by running `vimmit system1 system2 ... systemX --download` (or `-d`) with your selected systems.
+
+### After setup
+
+Run `vimmit system1 system2 ... systemX` to roll a random game!
+
+Games that you have already seen won't be rerolled.
+
+Run `vimmit --help` (or `-h`) to view all available commands.
+
+## Blacklist
+
+You can blacklist keywords or phrases to prevent certain games from being rolled. After setup, vimmit will create a blacklist.txt file like this:
+
+```
+# All Systems
+
+# Wintendo 64 (W64)
+
+# Blaystation 1 (BS1)
+
+```
+
+Enter one phrase per line under the systems of your choice. In the example below:
+- All games containing "basketball" are banned
+- Games containing "football" or "baseball" are banned from the Wintendo 64
+- Games containing "golf" or "soccer" are banned from the Blaystation 1
+
+```
+# All Systems
+basketball
+
+# Wintendo 64 (W64)
+football
+baseball
+
+# Blaystation 1 (BS1)
+golf
+soccer
+
+```
