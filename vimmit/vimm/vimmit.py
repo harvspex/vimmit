@@ -1,19 +1,21 @@
+from typing import Callable
+
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
 from utils.cli import console, get_args
-from utils.exceptions import NoSystemsError, ScrapeError
+from exceptions import NoSystemsError, ScrapeError
 import utils.systems as systems
 from utils.setup import setup
 from vimm.vimm_roller import VimmRoller
 from vimm.vimm_scraper import VimmScraper
-from vimmit.utils.delete import delete_from_games
+from utils.delete import delete_from_games
 
 
-def handle_errors():
+def handle_errors(func: Callable):
     def wrapper():
         try:
-            vimmit()
+            func()
         except NoSystemsError as e:
             console.print(str(e))
         except ScrapeError:
@@ -48,7 +50,7 @@ def vimmit():
             return
         return
 
-    if setup(args):
+    if setup(config, args):
         return
 
     if args.show_systems:

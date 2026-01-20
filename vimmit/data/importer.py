@@ -5,7 +5,7 @@ from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from utils.exceptions import ImportExportException
+from exceptions import ImportExportException
 from data.exporter import validate_export_path
 
 # TODO: Test all

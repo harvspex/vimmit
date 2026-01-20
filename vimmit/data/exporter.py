@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from utils.exceptions import ImportExportException
+from exceptions import ImportExportException
 from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config

@@ -6,7 +6,7 @@ from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
 from utils.cli import console
-from utils.exceptions import NoGamesError, NoSystemsError
+from exceptions import NoGamesError, NoSystemsError
 
 
 class VimmRoller:

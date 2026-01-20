@@ -1,7 +1,7 @@
 from typing import Callable
 
-from vimmit.data.games import Games
-from vimmit.utils.cli import console
+from data.games import Games
+from utils.cli import console
 
 
 def _confirm_will_delete(warning_message: str) -> bool:
