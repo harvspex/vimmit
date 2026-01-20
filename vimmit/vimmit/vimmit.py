@@ -5,13 +5,14 @@ from rich.columns import Columns
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from data.import_export import ImportExport
 from utils.cli import console, get_args
 from utils.exceptions import NoSystemsError
-from utils.setup import input_base_url
+from utils.vimmit import *
 from vimmit.vimm_roller import VimmRoller
 from vimmit.vimm_scraper import VimmScraper
 
+# TODO: Extract various class methods into utils.vimmit
+# Lazy load imports where possible
 
 class Vimmit:
     def __init__(self):
@@ -94,9 +95,10 @@ class Vimmit:
         blacklist = Blacklist(self.config)
 
         if getattr(args, 'import'):
+            from data.importer import Importer
             # TODO: Import WIP
             try:
-                importer = ImportExport(args.filepath)
+                importer = Importer(args.filepath)
                 importer.import_file(self.config, games, blacklist)
                 console.print('Imported file')
             except:
@@ -113,9 +115,10 @@ class Vimmit:
             return
 
         if args.export:
+            from data.exporter import Exporter
             # TODO: Export WIP
             try:
-                exporter = ImportExport(args.filepath)
+                exporter = Exporter(args.filepath)
                 exporter.export_file(self.config, games, blacklist)
                 console.print('Exported file')
             except:
