@@ -6,7 +6,7 @@ from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
 from utils.exceptions import ImportExportException
-from vimmit.data.exporter import validate_export_path
+from data.exporter import validate_export_path
 
 # TODO: Test all
 

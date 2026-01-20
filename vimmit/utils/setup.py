@@ -1,4 +1,7 @@
+from data.config import Config
 from utils.cli import console
+from vimm.vimm_scraper import VimmScraper
+from argparse import Namespace
 
 
 def _validate_url(user_input: str, default_scheme='https') -> str:
@@ -26,3 +29,19 @@ def input_base_url() -> str:
             continue
 
         return base_url
+
+
+def _scrape_systems_list(config: Config) -> dict:
+    scraper = VimmScraper(config)
+    return scraper.scrape_systems_dict()
+
+
+def setup(config: Config, args: Namespace) -> bool:
+    results = (
+        config.update('base_url', input_base_url, args.url),
+        config.update('systems', _scrape_systems_list, args.download_systems)
+    )
+    did_update_config = True in results
+    if did_update_config:
+        config.save()
+    return did_update_config

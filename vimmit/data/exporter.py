@@ -1,10 +1,10 @@
 from pathlib import Path
 
 from utils.exceptions import ImportExportException
-from vimmit.data.base_data import BaseData
-from vimmit.data.blacklist import Blacklist
-from vimmit.data.config import Config
-from vimmit.data.games import Games
+from data.base_data import BaseData
+from data.blacklist import Blacklist
+from data.config import Config
+from data.games import Games
 
 # TODO: Test all
 
