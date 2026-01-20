@@ -2,15 +2,33 @@ from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
 from utils.cli import console, get_args
+from utils.exceptions import NoSystemsError, ScrapeError
 import utils.systems as systems
 from utils.setup import setup
 from vimm.vimm_roller import VimmRoller
 from vimm.vimm_scraper import VimmScraper
 from vimmit.utils.delete import delete_from_games
 
+
+def handle_errors():
+    def wrapper():
+        try:
+            vimmit()
+        except NoSystemsError as e:
+            console.print(str(e))
+        except ScrapeError:
+            console.print(
+                '[bold red]Download error.[/bold red][red] If the problem persists, try reseting url '
+                'with --url, or redownload systems with --download-systems[/red]'
+            )
+        except KeyboardInterrupt:
+            pass
+    return wrapper
+
+
+# TODO: setup or way to install
 # TODO: WIP
-
-
+@handle_errors
 def vimmit():
     args = get_args()
     config = Config()
