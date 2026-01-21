@@ -1,30 +1,15 @@
-from pathlib import Path
 from typing import Any
 
 from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from exceptions import ImportExportException
-from data.exporter import validate_export_path
-
-# TODO: Test all
-# TODO: Add all import modes
-
-
-def validate_import_path(filepath: str | None) -> Path:
-    try:
-        return validate_export_path(filepath)
-    except FileExistsError:
-        return Path(filepath).expanduser()
+from vimmit.utils.filepath import validate_import_path
 
 
 class Importer(BaseData):
     def __init__(self, filepath: str):
-        try:
-            self.filepath = validate_import_path(filepath)
-        except:
-            raise ImportExportException
+        self.filepath = validate_import_path(filepath)
 
     @staticmethod
     def _both_instance_of(a: Any, b: Any, type: type):
