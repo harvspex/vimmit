@@ -3,6 +3,8 @@ from typing import Callable
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
+from data.io.exporter import Exporter
+from data.io.importer import Importer
 from common.exceptions import NoSystemsError, ScrapeError
 from app._delete import *
 from app._get_args import get_args
@@ -15,7 +17,7 @@ from common.console import console
 # TODO: setup or way to install
 
 
-def handle_errors(func: Callable):
+def _handle_errors(func: Callable):
     def wrapper():
         try:
             func()
@@ -32,7 +34,7 @@ def handle_errors(func: Callable):
     return wrapper
 
 
-@handle_errors
+@_handle_errors
 def vimmit():
     args = get_args()
     config = Config()
@@ -40,7 +42,6 @@ def vimmit():
     blacklist = Blacklist(config)
 
     if getattr(args, 'import'):
-        from data.importer import Importer
         # TODO: Import WIP
         try:
             importer = Importer(args.filepath)
@@ -60,7 +61,6 @@ def vimmit():
         return
 
     if args.export:
-        from data.exporter import Exporter
         # TODO: Export WIP
         try:
             exporter = Exporter(args.filepath)
