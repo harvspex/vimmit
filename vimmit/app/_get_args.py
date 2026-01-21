@@ -1,5 +1,7 @@
 import argparse
 
+from data.io.exporter import ExportModes
+
 
 # TODO (maybe): Add and implement
 # - Delay time (between requests)
@@ -42,11 +44,11 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         '-e', '--export',
         help=(
-            f'[data] (default): export system, game and blacklist data. '
-            f'[history]: export list of seen games '
+            f'[{ExportModes.DATA.value}] (default): export system, game and blacklist data. '
+            f'[{ExportModes.HISTORY.value}]: export list of seen games '
         ),
         nargs='?',
-        choices=['data', 'history'],
+        choices=[ExportModes.DATA.value, ExportModes.HISTORY.value],
         const='data',
         default=None
     )
