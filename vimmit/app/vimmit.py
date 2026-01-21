@@ -12,7 +12,7 @@ from data.games import Games
 from data.io.exporters import *
 from data.io.importer import *
 from data.io.io_utils import ImportModes, ExportModes
-from services.vimm_roller import VimmRoller
+import services.vimm_roller as vimm_roller
 
 # TODO: setup or way to install
 
@@ -109,6 +109,4 @@ def vimmit():
         delete_games(games, selected_systems)
         return
 
-    # Roll game
-    vimm_roller = VimmRoller(games, config, blacklist, selected_systems)
-    vimm_roller.roll()
+    vimm_roller.roll(games, config, blacklist, selected_systems)
