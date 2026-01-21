@@ -3,13 +3,13 @@ from typing import Callable
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from utils.cli import console, get_args
 from exceptions import NoSystemsError, ScrapeError
-import utils.systems as systems
-from utils.setup import setup
-from vimm.vimm_roller import VimmRoller
-from vimm.vimm_scraper import VimmScraper
+from utils.cli import console, get_args
 from utils.delete import *
+from utils.setup import setup
+from utils.systems import *
+from vimm.roller import VimmRoller
+from vimm.scraper import VimmScraper
 
 # TODO: setup or way to install
 
@@ -51,11 +51,11 @@ def vimmit():
             return
         return
 
-    if config.setup(args):
+    if setup(config, args):
         return
 
     if args.show_systems:
-        systems.show_systems(config, games)
+        show_systems(config, games)
         return
 
     if args.export:
@@ -71,9 +71,9 @@ def vimmit():
             return
         return
 
-    valid_systems = systems.validate_systems(
+    valid_systems = validate_systems(
         config,
-        systems.check_if_all_systems_selected(games, args.systems),
+        check_if_all_systems_selected(games, args.systems),
         config.data['systems'].keys(),
         diff_msg='The following systems were not found (will be skipped)',
         error_msg=(
@@ -87,7 +87,7 @@ def vimmit():
         scraper.scrape_games(games, valid_systems)
         return
 
-    selected_systems = systems.validate_systems(
+    selected_systems = validate_systems(
         config,
         valid_systems.keys(),
         games.data.keys(),

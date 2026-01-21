@@ -27,9 +27,9 @@ class BaseData(ABC):
         except FileNotFoundError:
             return {}
 
-    def update(self, key: str, func: Callable, overwrite: bool=False) -> bool:
+    def update(self, key: str, overwrite: bool, func: Callable, *args, **kwargs) -> bool:
         if not self.data.get(key, False) or overwrite:
-            self.data[key] = func()
+            self.data[key] = func(*args, **kwargs)
             return True
         return False
 
