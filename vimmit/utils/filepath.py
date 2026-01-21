@@ -28,12 +28,12 @@ def validate_path(func: Callable, filepath: str | None):
 @validate_path
 def validate_export_path(filepath: str | None) -> Path:
     if filepath.is_file() and filepath.suffix == VMT_SUFFIX:
-        raise FileExistsError
+        raise FileExistsError(f'{filepath} that already exists.')
     return filepath
 
 
 @validate_path
 def validate_import_path(filepath: str | None) -> Path:
     if not filepath.is_file():
-        raise FileNotFoundError
+        raise FileNotFoundError(f'{filepath} does not exist.')
     return filepath
