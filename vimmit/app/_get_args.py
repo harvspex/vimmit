@@ -49,7 +49,7 @@ def get_args() -> argparse.Namespace:
         ),
         nargs='?',
         choices=[ExportModes.DATA.value, ExportModes.HISTORY.value],
-        const='data',
+        const=ExportModes.DATA.value,
         default=None
     )
     parser.add_argument(
