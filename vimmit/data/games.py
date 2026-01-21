@@ -1,6 +1,3 @@
-from pathlib import Path
-
-from data.config import Config
 from data.base_data import BaseData, DATA_DIR
 
 
