@@ -42,8 +42,7 @@ class VimmScraper:
     def __init__(self, config: Config):
         truststore.inject_into_ssl()
         self.session = Session()
-        self.config = config
-        self.base_url = self.config.data['base_url']
+        self.base_url = config.data['base_url']
 
     @staticmethod
     def _format_system_name_and_id(sys_name: str, sys_vimm_id: str) -> str:

@@ -9,6 +9,7 @@ from utils.cli import console
 from exceptions import NoGamesError, NoSystemsError
 
 
+# TODO (maybe): expensive self calls -- remove some attributes? e.g. config
 class VimmRoller:
     def __init__(
         self,
