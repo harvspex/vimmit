@@ -6,10 +6,12 @@ from common.exceptions import ImportExportError
 DEFAULT_FILENAME = 'vimmit'
 VMT_SUFFIX = '.vmt'
 
-# TODO: colour printing
 
-
-def _validate_path(filepath: str | None):
+def _validate_path(
+    filepath: str | None,
+    default_name: str=DEFAULT_FILENAME,
+    suffix: str=VMT_SUFFIX
+) -> Path:
     if filepath is None:
         filepath = Path.cwd()
 
@@ -19,14 +21,18 @@ def _validate_path(filepath: str | None):
         raise ImportExportError('Parent directory does not exist.')
 
     if path.is_dir():
-        path /= DEFAULT_FILENAME
+        path /= default_name
 
-    return path.with_suffix(VMT_SUFFIX)
+    return path.with_suffix(suffix)
 
 
-def validate_export_path(filepath: str | None) -> Path:
-    path = _validate_path(filepath)
-    if path.is_file() and path.suffix == VMT_SUFFIX:
+def validate_export_path(
+    filepath: str | None,
+    default_name: str=DEFAULT_FILENAME,
+    suffix: str=VMT_SUFFIX
+) -> Path:
+    path = _validate_path(filepath, default_name, suffix)
+    if path.is_file():
         raise ImportExportError(f'Cannot overwrite file that already exists: {path}')
     return path
 

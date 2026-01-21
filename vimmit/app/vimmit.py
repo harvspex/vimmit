@@ -3,8 +3,8 @@ from typing import Callable
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from data.io.exporter import Exporter, ExportModes
-from data.io.importer import Importer
+from data.io.exporter import *
+from data.io.importer import *
 from common.exceptions import *
 from app._delete import *
 from app._get_args import get_args
@@ -49,14 +49,15 @@ def vimmit():
     if setup(config, args):
         return
 
-    if args.export:
-        exporter = Exporter(args.filepath)
-        match args.export:
-            case ExportModes.DATA.value:
-                exporter.export_data(config, games, blacklist)
-            case ExportModes.HISTORY.value:
-                exporter.export_history(config, games)
-        return
+    match args.export:
+        case ExportModes.DATA.value:
+            exporter = DataExporter(args.filepath)
+            exporter.export_data(config, games, blacklist)
+            return
+        case ExportModes.HISTORY.value:
+            exporter = HistoryExporter(args.filepath)
+            exporter.export_history(config, games)
+            return
 
     if args.show_systems:
         show_systems(config, games)
