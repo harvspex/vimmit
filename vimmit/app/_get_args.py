@@ -1,6 +1,7 @@
 import argparse
 
 from data.io.exporter import ExportModes
+from data.io.importer import ImportModes
 
 
 # TODO (maybe): Add and implement
@@ -31,14 +32,14 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         '-i', '--import',
         help=(
-            f'[games] (default): import systems and gamelists. '
-            f'[seen]: import games plus seen data (seen games won\'t be rolled). '
-            f'[blacklist]: import blacklist data. '
-            f'[all]: import all'
+            f'[{ImportModes.GAMES.value}] (default): import systems and gamelists. '
+            f'[{ImportModes.SEEN.value}]: import games plus seen data (seen games won\'t be rolled). '
+            f'[{ImportModes.BLACKLIST.value}]: import blacklist data. '
+            f'[{ImportModes.ALL.value}]: import all'
         ),
         nargs='?',
-        choices=['games', 'seen', 'blacklist', 'all'],
-        const='games',
+        choices=[_.value for _  in ImportModes],
+        const=ImportModes.GAMES.value,
         default=None
     )
     parser.add_argument(
@@ -48,7 +49,7 @@ def get_args() -> argparse.Namespace:
             f'[{ExportModes.HISTORY.value}]: export list of seen games '
         ),
         nargs='?',
-        choices=[ExportModes.DATA.value, ExportModes.HISTORY.value],
+        choices=[_.value for _  in ExportModes],
         const=ExportModes.DATA.value,
         default=None
     )
