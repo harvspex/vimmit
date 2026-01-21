@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, override
 
 from common.console import console
 from data.base_data import BaseData
@@ -24,12 +24,13 @@ class Importer(BaseData):
         return isinstance(a, type) and isinstance(b, type)
 
     @staticmethod
-    def _update(old_data: dict, new_data: dict) -> dict:
+    @override
+    def update(old_data: dict, new_data: dict) -> dict:
         for k, v in new_data.items():
             if k not in old_data:
                 old_data[k] = v
             elif Importer._both_instance_of(old_data[k], v, dict):
-                Importer._update(old_data[k], v)
+                Importer.update(old_data[k], v)
             elif Importer._both_instance_of(old_data[k], v, list):
                 data = set(old_data[k])
                 data.update(set(v))
@@ -43,18 +44,21 @@ class Importer(BaseData):
         will_import_seen: bool=False,
         will_print: bool=True
     ):
-        self.update(config, self.data[DataKeys.CONFIG.value])
+        self.update(config.data, self.data[DataKeys.CONFIG.value])
         new_games = self.data[DataKeys.GAMES.value]
         if not will_import_seen:
             games.clear_seen(new_games, new_games.keys())
-        self._update(games, new_games)
+        self.update(games.data, new_games)
         games.sort_all_games()
         games.save()
         if will_print:
-           console.print(f'Imported games from: {self.filepath}')
+           console.print(
+               f'Imported games {'and seen data ' if will_import_seen else ''}'
+               f'from: {self.filepath}'
+            )
 
     def import_blacklist(self, blacklist: Blacklist, will_print: bool=True):
-        self._update(blacklist, self.data[DataKeys.BLACKLIST.value])
+        self.update(blacklist.data, self.data[DataKeys.BLACKLIST.value])
         blacklist.save()
         if will_print:
             console.print(f'Imported blacklist from: {self.filepath}')
