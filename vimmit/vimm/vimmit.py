@@ -18,20 +18,16 @@ def handle_errors(func: Callable):
     def wrapper():
         try:
             func()
-        except NoSystemsError as e:
+        except KeyboardInterrupt:
+            console.print('Stopping Vimmit.')
+            pass
+        except (NoSystemsError, FileExistsError, FileNotFoundError) as e:
             console.print(str(e))
         except ScrapeError:
             console.print(
                 '[bold red]Download error.[/bold red][red] If the problem persists, try reseting url '
                 'with --url, or redownload systems with --download-systems[/red]'
             )
-        except KeyboardInterrupt:
-            console.print('Stopping Vimmit.')
-            pass
-        except:
-            # TODO:
-            ...
-            raise
     return wrapper
 
 
@@ -55,7 +51,7 @@ def vimmit():
             return
         return
 
-    if setup(config, args):
+    if config.setup(args):
         return
 
     if args.show_systems:
