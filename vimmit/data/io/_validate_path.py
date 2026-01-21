@@ -1,39 +1,36 @@
 from pathlib import Path
-from typing import Callable
+
+from common.exceptions import ImportExportError
 
 
 DEFAULT_FILENAME = 'vimmit'
 VMT_SUFFIX = '.vmt'
 
 
-def _validate_path(func: Callable, filepath: str | None):
-    def wrapper() -> Path:
-        if filepath is None:
-            filepath = Path.cwd() / DEFAULT_FILENAME
+def _validate_path(filepath: str | None):
+    if filepath is None:
+        filepath = Path.cwd()
 
-        path = Path(filepath).expanduser()
+    path = Path(filepath).expanduser()
 
-        if not path.parent.exists():
-            raise NotADirectoryError('Parent directory does not exist.')
+    if not path.parent.exists():
+        raise ImportExportError('Parent directory does not exist.')
 
-        if path.is_dir():
-            path /= DEFAULT_FILENAME
+    if path.is_dir():
+        path /= DEFAULT_FILENAME
 
-        path = path.with_suffix(VMT_SUFFIX)
-
-        return func(path)
-    return wrapper
+    return path.with_suffix(VMT_SUFFIX)
 
 
-@_validate_path
 def validate_export_path(filepath: str | None) -> Path:
-    if filepath.is_file() and filepath.suffix == VMT_SUFFIX:
-        raise FileExistsError(f'{filepath} that already exists.')
-    return filepath
+    path = _validate_path(filepath)
+    if path.is_file() and path.suffix == VMT_SUFFIX:
+        raise ImportExportError(f'{path} that already exists.')
+    return path
 
 
-@_validate_path
 def validate_import_path(filepath: str | None) -> Path:
-    if not filepath.is_file():
-        raise FileNotFoundError(f'{filepath} does not exist.')
-    return filepath
+    path = _validate_path(filepath)
+    if not path.is_file():
+        raise ImportExportError(f'{path} does not exist.')
+    return path

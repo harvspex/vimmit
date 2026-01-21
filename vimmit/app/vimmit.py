@@ -5,7 +5,7 @@ from data.config import Config
 from data.games import Games
 from data.io.exporter import Exporter
 from data.io.importer import Importer
-from common.exceptions import NoSystemsError, ScrapeError
+from common.exceptions import *
 from app._delete import *
 from app._get_args import get_args
 from app._setup import setup
@@ -24,7 +24,7 @@ def _handle_errors(func: Callable):
         except KeyboardInterrupt:
             console.print('Stopping Vimmit.')
             pass
-        except (NoSystemsError, FileExistsError, FileNotFoundError) as e:
+        except (NoSystemsError, ImportExportError) as e:
             console.print(str(e))
         except ScrapeError:
             console.print(
