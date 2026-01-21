@@ -8,6 +8,7 @@ from data.games import Games
 from data.io._validate_path import validate_import_path
 
 
+# TODO: colour printing
 class Importer(BaseData):
     def __init__(self, filepath: str):
         self.filepath = validate_import_path(filepath)

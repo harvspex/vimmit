@@ -6,6 +6,8 @@ from common.exceptions import ImportExportError
 DEFAULT_FILENAME = 'vimmit'
 VMT_SUFFIX = '.vmt'
 
+# TODO: colour printing
+
 
 def _validate_path(filepath: str | None):
     if filepath is None:

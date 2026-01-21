@@ -42,8 +42,8 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         '-e', '--export',
         help=(
-            f'[data] (default): export system, game and blacklist data'
-            f'. [history]: export list of seen games '
+            f'[data] (default): export system, game and blacklist data. '
+            f'[history]: export list of seen games '
         ),
         nargs='?',
         choices=['data', 'history'],
