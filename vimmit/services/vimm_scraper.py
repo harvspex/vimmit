@@ -15,8 +15,6 @@ from data.games import Games
 from common.console import console
 from common.exceptions import ScrapeError
 
-# BUG / TODO: issue where scrape is not working, or something wrong with seen data
-
 # TODO (maybe): Extract region priority into config?
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
