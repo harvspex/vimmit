@@ -1,7 +1,7 @@
 from typing import Callable
 
 from data.games import Games
-from utils.cli import console
+from common.console import console
 
 
 def confirm_delete(func: Callable):

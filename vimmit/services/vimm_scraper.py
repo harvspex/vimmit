@@ -12,8 +12,8 @@ import truststore
 
 from data.config import Config
 from data.games import Games
-from utils.cli import console
-from exceptions import ScrapeError
+from common.console import console
+from common.exceptions import ScrapeError
 
 # TODO (maybe): Extract region priority into config?
 OTHER_REGION = 'Other'

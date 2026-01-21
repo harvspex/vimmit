@@ -4,7 +4,7 @@ from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from utils.filepath import validate_import_path
+from data.io._validate_path import validate_import_path
 
 
 class Importer(BaseData):

@@ -1,4 +1,4 @@
-from vimm.vimmit import vimmit
+from app.vimmit import vimmit
 
 
 if __name__ == '__main__':

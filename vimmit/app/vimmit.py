@@ -3,13 +3,14 @@ from typing import Callable
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from exceptions import NoSystemsError, ScrapeError
-from utils.cli import console, get_args
-from utils.delete import *
-from utils.setup import setup
-from utils.systems import *
-from vimm.roller import VimmRoller
-from vimm.scraper import VimmScraper
+from common.exceptions import NoSystemsError, ScrapeError
+from app._delete import *
+from app._get_args import get_args
+from app._setup import setup
+from app._systems import *
+from services.vimm_roller import VimmRoller
+from services.vimm_scraper import VimmScraper
+from common.console import console
 
 # TODO: setup or way to install
 

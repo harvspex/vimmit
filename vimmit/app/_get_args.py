@@ -1,8 +1,5 @@
 import argparse
 
-from rich.console import Console
-
-console = Console(highlight=False)
 
 # TODO (maybe): Add and implement
 # - Delay time (between requests)

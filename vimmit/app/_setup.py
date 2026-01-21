@@ -1,6 +1,6 @@
 from data.config import Config
-from utils.cli import console
-from vimm.scraper import VimmScraper
+from common.console import console
+from services.vimm_scraper import VimmScraper
 
 
 def _validate_url(user_input: str, default_scheme='https') -> str:

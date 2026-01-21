@@ -1,7 +1,7 @@
 from data.config import Config
 from data.games import Games
-from utils.cli import console
-from exceptions import NoSystemsError
+from common.console import console
+from common.exceptions import NoSystemsError
 
 
 def check_if_all_systems_selected(games: Games, systems: list) -> list:

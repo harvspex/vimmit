@@ -5,8 +5,8 @@ import urllib.parse
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from utils.cli import console
-from exceptions import NoGamesError, NoSystemsError
+from common.console import console
+from common.exceptions import NoGamesError, NoSystemsError
 
 
 # TODO (maybe): expensive self calls -- remove some attributes? e.g. config
