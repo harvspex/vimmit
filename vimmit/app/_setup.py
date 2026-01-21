@@ -1,10 +1,9 @@
 from data.config import Config
 from common.console import console
-from services.vimm_scraper import VimmScraper
 
 
 def _validate_url(user_input: str, default_scheme='https') -> str:
-    from urllib.parse import urlparse, urlunparse
+    from urllib.parse import urlparse, urlunparse # NOTE: lazy loading
     parsed = urlparse(user_input)
     if not parsed.scheme:
         parsed = urlparse(f"{default_scheme}://{user_input}")
@@ -26,6 +25,7 @@ def _input_base_url() -> str:
 
 
 def _scrape_systems(config: Config) -> dict:
+    from services.vimm_scraper import VimmScraper # NOTE: lazy loading
     scraper = VimmScraper(config)
     return scraper.scrape_systems_dict()
 

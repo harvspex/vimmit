@@ -10,6 +10,7 @@ from common.exceptions import NoGamesError, NoSystemsError
 
 
 # TODO (maybe): expensive self calls -- remove some attributes? e.g. config
+# Or refactor to be functional?
 class VimmRoller:
     def __init__(
         self,

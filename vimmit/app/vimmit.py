@@ -13,7 +13,6 @@ from data.io.exporters import *
 from data.io.importer import *
 from data.io.io_utils import ImportModes, ExportModes
 from services.vimm_roller import VimmRoller
-from services.vimm_scraper import VimmScraper
 
 # TODO: setup or way to install
 
@@ -85,6 +84,7 @@ def vimmit():
         )
     )
     if args.download:
+        from services.vimm_scraper import VimmScraper # NOTE: lazy loading
         scraper = VimmScraper(config)
         scraper.scrape_games(games, valid_systems)
         return

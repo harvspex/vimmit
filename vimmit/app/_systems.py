@@ -15,7 +15,7 @@ def check_if_all_systems_selected(games: Games, systems: list) -> list:
 
 
 def show_systems(config: Config, games: Games):
-    from rich.columns import Columns
+    from rich.columns import Columns # NOTE: lazy loading
     # TODO (maybe): Force equal number of columns for both
     format_name = lambda sys_id, colour: (
         f'[{colour}]{sys_id}[/{colour}] ({config.data['systems'][sys_id]['name']})'

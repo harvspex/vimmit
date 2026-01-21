@@ -53,7 +53,6 @@ class VimmScraper:
     @scrape_wrapper
     def scrape_systems_dict(self) -> dict:
         console.print('Downloading systems list. Please wait... ', end='')
-        truststore.inject_into_ssl()
         html = self.session.get(self.base_url).text
         soup = BeautifulSoup(html, 'html.parser')
         systems = {}
