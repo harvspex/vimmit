@@ -9,7 +9,7 @@ import utils.systems as systems
 from utils.setup import setup
 from vimm.vimm_roller import VimmRoller
 from vimm.vimm_scraper import VimmScraper
-from utils.delete import delete_from_games
+from utils.delete import *
 
 
 def handle_errors(func: Callable):
@@ -97,21 +97,13 @@ def vimmit():
         )
     )
     if args.clear_seen:
-        delete_from_games(
-            games,
-            games.clear_seen,
-            selected_systems.keys(),
-            'You are about to clear seen data for the following system/s: '
-        )
+        print_system_list_warning('clear seen data', selected_systems)
+        clear_seen_games(games, selected_systems)
         return
 
     if args.delete:
-        delete_from_games(
-            games,
-            games.clear,
-            selected_systems.keys(),
-            'You are about to delete gamelists for the following system/s: ',
-        )
+        print_system_list_warning('delete gamelists', selected_systems)
+        delete_games(games, selected_systems)
         return
 
     # Roll game

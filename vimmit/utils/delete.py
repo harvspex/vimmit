@@ -4,23 +4,30 @@ from data.games import Games
 from utils.cli import console
 
 
-def _confirm_will_delete(warning_message: str) -> bool:
-    console.print(warning_message)
-    console.print(f'Enter "delete" to confirm, or anything else to cancel:')
-    user_input = console.input('>> ')
-    return user_input.strip().lower() == 'delete'
+def confirm_delete(func: Callable):
+    def wrapper(*args, **kwargs):
+        console.print(f'Enter "delete" to confirm, or anything else to cancel:')
+        user_input = console.input('>> ')
+        if user_input.strip().lower() == 'delete':
+            return func(*args, **kwargs)
+        console.print('[yellow]Cancelled.[/yellow]')
+    return wrapper
 
 
-def delete_from_games(games: Games, func: Callable, selected_systems: list, message: str):
-    # TODO: Maybe extract into 2 functions:
-    # - clear_seen()
-    # - delete_gamelists()
-
-    warning_message = (
-        f'[bold red]WARNING: [/bold red][red]{message}[/red][orange1]'
-        f'{' '.join(selected_systems)}[/orange1]'
+def print_system_list_warning(describe_action: str, selected_systems: list):
+    console.print(
+        f'[bold red]WARNING: [/bold red][red]You are about to {describe_action.strip()} '
+        f'for the following system/s: [/red][orange1]{' '.join(selected_systems)}[/orange1]'
     )
-    if not _confirm_will_delete(warning_message):
-        return
-    func(selected_systems)
+
+
+@confirm_delete
+def clear_seen_games(games: Games, selected_systems: list):
+    games.clear_seen(selected_systems)
+    games.save()
+
+
+@confirm_delete
+def delete_games(games: Games, selected_systems: list):
+    games.clear(selected_systems)
     games.save()
