@@ -12,7 +12,10 @@ VMT_SUFFIX = '.vmt'
 DEFAULT_FILENAME = 'data'
 
 
-def validate_export_path(filepath: str) -> Path:
+def validate_export_path(filepath: str | None) -> Path:
+    if filepath is None:
+        filepath = Path.cwd() / DEFAULT_FILENAME
+
     path = Path(filepath).expanduser()
 
     if not path.parent.exists():

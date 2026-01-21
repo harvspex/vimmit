@@ -11,6 +11,8 @@ from vimm.vimm_roller import VimmRoller
 from vimm.vimm_scraper import VimmScraper
 from utils.delete import *
 
+# TODO: setup or way to install
+
 
 def handle_errors(func: Callable):
     def wrapper():
@@ -24,12 +26,15 @@ def handle_errors(func: Callable):
                 'with --url, or redownload systems with --download-systems[/red]'
             )
         except KeyboardInterrupt:
+            console.print('Stopping Vimmit.')
             pass
+        except:
+            # TODO:
+            ...
+            raise
     return wrapper
 
 
-# TODO: setup or way to install
-# TODO: WIP
 @handle_errors
 def vimmit():
     args = get_args()

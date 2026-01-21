@@ -32,13 +32,13 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         '-i', '--import',
         help=(
-            f'[games] (default): import systems and gamelists'
-            f'. [seen]: import games plus seen data (seen games won\'t be rolled)'
-            f'. [blacklist]: import blacklist data'
-            f'. [all]: import all'
+            f'[games] (default): import systems and gamelists. '
+            f'[seen]: import games plus seen data (seen games won\'t be rolled). '
+            f'[blacklist]: import blacklist data. '
+            f'[all]: import all'
         ),
         nargs='?',
-        choices=['games', 'all'], # TODO add: 'seen', 'blacklist',
+        choices=['games', 'seen', 'blacklist', 'all'],
         const='games',
         default=None
     )
@@ -55,8 +55,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '-f', '--filepath',
-        # TODO: Update default filepath
-        help='optional: filepath for import/export (default: current_folder/vimmit.vmt)',
+        help='optional: filepath for import/export (default: ./vimmit.vmt)',
         nargs='?',
         const=None,
         default=None

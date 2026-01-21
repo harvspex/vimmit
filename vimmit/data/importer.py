@@ -9,9 +9,10 @@ from exceptions import ImportExportException
 from data.exporter import validate_export_path
 
 # TODO: Test all
+# TODO: Add all import modes
 
 
-def validate_import_path(filepath: str) -> Path:
+def validate_import_path(filepath: str | None) -> Path:
     try:
         return validate_export_path(filepath)
     except FileExistsError:
