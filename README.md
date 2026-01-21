@@ -14,6 +14,7 @@ Vimmit is a command-line tool for discovering retro games
 These examples use `py`, which will work if you installed Python using the Python install manager.
 
 ### First-Time Setup
+
 Navigate to your vimmit/ folder in a terminal window, and run `py vimmit` to begin first-time setup.
 
 After following the prompts, view a list of available systems with: `py vimmit --show-systems` or `py vimmit -s`
@@ -40,24 +41,22 @@ You can blacklist keywords or phrases to prevent certain games from being rolled
 # Wintendo 64 (W64)
 
 # Blaystation 1 (BS1)
-
 ```
 
 Enter one phrase per line under the systems of your choice. In the example below:
-- All games containing "basketball" are banned
-- Games containing "football" or "baseball" are banned from the Wintendo 64
+- All games containing "football" are banned
+- Games containing "basketball" or "baseball" are banned from the Wintendo 64
 - Games containing "golf" or "soccer" are banned from the Blaystation 1
 
 ```
 # All Systems
-basketball
+football
 
 # Wintendo 64 (W64)
-football
+basketball
 baseball
 
 # Blaystation 1 (BS1)
 golf
 soccer
-
 ```
