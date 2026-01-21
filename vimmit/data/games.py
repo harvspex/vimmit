@@ -5,10 +5,11 @@ class Games(BaseData):
     def __init__(self):
         super().__init__(DATA_DIR, 'games.dat')
 
-    def clear_seen(self, systems: list):
+    @staticmethod
+    def clear_seen(games_dict: dict, systems: list):
         for sys in systems:
-            for game in self.data[sys].values():
-                if game.get('seen', False):
+            for game in games_dict[sys].values():
+                if game.get('seen'):
                     del game['seen']
 
     def sort_games_per_system(self, sys_id):

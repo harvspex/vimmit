@@ -1,18 +1,11 @@
-from enum import Enum
-
 from common.console import console
 from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from data.io._validate_path import validate_export_path
+from data.io.io_utils import DataKeys, validate_export_path
 
-# TODO: colour printing
-
-
-class ExportModes(Enum):
-    DATA = 'data'
-    HISTORY = 'history'
+# TODO: Colour printing
 
 
 class DataExporter(BaseData):
@@ -21,9 +14,9 @@ class DataExporter(BaseData):
 
     def export_data(self, config: Config, games: Games, blacklist: Blacklist):
         self.data = {
-            'config': config.data,
-            'games': games.data,
-            'blacklist': blacklist.data
+            DataKeys.CONFIG.value: config.data,
+            DataKeys.GAMES.value: games.data,
+            DataKeys.BLACKLIST.value: blacklist.data
         }
         self.save()
         console.print(f'Exported file to: {self.filepath}')

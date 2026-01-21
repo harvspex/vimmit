@@ -1,3 +1,4 @@
+from enum import Enum
 from pathlib import Path
 
 from common.exceptions import ImportExportError
@@ -5,6 +6,24 @@ from common.exceptions import ImportExportError
 
 DEFAULT_FILENAME = 'vimmit'
 VMT_SUFFIX = '.vmt'
+
+
+class DataKeys(Enum):
+    CONFIG = 'config'
+    GAMES = 'games'
+    BLACKLIST = 'blacklist'
+
+
+class ImportModes(Enum):
+    GAMES = 'games'
+    SEEN = 'seen'
+    BLACKLIST = 'blacklist'
+    ALL = 'all'
+
+
+class ExportModes(Enum):
+    DATA = 'data'
+    HISTORY = 'history'
 
 
 def _validate_path(

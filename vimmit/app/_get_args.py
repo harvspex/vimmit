@@ -1,7 +1,6 @@
 import argparse
 
-from data.io.exporter import ExportModes
-from data.io.importer import ImportModes
+from data.io.io_utils import ImportModes, ExportModes
 
 
 # TODO (maybe): Add and implement

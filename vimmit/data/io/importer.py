@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Any
 
 from common.console import console
@@ -6,21 +5,19 @@ from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from data.io._validate_path import validate_import_path
+from data.io.io_utils import DataKeys, validate_import_path
 
-# TODO: colour printing
-
-
-class ImportModes(Enum):
-    GAMES = 'games'
-    SEEN = 'seen'
-    BLACKLIST = 'blacklist'
-    ALL = 'all'
+# TODO: Colour printing
+# TODO (maybe): It's possible to import bad base_url data if exporting user:
+# - Inits with good base_url
+# - Manually changes url
+# - Exports data
 
 
 class Importer(BaseData):
     def __init__(self, filepath: str):
         self.filepath = validate_import_path(filepath)
+        self.data = self.load()
 
     @staticmethod
     def _both_instance_of(a: Any, b: Any, type: type):
@@ -39,22 +36,30 @@ class Importer(BaseData):
                 old_data[k] = sorted(list(data))
         return old_data
 
-    def import_file(
+    def import_games(
         self,
-        old_config: Config,
-        old_games: Games,
-        old_blacklist: Blacklist
+        config: Config,
+        games: Games,
+        will_import_seen: bool=False,
+        will_print: bool=True
     ):
-        old_data = {
-            'config': old_config, 
-            'games': old_games, 
-            'blacklist': old_blacklist,
-        }
-        new_data = self.load()
-        for key, obj in old_data.items():
-            self._update(obj.data, new_data[key])
-            obj.save()
-        # TODO (maybe): sort system lists?
-        old_games.sort_all_games()
-        old_games.save()
-        console.print(f'Imported file: {self.filepath}')
+        self.update(config, self.data[DataKeys.CONFIG.value])
+        new_games = self.data[DataKeys.GAMES.value]
+        if not will_import_seen:
+            games.clear_seen(new_games, new_games.keys())
+        self._update(games, new_games)
+        games.sort_all_games()
+        games.save()
+        if will_print:
+           console.print(f'Imported games from: {self.filepath}')
+
+    def import_blacklist(self, blacklist: Blacklist, will_print: bool=True):
+        self._update(blacklist, self.data[DataKeys.BLACKLIST.value])
+        blacklist.save()
+        if will_print:
+            console.print(f'Imported blacklist from: {self.filepath}')
+
+    def import_all(self, config: Config, games: Games, blacklist: Blacklist):
+        self.import_games(config, games, will_import_seen=True, will_print=False)
+        self.import_blacklist(blacklist, will_print=False)
+        console.print(f'Imported all from: {self.filepath}')

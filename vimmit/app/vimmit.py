@@ -1,18 +1,19 @@
 from typing import Callable
 
-from data.blacklist import Blacklist
-from data.config import Config
-from data.games import Games
-from data.io.exporter import *
-from data.io.importer import *
-from common.exceptions import *
 from app._delete import *
 from app._get_args import get_args
 from app._setup import setup
 from app._systems import *
+from common.console import console
+from common.exceptions import *
+from data.blacklist import Blacklist
+from data.config import Config
+from data.games import Games
+from data.io.exporters import *
+from data.io.importer import *
+from data.io.io_utils import ImportModes, ExportModes
 from services.vimm_roller import VimmRoller
 from services.vimm_scraper import VimmScraper
-from common.console import console
 
 # TODO: setup or way to install
 
@@ -41,9 +42,18 @@ def vimmit():
     games = Games()
     blacklist = Blacklist(config)
 
-    if getattr(args, 'import'):
+    import_arg = getattr(args, 'import')
+    if import_arg:
         importer = Importer(args.filepath)
-        importer.import_file(config, games, blacklist)
+        match import_arg:
+            case ImportModes.GAMES.value:
+                importer.import_games(config, games, will_import_seen=False)
+            case ImportModes.SEEN.value:
+                importer.import_games(config, games, will_import_seen=True)
+            case ImportModes.BLACKLIST.value:
+                importer.import_blacklist(blacklist)
+            case ImportModes.ALL.value:
+                importer.import_all(config, games, blacklist)
         return
 
     if setup(config, args):
