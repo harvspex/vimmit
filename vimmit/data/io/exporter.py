@@ -6,7 +6,8 @@ from data.games import Games
 from data.io._validate_path import validate_export_path
 
 
-# TODO: colour printing
+# TODO: implement export modes
+# colour printing
 class Exporter(BaseData):
     def __init__(self, filepath: str):
         self.filepath = validate_export_path(filepath)

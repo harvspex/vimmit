@@ -9,6 +9,7 @@ def confirm_delete(func: Callable):
         console.print(f'Enter "delete" to confirm, or anything else to cancel:')
         user_input = console.input('>> ')
         if user_input.strip().lower() == 'delete':
+            console.print('[yellow]Deleted.[/yellow]')
             return func(*args, **kwargs)
         console.print('[yellow]Cancelled.[/yellow]')
     return wrapper

@@ -49,13 +49,13 @@ def vimmit():
     if setup(config, args):
         return
 
-    if args.show_systems:
-        show_systems(config, games)
-        return
-
     if args.export:
         exporter = Exporter(args.filepath)
         exporter.export_file(config, games, blacklist)
+        return
+
+    if args.show_systems:
+        show_systems(config, games)
         return
 
     valid_systems = validate_systems(
