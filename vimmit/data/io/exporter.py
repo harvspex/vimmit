@@ -1,3 +1,4 @@
+from common.console import console
 from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
@@ -16,3 +17,4 @@ class Exporter(BaseData):
             'blacklist': blacklist.data
         }
         self.save()
+        console.print(f'Exported file to: {self.filepath}')

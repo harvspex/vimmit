@@ -28,8 +28,8 @@ def _handle_errors(func: Callable):
             console.print(str(e))
         except ScrapeError:
             console.print(
-                '[bold red]Download error.[/bold red][red] If the problem persists, try reseting url '
-                'with --url, or redownload systems with --download-systems[/red]'
+                '[bold red]Download error.[/bold red][red] If the problem persists, try '
+                'reseting url with --url, or redownload systems with --download-systems[/red]'
             )
     return wrapper
 
@@ -42,15 +42,8 @@ def vimmit():
     blacklist = Blacklist(config)
 
     if getattr(args, 'import'):
-        # TODO: Import WIP
-        try:
-            importer = Importer(args.filepath)
-            importer.import_file(config, games, blacklist)
-            console.print('Imported file')
-        except:
-            raise
-            ...
-            return
+        importer = Importer(args.filepath)
+        importer.import_file(config, games, blacklist)
         return
 
     if setup(config, args):
@@ -61,15 +54,8 @@ def vimmit():
         return
 
     if args.export:
-        # TODO: Export WIP
-        try:
-            exporter = Exporter(args.filepath)
-            exporter.export_file(config, games, blacklist)
-            console.print('Exported file')
-        except:
-            raise
-            ...
-            return
+        exporter = Exporter(args.filepath)
+        exporter.export_file(config, games, blacklist)
         return
 
     valid_systems = validate_systems(

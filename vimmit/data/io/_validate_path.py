@@ -25,12 +25,12 @@ def _validate_path(filepath: str | None):
 def validate_export_path(filepath: str | None) -> Path:
     path = _validate_path(filepath)
     if path.is_file() and path.suffix == VMT_SUFFIX:
-        raise ImportExportError(f'{path} that already exists.')
+        raise ImportExportError(f'Cannot overwrite file that already exists: {path}')
     return path
 
 
 def validate_import_path(filepath: str | None) -> Path:
     path = _validate_path(filepath)
     if not path.is_file():
-        raise ImportExportError(f'{path} does not exist.')
+        raise ImportExportError(f'Cannot import from file that does not exist: {path}')
     return path

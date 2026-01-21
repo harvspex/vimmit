@@ -1,5 +1,6 @@
 from typing import Any
 
+from common.console import console
 from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
@@ -46,3 +47,4 @@ class Importer(BaseData):
         # TODO (maybe): sort system lists?
         old_games.sort_all_games()
         old_games.save()
+        console.print(f'Imported file: {self.filepath}')
