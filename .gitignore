@@ -1,9 +1,13 @@
 __pycache__/
-.venv/
+*.egg-info/
 .data/
 .info/
+.venv/
 .vscode/
+build/
+dist/
 old/
+venv/
 
 *.bin
 *.csv
@@ -14,8 +18,4 @@ old/
 *.vmt
 *.yaml
 *.yml
-
-test.py
 notes.md
-
-!requirements.txt
