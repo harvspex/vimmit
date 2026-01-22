@@ -2,10 +2,10 @@ import argparse
 
 from data.io.io_utils import ImportModes, ExportModes
 
-
-# TODO (maybe): Add and implement
+# TODO: Add and implement
 # - Delay time (between requests)
-# - Mode to roll games per game rather than per system?
+# - Mode to roll games per combined system gameslists, rather than per system
+
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(

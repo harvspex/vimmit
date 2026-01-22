@@ -3,8 +3,8 @@ from typing import override
 from data.base_data import BaseData, CWD
 from data.config import Config
 
+# TODO: reimplement blacklist hash, with re-check only on changed hash
 
-# TODO (maybe): reimplement blacklist hash, with re-check only on changed hash
 
 class Blacklist(BaseData):
     ALL_SYSTEMS = 'All Systems'

@@ -7,8 +7,7 @@ from data.config import Config
 from data.games import Games
 from data.io.io_utils import DataKeys, ImportModes, validate_import_path, format_filepath_message
 
-# TODO: Test that it's working as intended
-# TODO (maybe): It's possible to import bad base_url data if exporting user:
+# TODO: It's possible to import bad base_url data if exporting user:
 # - Inits with good base_url
 # - Manually changes url
 # - Exports data

@@ -15,7 +15,7 @@ from data.games import Games
 from common.console import console
 from common.exceptions import ScrapeError
 
-# TODO (maybe): Extract region priority into config?
+# TODO: Extract region priority into config
 OTHER_REGION = 'Other'
 REGION_PRIORITY = {
     'USA': 1,
@@ -142,7 +142,6 @@ class VimmScraper:
             time.sleep(delay/increments)
             progress.update(task_id, advance=step)
 
-    # TODO: Disable test mode
     def _scrape_games_per_system(
         self,
         vimm_id: str,
@@ -150,7 +149,7 @@ class VimmScraper:
         progress: Progress,
         task_id: TaskID,
         base_delay: float=2,
-        test_mode: bool=True
+        test_mode: bool=False
     ) -> dict:
         r = 1 if test_mode else 26
         amt = 1 / (r+1) * 100
