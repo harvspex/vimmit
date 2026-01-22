@@ -44,29 +44,21 @@ def vimmit():
     import_arg = getattr(args, 'import')
     if import_arg:
         importer = Importer(args.filepath)
-        match import_arg:
-            case ImportModes.GAMES.value:
-                importer.import_games(config, games, will_import_seen=False)
-            case ImportModes.SEEN.value:
-                importer.import_games(config, games, will_import_seen=True)
-            case ImportModes.BLACKLIST.value:
-                importer.import_blacklist(blacklist)
-            case ImportModes.ALL.value:
-                importer.import_all(config, games, blacklist)
+        importer.import_data(config, games, blacklist, import_arg)
         return
 
     if setup(config, args):
         return
 
-    if args.export:
-        match args.export:
-            case ExportModes.DATA.value:
-                exporter = DataExporter(args.filepath)
-                exporter.export_data(config, games, blacklist)
-            case ExportModes.HISTORY.value:
-                exporter = HistoryExporter(args.filepath)
-                exporter.export_history(config, games)
-        return
+    match args.export:
+        case ExportModes.DATA.value:
+            exporter = DataExporter(args.filepath)
+            exporter.export_data(config, games, blacklist)
+            return
+        case ExportModes.HISTORY.value:
+            exporter = HistoryExporter(args.filepath)
+            exporter.export_history(config, games)
+            return
 
     if args.show_systems:
         show_systems(config, games)

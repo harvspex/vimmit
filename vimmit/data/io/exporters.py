@@ -28,6 +28,7 @@ class HistoryExporter:
         self.filepath = validate_export_path(filepath, 'history', '.txt')
 
     # TODO (maybe): refactor
+    # Remove extra newline at end of file
     def export_history(self, config: Config, games: Games):
         extract_names = lambda data: [f'{game['name']}\n' for game in data.values() if game.get('seen', False)]
         history = {system: extract_names(games) for system, games in games.data.items()}
