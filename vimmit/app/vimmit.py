@@ -50,15 +50,15 @@ def vimmit():
     if setup(config, args):
         return
 
-    match args.export:
-        case ExportModes.DATA.value:
-            exporter = DataExporter(args.filepath)
-            exporter.export_data(config, games, blacklist)
-            return
-        case ExportModes.HISTORY.value:
-            exporter = HistoryExporter(args.filepath)
-            exporter.export_history(config, games)
-            return
+    if args.export:
+        match args.export:
+            case ExportModes.DATA.value:
+                exporter = DataExporter(args.filepath)
+                exporter.export_data(config, games, blacklist)
+            case ExportModes.HISTORY.value:
+                exporter = HistoryExporter(args.filepath)
+                exporter.export_history(config, games)
+        return
 
     if args.show_systems:
         show_systems(config, games)
