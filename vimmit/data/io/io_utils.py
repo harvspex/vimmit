@@ -38,7 +38,9 @@ def _validate_path(
     path = Path(filepath).expanduser()
 
     if not path.parent.exists():
-        raise ImportExportError('Parent directory does not exist.')
+        raise ImportExportError(
+            format_filepath_message('Folder does not exist', 'orange1', path.parent)
+        )
 
     if path.is_dir():
         path /= default_name
