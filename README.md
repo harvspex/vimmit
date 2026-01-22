@@ -6,30 +6,19 @@ Vimmit is a command-line tool for discovering retro games
 
 ## How to Vimmit ✌️🤮
 
-### Install: WIP
-...
-
-**NOTE:** Depending how you installed Python, you may need a different keyword to run vimmit. e.g. `py`, `python`, `python3`
-
-These examples use `py`, which will work if you installed Python using the Python install manager.
-
 ### First-Time Setup
 
-Navigate to your vimmit/ folder in a terminal window, and run `py vimmit` to begin first-time setup.
-
-After following the prompts, view a list of available systems with: `py vimmit --show-systems` or `py vimmit -s`
-
-Download gamelists by running `py vimmit system1 system2 ... systemX --download` (or `-d`) with your selected systems.
+- Ensure that Python and vimmit are installed
+- Run `py vimmit` to begin first-time setup
+- After following the prompts, view a list of available systems with: `py vimmit --show-systems` or `py vimmit -s`
+- Download gamelists by running `py vimmit system1 system2 ... systemX --download` (or `-d`) with your selected systems
 
 ### After Setup
 
-Run `py vimmit system1 system2 ... systemX` to roll a random game!
-
-You can also run `py vimmit *` to roll all downloaded systems.
-
-Games that you have already seen won't be rerolled.
-
-Run `py vimmit --help` (or `-h`) to view all available commands.
+- Run `py vimmit system1 system2 ... systemX` to roll a random game from the selected systems
+    - You can also run `py vimmit *` to select all downloaded systems
+- Games that you have already seen won't be rerolled
+- Run `py vimmit --help` (or `-h`) to view all available commands
 
 ## Blacklist
 
