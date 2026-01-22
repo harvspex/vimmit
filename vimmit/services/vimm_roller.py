@@ -29,7 +29,7 @@ def _game_is_blacklisted(config: Config, blacklist: Blacklist, sys_id: str, game
 
 def _roll_system(selected_systems: dict) -> str:
     if not selected_systems:
-        raise NoSystemsError('No new games! Try a new system, or reduce your blacklist.')
+        raise NoSystemsError('[orange1]No new games![/orange1] Try a new system, or reduce your blacklist.')
 
     key = _roll_dict_key(selected_systems)
     return key, selected_systems.pop(key)

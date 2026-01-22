@@ -23,7 +23,6 @@ def _handle_errors(func: Callable):
             func()
         except KeyboardInterrupt:
             console.print('Stopping Vimmit.')
-            pass
         except (NoSystemsError, ImportExportError) as e:
             console.print(str(e))
         except ScrapeError:
