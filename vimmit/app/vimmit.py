@@ -11,7 +11,7 @@ from data.config import Config
 from data.games import Games
 from data.io.exporters import *
 from data.io.importer import *
-from data.io.io_utils import ImportModes, ExportModes
+from data.io.io_utils import ExportModes
 import services.vimm_roller as vimm_roller
 
 # TODO: setup or way to install
