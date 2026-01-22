@@ -70,10 +70,8 @@ class Importer(BaseData):
         # Import config
         self._recursive_update(config.data, self.data[DataKeys.CONFIG.value])
         config.save()
-
         # Update blacklist with new systems
-        blacklist.load()
-        blacklist.save()
+        blacklist.__init__(config)
 
         match import_mode:
             case ImportModes.GAMES.value:
