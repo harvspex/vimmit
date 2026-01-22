@@ -5,9 +5,8 @@ from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from data.io.io_utils import DataKeys, ImportModes, validate_import_path
+from data.io.io_utils import DataKeys, ImportModes, validate_import_path, format_filepath_message
 
-# TODO: Colour printing
 # TODO: Test that it's working as intended
 # TODO (maybe): It's possible to import bad base_url data if exporting user:
 # - Inits with good base_url
@@ -52,19 +51,28 @@ class Importer(BaseData):
         if not will_print:
             return
         console.print(
-            f'Imported games{' and seen data ' if will_import_seen else ' '}from: {self.filepath}'
+            format_filepath_message(
+                f'Imported games{' and seen data ' if will_import_seen else ' '}from',
+                'green',
+                self.filepath
+            )
         )
 
     def _import_blacklist(self, blacklist: Blacklist, will_print: bool=True):
         self._recursive_update(blacklist.data, self.data[DataKeys.BLACKLIST.value])
         blacklist.save()
-        if will_print:
-            console.print(f'Imported blacklist from: {self.filepath}')
+        if not will_print:
+            return
+        console.print(
+            format_filepath_message('Imported blacklist from', 'green', self.filepath)
+        )
 
     def _import_all(self, games: Games, blacklist: Blacklist):
         self._import_games(games, will_import_seen=True, will_print=False)
         self._import_blacklist(blacklist, will_print=False)
-        console.print(f'Imported all from: {self.filepath}')
+        console.print(
+            format_filepath_message('Imported all from', 'green', self.filepath)
+        )
 
     def import_data(self, config: Config, games: Games, blacklist: Blacklist, import_mode: str):
         # Import config

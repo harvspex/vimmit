@@ -3,9 +3,8 @@ from data.base_data import BaseData
 from data.blacklist import Blacklist
 from data.config import Config
 from data.games import Games
-from data.io.io_utils import DataKeys, validate_export_path
+from data.io.io_utils import DataKeys, validate_export_path, format_filepath_message
 
-# TODO: Colour printing
 # TODO: Test that it's working as intended
 
 
@@ -20,7 +19,9 @@ class DataExporter(BaseData):
             DataKeys.BLACKLIST.value: blacklist.data
         }
         self.save()
-        console.print(f'Exported file to: {self.filepath}')
+        console.print(
+            format_filepath_message('Exported file to', 'green', self.filepath)
+        )
 
 
 class HistoryExporter:
@@ -39,4 +40,6 @@ class HistoryExporter:
                 f.write(f'# {bl_id}\n')
                 f.writelines(games)
                 f.write('\n')
-        console.print(f'Exported history to: {self.filepath}')
+        console.print(
+            format_filepath_message('Exported history to', 'green', self.filepath)
+        )

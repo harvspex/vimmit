@@ -1,6 +1,7 @@
 from enum import Enum
 from pathlib import Path
 
+from common.console import console
 from common.exceptions import ImportExportError
 
 
@@ -52,12 +53,20 @@ def validate_export_path(
 ) -> Path:
     path = _validate_path(filepath, default_name, suffix)
     if path.is_file():
-        raise ImportExportError(f'Cannot overwrite file that already exists: {path}')
+        raise ImportExportError(
+            format_filepath_message('Cannot overwrite file that already exists', 'orange1', path)
+        )
     return path
 
 
 def validate_import_path(filepath: str | None) -> Path:
     path = _validate_path(filepath)
     if not path.is_file():
-        raise ImportExportError(f'Cannot import from file that does not exist: {path}')
+        raise ImportExportError(
+            format_filepath_message('Cannot import from file that does not exist', 'orange1', path)
+        )
     return path
+
+
+def format_filepath_message(message: str, colour: str, filepath: Path) -> str:
+    return f'[{colour}]{message}: [/{colour}]{filepath}'
