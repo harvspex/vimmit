@@ -57,4 +57,7 @@ class VimmExtractor:
 
             # TODO: If users don't download, or manually move some games, this will result in a 
             # growing list of game names that get checked, but never set to 'moved'=True
+            #
+            # Could warn user that games have been flagged as moved but not actually moved
+            # and user needs to rerun an arg like --force-recheck if they download it in the future
             games.data[sys_id][game_id]['moved'] = True
