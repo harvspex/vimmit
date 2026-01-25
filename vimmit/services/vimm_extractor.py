@@ -44,9 +44,9 @@ class VimmExtractor:
 
     def run(self, games: Games):
         for sys_id, game_id in self._yield_sys_and_game(games):
-            self._run()
+            self._handle_game(games, sys_id, game_id)
 
-    def _run(self, games: Games, sys_id: str, game_id: str):
+    def _handle_game(self, games: Games, sys_id: str, game_id: str):
         game = games[sys_id][game_id]
         game_name = game['name']
         filepath = self._get_filepath(game_name)
@@ -64,3 +64,4 @@ class VimmExtractor:
             self._move_game()
 
         games.data[sys_id][game_id]['moved'] = True
+        games.save()
