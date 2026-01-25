@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from common.console import console
 from data.config import Config
 from data.games import Games
 
@@ -12,6 +13,7 @@ from data.games import Games
 # - Delete archive if will_delete == True
 #
 # Change importer to only import game IDs, names, and (optionally) seen data
+# Also, don't import download path/roms path from config
 
 class VimmExtractor:
     ARCHIVE_SUFFIXES = {'.7z', '.zip'}
@@ -22,42 +24,43 @@ class VimmExtractor:
         self.roms_path = Path(config.data['roms'])
 
     @staticmethod
-    def _match_game_from_filename(seen_games: dict, filename: str) -> tuple:
-        for sys_id in seen_games:
-            for game_id, game in seen_games[sys_id].items():
-                if game['name'] in filename:
-                    return sys_id, game_id
-        return None, None
+    def _yield_sys_and_game(games: Games):
+        for sys_id, games in games.items():
+            for game_id, game in games.items():
+                if game.get('seen') and not game.get('moved'):
+                    yield sys_id, game_id
 
+    def _get_filepath(self, game_name: str) -> Path | None:
+        for file in self.download_path.iterdir():
+            if game_name in file.name:
+                return file
+        return None
 
-    def _handle_extract(self, filepath: Path, sys_id: str, game_id: str):
+    def _extract_game(self, filepath: Path, sys_id: str, game_id: str):
         ...
 
-
-    def _handle_move(self, filepath: Path, sys_id: str, game_id: str):
+    def _move_game(self, filepath: Path, sys_id: str, game_id: str):
         ...
 
+    def run(self, games: Games):
+        for sys_id, game_id in self._yield_sys_and_game(games):
+            self._run()
 
-    def _move_or_extract(self, filepath: Path, sys_id: str, game_id: str):
-        if filepath.suffix in self.ARCHIVE_SUFFIXES:
-            self._handle_extract()
+    def _run(self, games: Games, sys_id: str, game_id: str):
+        game = games[sys_id][game_id]
+        game_name = game['name']
+        filepath = self._get_filepath(game_name)
+
+        if not filepath:
+            # TODO: Colour
+            console.print(
+                f'WARNING: File not found for {game_name}. To extract in the future, please...' # TODO: WIP
+            )
+
+        elif filepath.suffix in self.ARCHIVE_SUFFIXES:
+            self._extract_game()
+
         else:
-            self._handle_move()
+            self._move_game()
 
-
-    def extract_games(self, games: Games):
-        seen_games = ...
-
-        for file in self.download_path.iterdir():        
-            sys_id, game_id = self._match_game_from_filename(seen_games, file.name)
-            if None in (sys_id, game_id):
-                continue
-
-            self._move_or_extract(file, sys_id, game_id)
-
-            # TODO: If users don't download, or manually move some games, this will result in a 
-            # growing list of game names that get checked, but never set to 'moved'=True
-            #
-            # Could warn user that games have been flagged as moved but not actually moved
-            # and user needs to rerun an arg like --force-recheck if they download it in the future
-            games.data[sys_id][game_id]['moved'] = True
+        games.data[sys_id][game_id]['moved'] = True
