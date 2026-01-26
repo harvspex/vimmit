@@ -33,10 +33,10 @@ class ExtractModes(Enum):
 
 
 class VimmExtractor:
-    def __init__(self, config: Config, will_delete_archive: bool):
+    def __init__(self, config: Config, extract_modes: list):
         self.download_path = self._validate_path(config, 'downloads')
         self.roms_path = self._validate_path(config, 'roms')
-        self.will_delete_archive = will_delete_archive
+        # TODO: Handle extract_modes
 
     @staticmethod
     def _validate_path(config: Config, key: str):

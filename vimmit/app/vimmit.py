@@ -64,9 +64,9 @@ def vimmit():
         return
 
     if args.extract is not None:
-        # TODO: Handle extract.
-        # Could pass in systems list to help improve speed of auto extract option?
-        ...
+        from services.vimm_extractor import VimmExtractor
+        extractor = VimmExtractor(config, args.extract)
+        extractor.run(games)
         return
 
     valid_systems = validate_systems(
