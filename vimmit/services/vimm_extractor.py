@@ -1,4 +1,6 @@
+from enum import Enum
 from pathlib import Path
+import shutil
 
 from common.console import console
 from data.config import Config
@@ -14,10 +16,16 @@ from data.games import Games
 #
 # Change importer to only import game IDs, names, and (optionally) seen data
 # Also, don't import download path/roms path from config
+#
+# TODO: Colour printing
+
+
+class ArchiveSuffix(Enum):
+    ZIP = '.zip'
+    SEVEN_ZIP = '.7z'
+
 
 class VimmExtractor:
-    ARCHIVE_SUFFIXES = {'.7z', '.zip'}
-
     def __init__(self, config: Config):
         self.systems = config.data['systems']
         self.download_path = Path(config.data['downloads'])
@@ -36,32 +44,35 @@ class VimmExtractor:
                 return file
         return None
 
-    def _extract_game(self, filepath: Path, sys_id: str, game_id: str):
-        ...
-
-    def _move_game(self, filepath: Path, sys_id: str, game_id: str):
-        ...
-
     def run(self, games: Games):
         for sys_id, game_id in self._yield_sys_and_game(games):
-            self._handle_game(games, sys_id, game_id)
+            game = games[sys_id][game_id]
+            self._handle_game(sys_id, game)
+            games.data[sys_id][game_id]['moved'] = True
+            games.save()
 
-    def _handle_game(self, games: Games, sys_id: str, game_id: str):
-        game = games[sys_id][game_id]
+    def _handle_game(self, sys_id: str, game: dict):
         game_name = game['name']
         filepath = self._get_filepath(game_name)
 
         if not filepath:
-            # TODO: Colour
             console.print(
                 f'WARNING: File not found for {game_name}. To extract in the future, please...' # TODO: WIP
             )
+            return
 
-        elif filepath.suffix in self.ARCHIVE_SUFFIXES:
-            self._extract_game()
+        sys_folder = self.download_path / sys_id
+        if not sys_folder.is_dir():
+            sys_folder.mkdir()
 
-        else:
-            self._move_game()
+        if filepath.suffix not in ArchiveSuffix:
+            shutil.move(filepath, sys_folder)
+            return
 
-        games.data[sys_id][game_id]['moved'] = True
-        games.save()
+        match filepath.suffix:
+            case ArchiveSuffix.ZIP:
+                ...
+            case ArchiveSuffix.SEVEN_ZIP:
+                ...
+            case _:
+                ...
