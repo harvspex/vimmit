@@ -8,13 +8,13 @@ from data.games import Games
 
 # TODO:
 # - Setup downloads folder and destination folder if needed
-# - Match string similarity of seen games to games in downloads folder
+# - (Done) Match string similarity of seen games to games in downloads folder
 #   - If extension == .zip or .7z : Extract games to dir "System/Archive Name (no suffix)/"
 #   - Else: just move the file to dir "System/"
-# - Flag games as extracted
+# - (Done) Flag games as moved
 # - Delete archive if will_delete == True
 #
-# Change importer to only import game IDs, names, and (optionally) seen data
+# (Done) Change importer to only import game IDs, names, and (optionally) seen data
 # Also, don't import download_path or roms_path from config
 #
 # TODO: Colour printing

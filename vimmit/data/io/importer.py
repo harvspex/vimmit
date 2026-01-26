@@ -43,7 +43,7 @@ class Importer(BaseData):
     ):
         new_games = self.data[DataKeys.GAMES.value]
         if not will_import_seen:
-            games.clear_seen(new_games, new_games.keys())
+            Games.clear_seen(new_games, new_games.keys())
         self._recursive_update(games.data, new_games)
         games.sort_all_games()
         games.save()

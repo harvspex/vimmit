@@ -24,7 +24,7 @@ def print_system_list_warning(describe_action: str, selected_systems: list):
 
 @confirm_delete
 def clear_seen_games(games: Games, selected_systems: list):
-    games.clear_seen(games.data, selected_systems)
+    Games.clear_seen(games.data, selected_systems)
     games.save()
 
 
