@@ -15,7 +15,7 @@ from data.games import Games
 # - Delete archive if will_delete == True
 #
 # Change importer to only import game IDs, names, and (optionally) seen data
-# Also, don't import download path/roms path from config
+# Also, don't import download_path or roms_path from config
 #
 # TODO: Colour printing
 
@@ -26,10 +26,20 @@ class ArchiveSuffix(Enum):
 
 
 class VimmExtractor:
-    def __init__(self, config: Config):
-        self.systems = config.data['systems']
-        self.download_path = Path(config.data['downloads'])
-        self.roms_path = Path(config.data['roms'])
+    def __init__(self, config: Config, will_delete_archive: bool):
+        self.download_path = self._validate_path(config, 'downloads')
+        self.roms_path = self._validate_path(config, 'roms')
+        self.will_delete_archive = will_delete_archive
+
+    @staticmethod
+    def _validate_path(config: Config, key: str):
+        try:
+            path = Path(config.data['paths'][key])
+        except KeyError:
+            ... # TODO: Handle setup
+        if path.is_dir():
+            return Path
+        raise ... # TODO: Custom exception
 
     @staticmethod
     def _yield_sys_and_game(games: Games):
@@ -61,7 +71,7 @@ class VimmExtractor:
             )
             return
 
-        sys_folder = self.download_path / sys_id
+        sys_folder = self.roms_path / sys_id
         if not sys_folder.is_dir():
             sys_folder.mkdir()
 
@@ -76,3 +86,6 @@ class VimmExtractor:
                 ...
             case _:
                 ...
+
+        if self.will_delete_archive:
+            ...
