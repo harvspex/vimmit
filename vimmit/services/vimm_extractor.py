@@ -26,6 +26,12 @@ class ArchiveSuffix(Enum):
     SEVEN_ZIP = '.7z'
 
 
+class ExtractModes(Enum):
+    NORMAL = 'normal'
+    AUTO = 'auto'
+    DELETE = 'delete'
+
+
 class VimmExtractor:
     def __init__(self, config: Config, will_delete_archive: bool):
         self.download_path = self._validate_path(config, 'downloads')

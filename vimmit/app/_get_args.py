@@ -1,6 +1,7 @@
 import argparse
 
 from data.io.io_utils import ImportModes, ExportModes
+from services.vimm_extractor import ExtractModes
 
 # TODO: Add and implement
 # - Delay time (between requests)
@@ -27,6 +28,17 @@ def get_args() -> argparse.Namespace:
         help='show list of downloaded and available systems',
         action='store_true',
         default=False
+    )
+    parser.add_argument(
+        '-x', '--extract',
+        help=(
+            'extract seen games, or move them if not an archive. '
+            f'[{ExtractModes.AUTO.value}] (optional): try to extract/move games not seen by vimmit. '
+            f'[{ExtractModes.DELETE.value}] (optional): delete the archive after extracting'
+        ),
+        nargs='*',
+        choices=[ExtractModes.AUTO.value, ExtractModes.DELETE.value],
+        default=None
     )
     parser.add_argument(
         '-i', '--import',

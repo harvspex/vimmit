@@ -63,6 +63,12 @@ def vimmit():
         show_systems(config, games)
         return
 
+    if args.extract is not None:
+        # TODO: Handle extract.
+        # Could pass in systems list to help improve speed of auto extract option?
+        ...
+        return
+
     valid_systems = validate_systems(
         config,
         check_if_all_systems_selected(games, args.systems),
