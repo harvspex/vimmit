@@ -37,9 +37,9 @@ class VimmExtractor:
             path = Path(config.data['paths'][key])
         except KeyError:
             ... # TODO: Handle setup
-        if path.is_dir():
-            return Path
-        raise ... # TODO: Custom exception
+        if not path.is_dir():
+            ... # TODO: Handle setup
+        return path
 
     @staticmethod
     def _yield_sys_and_game(games: Games):
