@@ -2,12 +2,13 @@ from enum import Enum
 from pathlib import Path
 import shutil
 
+from app._setup import get_input
 from common.console import console
 from data.config import Config
 from data.games import Games
 
 # TODO:
-# - Setup downloads folder and destination folder if needed
+# - (Done, needs testing) Setup downloads folder and destination folder if needed
 # - (Done) Match string similarity of seen games to games in downloads folder
 #   - If extension == .zip or .7z : Extract games to dir "System/Archive Name (no suffix)/"
 #   - Else: just move the file to dir "System/"
@@ -15,7 +16,7 @@ from data.games import Games
 # - Delete archive if will_delete == True
 #
 # (Done) Change importer to only import game IDs, names, and (optionally) seen data
-# Also, don't import download_path or roms_path from config
+# (Don't need) Also, don't import download_path or roms_path from config
 #
 # TODO: Colour printing
 
@@ -36,10 +37,21 @@ class VimmExtractor:
         try:
             path = Path(config.data['paths'][key])
         except KeyError:
-            ... # TODO: Handle setup
+            path = VimmExtractor._setup_path(config, key)
         if not path.is_dir():
-            ... # TODO: Handle setup
+            path = VimmExtractor._setup_path(config, key)
         return path
+
+    @staticmethod
+    def _setup_path(config: Config, key: str):
+        path = get_input(
+            f'Please input path to {key} folder:',
+            'Please enter a valid folder path:',
+            lambda path: path if Path(path).is_dir() else None
+        )
+        config.data['paths'][key] = path
+        config.save()
+        return Path(path)
 
     @staticmethod
     def _yield_sys_and_game(games: Games):

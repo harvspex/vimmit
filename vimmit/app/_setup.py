@@ -1,5 +1,18 @@
+from typing import Callable
+
 from data.config import Config
 from common.console import console
+
+
+def get_input(msg: str, retry_msg: str, validator: Callable, *args, **kwargs) -> str:
+    console.print(msg)
+    while True:
+        user_input = console.input('>> ').strip()
+        user_input = validator(user_input, *args, **kwargs)
+        if not user_input:
+            console.print(retry_msg)
+            continue
+        return user_input
 
 
 def _validate_url(user_input: str, default_scheme='https') -> str:
@@ -14,14 +27,11 @@ def _validate_url(user_input: str, default_scheme='https') -> str:
 
 
 def _input_base_url() -> str:
-    console.print('Please enter base url (hint: vimm dot net):')
-    while True:
-        user_input = console.input('>> ').strip()
-        base_url = _validate_url(user_input)
-        if not base_url:
-            console.print('Please enter valid url:')
-            continue
-        return base_url
+    return get_input(
+        'Please enter base url (hint: vimm dot net):',
+        'Please enter valid url:',
+        _validate_url
+    )
 
 
 def _scrape_systems(config: Config) -> dict:
