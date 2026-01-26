@@ -19,3 +19,4 @@ venv/
 *.yaml
 *.yml
 notes.md
+test.py
